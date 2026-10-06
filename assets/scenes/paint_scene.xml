@@ -110,13 +110,14 @@
     <mesh file="finger_0.obj" />
     <mesh file="finger_1.obj" />
     <material name="table_material" rgba="0.35 0.24 0.14 1" specular="0.05" shininess="0.1" />
-    <material name="canvas_material" rgba="0.93 0.90 0.80 1" specular="0.05" shininess="0.1" />
+    <material name="canvas_material" texture="canvas_texture" texuniform="false" texrepeat="1 1" rgba="0.93 0.90 0.80 1" specular="0.05" shininess="0.1" />
     <material name="canvas_edge" rgba="0.62 0.48 0.30 1" specular="0.05" shininess="0.1" />
     <material name="brush_wood" rgba="0.72 0.42 0.18 1" specular="0.05" shininess="0.1" />
     <material name="brush_bristle" rgba="0.08 0.06 0.04 1" specular="0.05" shininess="0.1" />
     <material name="washer_material" rgba="0.22 0.28 0.33 1" specular="0.05" shininess="0.1" />
     <material name="palette_material" rgba="0.75 0.78 0.82 1" specular="0.05" shininess="0.1" />
     <material name="water_material" rgba="0.18 0.48 0.68 1" specular="0.05" shininess="0.1" />
+    <texture name="canvas_texture" type="2d" builtin="flat" width="512" height="512" rgb1="0.93 0.90 0.80" rgb2="0.93 0.90 0.80" />
     <material name="pigment_00" rgba="0.137 0.369 0.635 1" specular="0.02" shininess="0.05" />
     <material name="pigment_01" rgba="0.851 0.239 0.212 1" specular="0.02" shininess="0.05" />
     <material name="pigment_02" rgba="0.925 0.706 0.157 1" specular="0.02" shininess="0.05" />
@@ -309,6 +310,7 @@
     <site name="palette_center" pos="0.04 0.235 0.09" size="0.006" rgba="0.9 0.6 0.1 0.8" type="sphere" />
     <site name="washer_center" pos="0.04 -0.235 0.09" size="0.006" rgba="0.1 0.6 0.9 0.8" type="sphere" />
     <camera name="top_camera" pos="0.50 0 1.45" quat="1 0 0 0" fovy="45" />
+    <camera name="canvas_camera" pos="0.50 -0.80 1.05" xyaxes="1 0 0 0 0.80 0.60" fovy="38" />
     <camera name="overview_camera" pos="1.08 -1.05 0.95" xyaxes="0.70 0.72 0  -0.45 0.44 0.78" fovy="48" />
   </worldbody>
   <tendon>

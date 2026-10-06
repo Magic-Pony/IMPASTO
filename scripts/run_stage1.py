@@ -5,7 +5,6 @@ from __future__ import annotations
 import csv
 import json
 from concurrent.futures import ProcessPoolExecutor
-from dataclasses import asdict
 from pathlib import Path
 import multiprocessing as mp
 import time
@@ -17,7 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-from impasto.actions import Stroke, sample_strokes
+from impasto.actions import Stroke
 from impasto.sim.mujoco_env import PaintingEnv, write_episode
 from impasto.sim.paint import PALETTE
 
@@ -41,32 +40,19 @@ def font(size=18):
         return ImageFont.load_default()
 
 
-def canvas_panel(env, size=(260, 260), label="canvas"):
-    im = Image.fromarray(env.canvas.image()).convert("RGB")
-    im.thumbnail(size, Image.Resampling.LANCZOS)
-    panel = Image.new("RGB", size, (35, 35, 35))
-    panel.paste(im, ((size[0]-im.width)//2, (size[1]-im.height)//2))
-    draw = ImageDraw.Draw(panel)
-    draw.rectangle((0, 0, size[0]-1, size[1]-1), outline=(240, 240, 240), width=2)
-    draw.text((8, 8), label, fill=(255, 255, 255), font=font(16))
-    return panel
-
-
 def overview_frame(env, camera="overview_camera", size=(640, 360), title=""):
     rgb = env.render(camera, width=size[0], height=size[1])
     base = Image.fromarray(rgb).convert("RGB")
-    inset = canvas_panel(env, (190, 190), "paint state")
-    base.paste(inset, (size[0]-inset.width-10, 10))
     draw = ImageDraw.Draw(base)
     if title:
-        draw.rectangle((0, 0, min(size[0], 430), 31), fill=(0, 0, 0))
+        draw.rectangle((0, 0, min(size[0], 520), 31), fill=(0, 0, 0))
         draw.text((8, 6), title, fill=(255, 255, 255), font=font(17))
     return np.asarray(base)
 
 
 def topdown_frame(env, size=(640, 480), title=""):
-    im = Image.fromarray(env.canvas.image()).convert("RGB")
-    im = im.resize(size, Image.Resampling.BILINEAR)
+    # This is the simulated camera image, including the live canvas texture.
+    im = Image.fromarray(env.render("canvas_camera", width=size[0], height=size[1])).convert("RGB")
     draw = ImageDraw.Draw(im)
     draw.rectangle((0, 0, size[0]-1, size[1]-1), outline=(25, 25, 25), width=4)
     if title:
@@ -116,8 +102,8 @@ def run_demo(config, seed, strokes, video_name=None, frame_stride=10):
         if frames_overview:
             frames_overview.extend([frames_overview[-1]] * 10)
             frames_top.extend([frames_top[-1]] * 10)
-        imageio.mimsave(VID / f"{video_name}_scene.mp4", frames_overview, fps=24, codec="libx264")
-        imageio.mimsave(VID / f"{video_name}_topdown.mp4", frames_top, fps=24, codec="libx264")
+        imageio.mimsave(VID / f"{video_name}_scene.mp4", frames_overview, fps=24, codec="libx264", macro_block_size=None)
+        imageio.mimsave(VID / f"{video_name}_topdown.mp4", frames_top, fps=24, codec="libx264", macro_block_size=None)
     return env, results, wall
 
 
@@ -135,10 +121,10 @@ def stage_plots(config, env, results, multi_strokes):
     # Scene layout combines the actual MuJoCo camera and the explicit paint state.
     scene = Image.new("RGB", (1000, 520), (230, 230, 230))
     scene.paste(Image.fromarray(env.render("overview_camera", 640, 360)), (0, 80))
-    scene.paste(Image.fromarray(env.render("top_camera", 340, 340)), (650, 80))
+    scene.paste(Image.fromarray(env.render("canvas_camera", 340, 340)), (650, 80))
     d = ImageDraw.Draw(scene)
     d.text((15, 20), "MuJoCo overview", fill=(20, 20, 20), font=font(24))
-    d.text((665, 20), "Top-down canvas camera", fill=(20, 20, 20), font=font(24))
+    d.text((665, 20), "Canvas camera (live texture)", fill=(20, 20, 20), font=font(24))
     scene.save(FIG / "scene_layout.png")
 
     before = Image.new("RGB", (512, 256), "white")
@@ -151,25 +137,30 @@ def stage_plots(config, env, results, multi_strokes):
 
     # Derive phase labels from transition timestamps.
     phase_ranges = []
+    stroke_index = -1
     for i, ev in enumerate(env.events):
+        if ev["phase"] == "MOVE_TO_START":
+            stroke_index += 1
         t0 = ev["time"]
         t1 = env.events[i+1]["time"] if i + 1 < len(env.events) else float("inf")
-        phase_ranges.append((t0, t1, ev["phase"]))
+        force_target = (multi_strokes[stroke_index].force
+                        if 0 <= stroke_index < len(multi_strokes) else "")
+        phase_ranges.append((t0, t1, ev["phase"], force_target))
     def phase_at(t):
-        for t0, t1, p in phase_ranges:
+        for t0, t1, p, target_force in phase_ranges:
             if t0 <= t < t1:
-                return p
-        return "unknown"
+                return p, target_force
+        return "unknown", ""
 
-    observations = [(o, phase_at(o.time)) for o in env.observations]
+    observations = [(o, *phase_at(o.time)) for o in env.observations]
     write_csv(DATA / "force_trace.csv", ["time_s", "phase", "force_N", "contacting", "target_force_N"],
-              [[o.time, p, o.normal_force, int(o.contacting),
-                next((s.force for s in multi_strokes if p == "STROKE"), "")] for o, p in observations])
+              [[o.time, p, o.normal_force, int(o.contacting), target]
+               for o, p, target in observations])
     write_csv(DATA / "trajectory.csv", ["time_s", "phase", "tip_x_m", "tip_y_m", "tip_z_m", "target_x_m", "target_y_m", "target_z_m"],
-              [[o.time, p, *o.tip_xyz, *o.target_xyz] for o, p in observations])
+              [[o.time, p, *o.tip_xyz, *o.target_xyz] for o, p, _ in observations])
 
     plt.figure(figsize=(10, 4))
-    for o, p in observations:
+    for o, p, _ in observations:
         if p in ("FORCE_ACQUIRE", "STROKE"):
             plt.scatter(o.time, o.normal_force, s=2, c="tab:blue" if p == "STROKE" else "tab:orange")
     stroke_targets = [r.get("target_force_N", np.nan) for r in results if r.get("success")]
@@ -182,7 +173,7 @@ def stage_plots(config, env, results, multi_strokes):
     for s in multi_strokes:
         pts = s.points(np.linspace(0, 1, 100))
         plt.plot(pts[:, 0], pts[:, 1], "--", lw=1.5, label=f"target c{s.color}")
-    for o, p in observations:
+    for o, p, _ in observations:
         if p == "STROKE" and o.contacting:
             plt.scatter(o.tip_xyz[0]-.5, o.tip_xyz[1], c="k", s=2)
     plt.gca().set_aspect("equal"); plt.xlim(-.23, .23); plt.ylim(-.27, .27)
@@ -201,7 +192,11 @@ def stage_plots(config, env, results, multi_strokes):
 def worker(task):
     config, seed = task
     env = PaintingEnv(config, seed=seed, render=False)
-    stroke = sample_strokes(seed + 10000, 1)[0]
+    # Use the same reachable, centered workload for the serial/parallel
+    # benchmark so it measures process throughput rather than workspace-edge
+    # IK failures. Random self-play sampling is exercised separately in the
+    # action/data tests and will be expanded in Stage 2.
+    stroke = Stroke(-.05, -.03, .06, 0.0, 0.0, .60, color=seed % 24)
     t0 = time.perf_counter()
     result = env.execute_stroke(stroke)
     wall = time.perf_counter() - t0
@@ -226,7 +221,7 @@ def throughput(config, workers=4, count=8):
             ["parallel", parallel_wall, count/parallel_wall, out["parallel_success_rate"]]]
     write_csv(DATA / "throughput.csv", ["mode", "wall_s", "strokes_per_s", "success_rate"], rows)
     plt.figure(figsize=(6, 4)); plt.bar(["serial", "parallel"], [count/serial_wall, count/parallel_wall], color=["#999999", "#2277aa"])
-    plt.ylabel("completed strokes / wall second"); plt.title(f"Self-play throughput ({workers} worker processes)")
+    plt.ylabel("completed strokes / wall second"); plt.title(f"Independent environment throughput ({workers} worker processes)")
     for i,v in enumerate([count/serial_wall, count/parallel_wall]): plt.text(i, v, f"{v:.2f}", ha="center", va="bottom")
     plt.tight_layout(); plt.savefig(FIG / "parallel_throughput.png", dpi=160); plt.close()
     return out, serial, parallel
@@ -268,7 +263,11 @@ def main():
         "success_rate": len(successful)/len(all_results),
         "mean_force_N": float(np.mean([r["force_mean_N"] for r in successful])) if successful else 0.0,
         "mean_force_rmse_N": float(np.mean([r["force_rmse_N"] for r in successful])) if successful else 0.0,
+        "mean_force_std_N": float(np.mean([r["force_std_N"] for r in successful])) if successful else 0.0,
+        "mean_force_range_N": float(np.mean([r["force_range_N"] for r in successful])) if successful else 0.0,
         "max_force_N": float(np.max([r["force_max_N"] for r in successful])) if successful else 0.0,
+        "mean_brush_tilt_deg": float(np.mean([r["brush_tilt_mean_deg"] for r in successful])) if successful else 0.0,
+        "max_brush_tilt_deg": float(np.max([r["brush_tilt_max_deg"] for r in successful])) if successful else 0.0,
         "mean_trajectory_rmse_m": float(np.mean([r["trajectory_rmse_m"] for r in successful])) if successful else 0.0,
         "deposited_pixels": int(plot_env.canvas.changed_mask().sum()),
         "multi_sim_time_s": float(plot_env.data.time),
@@ -297,8 +296,12 @@ def main():
 | 笔画成功率 | {metrics['success_rate']:.3f} |
 | 平均法向力 | {metrics['mean_force_N']:.3f} N |
 | 平均法向力 RMSE | {metrics['mean_force_rmse_N']:.3f} N |
+| 运笔阶段法向力标准差 | {metrics['mean_force_std_N']:.3f} N |
+| 运笔阶段法向力范围 | {metrics['mean_force_range_N']:.3f} N |
 | 最大法向力 | {metrics['max_force_N']:.3f} N |
 | 平均接触轨迹 RMSE | {metrics['mean_trajectory_rmse_m']*1000:.2f} mm |
+| 平均刷杆倾角 | {metrics['mean_brush_tilt_deg']:.3f}° |
+| 最大刷杆倾角 | {metrics['max_brush_tilt_deg']:.3f}° |
 | 最终画布沉积像素 | {metrics['deposited_pixels']} |
 | 多笔物理仿真时间 | {metrics['multi_sim_time_s']:.3f} s |
 | 多笔含渲染运行时间 | {metrics['multi_wall_time_s_with_video']:.3f} s |
@@ -327,7 +330,9 @@ def main():
 
 ## 解释和限制
 
-MuJoCo 的离散 penalty contact 在小刷尖上会产生瞬时较大的原始接触冲量，因此报告中的法向力经过固定阶段标定比例，作为虚拟六轴 F/T 传感器读数；`PaintingEnv.normal_force_raw()` 保留原始量。沉积由接触、力、速度、刷上颜料量和画布 tooth 驱动，不是 Navier–Stokes 或逐刷毛油画流体模型。视频中的预设笔画不代表 IMPASTO 学习模型已经生成了规划结果。
+MuJoCo 的离散 penalty contact 在小刷尖上会产生瞬时较大的原始接触冲量，因此报告中的法向力经过固定阶段标定比例，作为虚拟六轴 F/T 传感器读数；`PaintingEnv.normal_force_raw()` 保留原始量。运笔中增加了低带宽的高度修正，以抵消离散接触和关节伺服误差；它用于阶段 1 仿真稳定性验证，不能等同于论文硬件上的六轴传感器力控。沉积由接触、力、速度、刷上颜料量和画布 tooth 驱动，不是 Navier–Stokes 或逐刷毛油画流体模型。视频中的预设笔画不代表 IMPASTO 学习模型已经生成了规划结果。
+
+力控流程是先以 `force_ema` 滤波目标力与接触法向力误差，落笔阶段按误差调节高度；达到 ±0.12 N 并持续 0.16 s 后进入运笔。仿真运笔时再以较低带宽的小幅高度修正补偿离散接触造成的漂移。阶段 1 的 8 笔演示在有效接触样本上的平均力为 {metrics['mean_force_N']:.3f} N，目标力均值为 {float(np.mean([s.force for s in multi_strokes])):.3f} N；逐笔力标准差均值为 {metrics['mean_force_std_N']:.3f} N，逐笔力范围均值为 {metrics['mean_force_range_N']:.3f} N。结果表明本轮仿真绘制期间力基本稳定，但仍有采样接触误差和 MuJoCo 传感器比例标定带来的系统偏差。
 
 下一阶段可以直接复用本阶段 episode 数据接口，采集论文对齐规模的 self-play 数据，加入 100×100 灰度局部状态、预渲染笔画和 6D action，训练 U-Net 前向动力学模型。
 """
