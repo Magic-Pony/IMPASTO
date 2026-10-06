@@ -1,0 +1,12 @@
+.conda/
+.cache/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+data/
+outputs/
+*.part
+papers/IMPASTO_arxiv_2603.29315v1.pdf
+reports/stage1/serve.log

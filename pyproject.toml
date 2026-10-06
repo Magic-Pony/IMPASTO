@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "impasto-reproduction"
+version = "0.1.0"
+description = "Local simulation reproduction of IMPASTO (ICRA 2026)"
+requires-python = ">=3.11,<3.13"
+dependencies = ["mujoco>=3.3,<4", "numpy>=2,<3", "scipy", "pillow", "matplotlib", "imageio", "imageio-ffmpeg", "pyyaml", "opencv-python-headless"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+learning = ["torch", "lpips"]
+
+[project.scripts]
+impasto = "impasto.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

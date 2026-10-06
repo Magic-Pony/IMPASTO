@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- EDIT: page description and keywords -->
+  <meta name="description" content="[EDIT] One-sentence summary of your paper.">
+  <meta name="keywords" content="[EDIT] keyword1, keyword2, research-area">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- EDIT: browser tab title -->
+  <title>IMPASTO: Integrating Model-Based Planning with Learned Dynamics Models for Robotic Oil Painting Reproduction</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <!-- <link rel="stylesheet" href="./static/css/fontawesome.all.min.css"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- <script defer src="./static/js/fontawesome.all.min.js"></script> -->
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+<!-- ===== HERO: title + conference (visible) ===== -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+
+          <!-- EDIT: paper title (and optional subtitle) -->
+          <h1 class="title is-2 publication-title">
+            IMPASTO: <b>I</b>ntegrating <b>M</b>odel-Based <b>P</b>lanning with Le<b>a</b>rned Dynamic<b>s</b> Models for Robo<b>t</b>ic <b>O</b>il Painting Reproduction
+          </h1>
+
+          <h3 class="title is-4 conference-authors">
+            <a target="_blank" href="https://2026.ieee-icra.org/">IEEE International Conference on Robotics and Automation (ICRA) 2026</a>
+          </h3>
+
+          <!-- Optional: keep anonymous or replace with author list/affiliations -->
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              Yingke Wang<sup>1</sup>, Hao Li<sup>1</sup>, Yifeng Zhu<sup>2</sup>, 
+              Hong-Xing Yu<sup>1</sup>,<br> Ken Goldberg<sup>3</sup>, Li Fei-Fei<sup>1</sup>, Jiajun Wu<sup>1</sup>, Yunzhu Li<sup>4</sup>, 
+              Ruohan Zhang<sup>1</sup>
+            </span>
+            <br><br>
+            <span class="author-block" style="font-size: 0.95em;">
+              <sup>1</sup> Stanford University<br>
+              <sup>2</sup> The University of Texas at Austin<br>
+              <sup>3</sup> University of California, Berkeley<br>
+              <sup>4</sup> Columbia University
+            </span>
+          </div>
+
+          <!-- Hide button row for now; remove 'hide' later to show -->
+          <div class="button-container">
+            <!-- Appendix (visible) -->
+            <a href="media/appendix.pdf" target="_blank" class="button">
+              <i class="fas fa-file-pdf" aria-hidden="true"></i>&emsp14;Appendix
+            </a>
+
+            <!-- Paper (visible) -->
+            <a href="media/paper.pdf" target="_blank" class="button">
+              <i class="fas fa-file-pdf" aria-hidden="true"></i>&emsp14;Paper
+            </a>
+
+            <a href="https://arxiv.org/abs/2603.29315" target="_blank" class="button">
+              <i class="ai ai-arxiv"></i>&emsp14;arXiv
+            </a>
+
+            <a href="https://x.com/RuohanZhang76/status/1997020534857781533" target="_blank" class="button">
+              <i class="fa-brands fa-x-twitter"></i>&emsp14;tl;dr
+            </a>
+
+            <!-- Code coming soon -->
+            <a class="button disabled" aria-disabled="true" tabindex="-1">
+              <i class="fas fa-code" aria-hidden="true"></i>&emsp14;Code
+            </a>
+
+            
+          
+            <!-- keep others hidden for now -->
+            <!-- <a href="#" target="_blank" class="button disabled" aria-disabled="true" tabindex="-1" hidden>
+              <i class="fa-light fa-file"></i>&emsp14;PDF
+            </a>
+            <a href="#" target="_blank" class="button disabled" aria-disabled="true" tabindex="-1" hidden>
+              <i class="ai ai-arxiv"></i>&emsp14;arXiv
+            </a>
+            <a class="button disabled" aria-disabled="true" tabindex="-1" hidden>
+              <i class="fa-light fa-film"></i>&emsp14;Video
+            </a>
+            <a href="#" target="_blank" class="button disabled" aria-disabled="true" tabindex="-1" hidden>
+              <i class="fa-brands fa-x-twitter"></i>&emsp14;Social
+            </a>
+            <a href="#" target="_blank" class="button disabled" aria-disabled="true" tabindex="-1" hidden>
+              <i class="fa-light fa-code"></i>&emsp14;Code
+            </a> -->
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TEASER VIDEO (visible) ===== -->
+<!-- ===== TEASER VIDEO (visible) ===== -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <div class="container">
+
+        <!-- Row 1: Pearl -->
+        <div class="columns is-vcentered is-centered">
+          <!-- Video -->
+          <div class="column is-half has-text-centered">
+            <video
+              autoplay
+              muted
+              loop
+              controls
+              style="width: 100%; max-width: 300px; height: auto;"
+            >
+              <source src="media/videos/pearl_400.mp4" type="video/mp4">
+            </video>
+          </div>
+          <!-- Image -->
+          <div class="column is-half has-text-centered">
+            <figure class="image" style="display: inline-block;">
+              <img
+                src="media/figures/pearl.png"
+                alt="IMPASTO Pearl"
+                style="width: 100%; max-width: 600px; height: auto;"
+              >
+            </figure>
+          </div>
+        </div>
+
+        <!-- Row 2: Landscape -->
+        <div class="columns is-vcentered is-centered" style="margin-top: 1.5rem;">
+          <!-- Video -->
+          <div class="column is-half has-text-centered">
+            <video
+              autoplay
+              muted
+              loop
+              controls
+              style="width: 100%; max-width: 300px; height: auto;"
+            >
+              <source src="media/videos/landscape_400.mp4" type="video/mp4">
+            </video>
+          </div>
+          <!-- Image -->
+          <div class="column is-half has-text-centered">
+            <figure class="image" style="display: inline-block;">
+              <img
+                src="media/figures/landscape.png"
+                alt="IMPASTO Landscape"
+                style="width: 100%; max-width: 600px; height: auto;"
+              >
+            </figure>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== ABSTRACT (visible) ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <!-- EDIT: replace with your abstract -->
+          <p>
+            Robotic reproduction of oil paintings using soft brushes and pigments requires force-sensitive control of deformable tools, prediction of brushstroke effects, and multi-step stroke planning, often without human step-by-step demonstrations or faithful simulators. Given only a target oil painting image, can a robot infer and execute the stroke trajectories, forces, and colors needed to reproduce it? We present IMPASTO, a robotic oil-painting system that integrates learned pixel dynamics models with model-based planning. The dynamics models predict canvas updates from image observations and parameterized stroke actions; a receding-horizon model predictive control optimizer then plans trajectories and forces, while a force-sensitive controller executes strokes on a 7-DoF robot arm. IMPASTO learns solely from robot self-play and achieves high-fidelity replication on human artists' single-stroke datasets and multi-stroke artworks, outperforming baselines in reproduction accuracy. By integrating low-level force control, learned dynamics models, and high-level closed-loop planning, IMPASTO is a step toward robots that can paint with the finesse of a human artist by manipulating real brushes and paints.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Everything below is kept but hidden via .hide ===== -->
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Overview of IMPASTO</h2>
+
+        <!-- Optional: a short intro line (kept centered) -->
+        <!-- <p class="subtitle">A high-level look at the system.</p> -->
+
+        <!-- Image centered; remove if you don't want it -->
+        <figure class="image" style="margin: 1rem auto; display: block;">
+          <img
+            src="media/figures/overview.png"
+            alt="IMPASTO method overview"
+            style="max-width: 90%; height: auto; display: block; margin: 0 auto;"
+          >
+        </figure>
+
+        <!-- Body text matches Abstract's width and justification -->
+        <div class="content has-text-justified">
+          <p>
+            IMPASTO is a robotic oil painting system that integrates learned neural dynamics models with model-based planning algorithms to accurately replicate human artists' brushstrokes and artworks.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Method</h2>
+
+        <!-- Optional: a short intro line (kept centered) -->
+        <!-- <p class="subtitle">A high-level look at the system.</p> -->
+
+        <!-- Image centered; remove if you don't want it -->
+        <div class="columns is-vcentered is-centered" style="margin-top: 1.5rem;">
+          <!-- Image -->
+          <div class="column is-half has-text-centered">
+            <figure class="image" style="display: inline-block;">
+              <img
+                src="media/figures/action.png"
+                alt="IMPASTO Landscape"
+                style="width: 100%; max-width: 600px; height: auto;"
+              >
+            </figure>
+          </div>
+          <!-- Video -->
+          <div class="column is-half has-text-centered">
+            <video
+              autoplay
+              muted
+              loop
+              controls
+              style="width: 100%; max-width: 300px; height: auto;"
+            >
+              <source src="media/videos/forces.mp4" type="video/mp4">
+            </video>
+          </div>
+          
+        </div>
+        <div class="content has-text-justified">
+          <p>
+            To concisely and expressively represent the strokes, we define 10 parameters including starting positions, tilting angle, RGBA, length, bend, and most importantly, force, to form the stroke as either a straight line or a parabolic curve. We then control the arm in joint-impedance mode with force injection and run a force-control loop along the surface normal. At the beginning of each stroke, a normal-direction admittance accumulates a smoothed feedforward force. 
+          </p>
+        </div>
+
+        <figure class="image" style="margin: 1rem auto; display: block;">
+          <img
+            src="media/figures/method_paper.png"
+            alt="IMPASTO method"
+            style="max-width: 90%; height: auto; display: block; margin: 0 auto;"
+          >
+        </figure>
+
+        <!-- Body text matches Abstract's width and justification -->
+        <div class="content has-text-justified">
+          <p>
+            Overview of the learning and planning framework. Top: IMPASTO-UNet's neural pixel dynamics model, which combines an image encoder and an action encoder to predict the effect of a stroke. The model is trained using a weighted
+l1 loss. Bottom: To find one or more consecutive strokes between a base image and a target image, an MPC-based planner optimizes stroke parameters with a weighted l1 image objective in a receding-horizon, closed loop.
+          </p>
+        </div>
+        <!-- <div class="columns is-vcentered is-centered is-gapless">
+          <div class="overlaid-row">
+            <video
+              class="overlaid-media"
+              autoplay
+              muted
+              loop
+              controls
+            >
+              <source src="media/video/forces.mp4" type="video/mp4">
+            </video>
+          
+            <img
+              class="overlaid-media"
+              src="media/figures/action.png"
+              alt="IMPASTO overlaid"
+            >
+          </div>
+        </div> -->
+               
+
+        <div class="column is-max-desktop">
+          <video
+            autoplay
+            muted
+            loop
+            controls
+            style="width: 100%; max-width: 1400px; height: auto;"
+          >
+            <source src="media/videos/DynModel.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <div class="column is-max-desktop">
+          <video
+            autoplay
+            muted
+            loop
+            controls
+            style="width:100%; max-width: 1400px; height: auto;"
+          >
+            <source src="media/videos/MPC.mp4" type="video/mp4">
+          </video>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Independent Stroke Replication</h2>
+
+        <!-- Optional: a short intro line (kept centered) -->
+        <!-- <p class="subtitle">A high-level look at the system.</p> -->
+
+        <!-- Image centered; remove if you don't want it -->
+        <div class="column is-max-desktop">
+          <video
+            autoplay
+            muted
+            loop
+            controls
+            style="width: 95%; max-width: 1920px; height: auto;"
+          >
+            <source src="media/videos/single_strokes.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <figure class="image" style="margin: 1rem auto; display: block;">
+          <img
+            src="media/figures/ind_strokes.png"
+            alt="IMPASTO ind"
+            style="max-width: 70%; height: auto; display: block; margin: 0 auto;"
+          >
+        </figure>
+
+        <!-- Body text matches Abstract's width and justification -->
+        <div class="content has-text-justified">
+          <p>
+            Target brushstrokes from five human artists (two examples per artist from the overall 60 strokes) and the strokes reproduced by the robot using different methods. The numbers shown are the weighted l1 loss between the target and the painted strokes. Instances with the best performances are highlighted with bold borders. Overall, IMPASTO-UNet more accurately reproduced human brushstrokes.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Overlaid Stroke Replication</h2>
+
+        <div class="columns is-vcentered is-centered is-gapless">
+          <div class="overlaid-row">
+            <!-- 左：Video -->
+            <video
+              class="overlaid-media"
+              autoplay
+              muted
+              loop
+              controls
+            >
+              <source src="media/videos/overlaid_strokes.mp4" type="video/mp4">
+            </video>
+          
+            <!-- 右：Image -->
+            <img
+              class="overlaid-media"
+              src="media/figures/overlaid_strokes.png"
+              alt="IMPASTO overlaid"
+            >
+          </div>
+        </div>
+        
+                  
+
+
+        <!-- Image centered; remove if you don't want it
+        <div class="column is-max-desktop">
+          <video
+            autoplay
+            muted
+            loop
+            controls
+            style="width: 50%; max-width: 800px; height: auto;"
+          >
+            <source src="media/videos/overlaid_strokes.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <figure class="image" style="margin: 1rem auto; display: block;">
+          <img src="media/figures/overlaid_strokes.png" alt="IMPASTO overlaid" style="max-width: 100%; height: auto;">
+        </figure> -->
+
+        <!-- Body text matches Abstract's width and justification -->
+        <div class="content has-text-justified">
+          <p>
+            Qualitative results showing the target strokes from overlaid strokes and the strokes painted by the robot using different methods. Instances with the best performances are highlighted with bold borders. The base images (canvas states) already have painted strokes. This requires the dynamics models to make accurate predictions given the noisy background. The numbers shown are the weighted l1 loss. Note that the loss is only calculated around the target stroke area. IMPASTO-UNet is more accurate in reproducing human brushstrokes given the noisy base images.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Closed-loop Multi-step Replication</h2>
+
+        <!-- Optional: a short intro line (kept centered) -->
+        <!-- <p class="subtitle">A high-level look at the system.</p> -->
+
+        <!-- Image centered; remove if you don't want it -->
+        <div class="columns is-vcentered is-centered" style="margin-top: 1.5rem;">
+          <!-- Video -->
+          <div class="column is-half has-text-centered">
+            <video
+              autoplay
+              muted
+              loop
+              controls
+              style="width: 100%; max-width: 800px; height: auto;"
+            >
+              <source src="media/videos/Flower-ours.mp4" type="video/mp4">
+            </video>
+          </div>
+          <!-- Video -->
+          <div class="column is-half has-text-centered">
+            <video
+              autoplay
+              muted
+              loop
+              controls
+              style="width: 100%; max-width: 800px; height: auto;"
+            >
+              <source src="media/videos/Fish-ours.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+        
+        <figure class="image" style="margin: 1rem auto; display: block;">
+          <img src="media/figures/planning-2.png" alt="IMPASTO planning" style="max-width: 100%; height: auto;">
+        </figure>
+
+        <!-- Body text matches Abstract's width and justification -->
+        <div class="content has-text-justified">
+          <p>
+            Qualitative results showing the target paintings and the painting produced by the robot using IMPASTO vs. FRIDA. The planning horizon was set to be five, and the framed images are the targets for MPC. Our method can more accurately reproduce oil paintings.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Open-loop Single-step Replication</h2>
+
+        <!-- Optional: a short intro line (kept centered) -->
+        <!-- <p class="subtitle">A high-level look at the system.</p> -->
+
+        <!-- Image centered; remove if you don't want it -->
+        <figure class="image" style="margin: 1rem auto; display: block;">
+          <img
+            src="media/figures/demo-2.png"
+            alt="IMPASTO demo2"
+            style="max-width: 70%; height: auto; display: block; margin: 0 auto;"
+          >
+        </figure>
+
+        <!-- Body text matches Abstract's width and justification -->
+        <div class="content has-text-justified">
+          <p>
+            IMPASTO was able to replicate a complex oil painting with single-step planning.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>  
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Failure cases</h2>
+
+        <!-- Two images side-by-side -->
+        <!-- <div class="columns is-mobile is-centered">
+          <div class="column">
+            <figure class="image">
+              <img src="media/figures/landscape.png" alt="IMPASTO landscape">
+            </figure>
+          </div>
+
+          <div class="column">
+            <figure class="image">
+              <img src="media/figures/pearl.png" alt="IMPASTO pearl">
+            </figure>
+          </div>
+        </div> -->
+
+        <!-- Video -->
+        <div class="column is-max-desktop">
+          <video
+            autoplay
+            muted
+            loop
+            controls
+            style="width: 100%; max-width: 1920px; height: auto;"
+          >
+            <source src="media/videos/failures.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Optional text under the pair -->
+        <div class="content has-text-justified">
+          <p>
+            Failure mode: worn-out brush and overly dry or wet pigments introduce stochasticity during execution even though the prediction and planning are accurate.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section hide" id="comparison">
+  <div class="container is-max-widescreen">
+    <h2 class="title is-3">[Task-Conditioned Results Title]</h2>
+    <div class="columns is-vcentered">
+      <div class="column has-text-centered">
+        <figure class="image side-img">
+          <img src="media/figures/droid-viz.png" alt="Evaluation Results A">
+        </figure>
+      </div>
+      <div class="column has-text-centered">
+        <figure class="image side-img">
+          <img src="media/figures/agd.png" alt="Evaluation Results B">
+        </figure>
+      </div>
+    </div>
+    <p class="subtitle is-5 has-text-centered">
+      [Placeholder caption...]
+    </p>
+  </div>
+</section>
+
+<section class="section hide" id="affordance-demo">
+  <div class="container is-max-widescreen">
+    <h2 class="title is-3">Interactive Demo</h2>
+    <div id="demo-loader" class="has-text-centered">
+      <p class="subtitle is-5">Demo will be available after review process...</p>
+    </div>
+    <div class="has-text-centered" style="height: 550px; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center;">
+      <p class="subtitle is-5">[Interactive Demo Placeholder - Will be available after review]</p>
+    </div>
+  </div>
+</section>
+
+<section class="section hide">
+  <div class="container is-max-widescreen">
+    <div class="rows">
+      <h2 class="title is-3">Generalization Properties for [Application]</h2>
+      <p class="content has-text-justified">
+        Using our proposed method as a [type of representation], policies learned from [training data description] generalize to
+        <b>[generalization type 1]</b>, <b>[generalization type 2]</b>, <b>[generalization type 3]</b>, and <b>[generalization type 4]</b>.
+      </p>
+
+      <div class="task-picker">
+        <label for="task-selector" class="label mb-0">Select task:</label>
+        <div class="select">
+          <select id="task-selector">
+            <option value="pour">[Task 1 Name]</option>
+            <option value="open">[Task 2 Name]</option>
+            <option value="insert">[Task 3 Name]</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="task-block" id="task-pour">
+        <h4 class="title is-4">[Task 1 Name]: [Task 1 Description]</h4>
+        <div class="columns">
+          <div class="column has-text-centered left-column">
+            <video id="dist1" autoplay muted loop controls width="72%">
+              <source src="media/videos/pour/pour_train.mp4" type="video/mp4">
+            </video>
+            <p>Training Scenario</p>
+          </div>
+          <div class="column right-column">
+            <div class="columns">
+              <div class="column has-text-centered">
+                <video id="dist1" autoplay muted loop controls width="80%">
+                  <source src="media/videos/pour/pour_pose.mp4" type="video/mp4">
+                </video>
+                <p>[Generalization Type 1]</p>
+              </div>
+              <div class="column has-text-centered">
+                <video id="dist1" autoplay muted loop controls width="80%">
+                  <source src="media/videos/pour/pour_instance.mp4" type="video/mp4">
+                </video>
+                <p>[Generalization Type 2] <br> ([Example Description])</p>
+              </div>
+            </div>
+            <div class="columns">
+              <div class="column has-text-centered">
+                <video id="dist1" autoplay muted loop controls width="80%">
+                  <source src="media/videos/pour/pour_category.mp4" type="video/mp4">
+                </video>
+                <p>[Generalization Type 3] <br> ([Example Variation])</p>
+              </div>
+              <div class="column has-text-centered">
+                <video id="dist1" autoplay muted loop controls width="80%">
+                  <source src="media/videos/pour/pour_instruction.mp4" type="video/mp4">
+                </video>
+                <p>[Generalization Type 4] <br> ([Example Change])</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-block" id="task-open">
+        <h4 class="title is-4">[Task 2 Name]: [Task 2 Description]</h4>
+        <div class="columns">
+          <div class="column has-text-centered left-column">
+            <video autoplay muted loop controls width="72%">
+              <source src="media/videos/open/open_train.mp4" type="video/mp4">
+            </video>
+            <p>Training Scenario</p>
+          </div>
+          <div class="column">
+            <div class="columns is-mobile is-multiline is-centered">
+              <div class="column is-half-desktop is-half-tablet has-text-centered">
+                <video autoplay muted loop controls width="80%">
+                  <source src="media/videos/open/open_pose.mp4" type="video/mp4">
+                </video>
+                <p>[Generalization Type 1]</p>
+              </div>
+              <div class="column is-half-desktop is-half-tablet has-text-centered">
+                <video autoplay muted loop controls width="80%">
+                  <source src="media/videos/open/open_instance.mp4" type="video/mp4">
+                </video>
+                <p>[Generalization Type 2]</p>
+              </div>
+              <div class="column is-half-desktop is-half-tablet is-bottom-center has-text-centered">
+                <video autoplay muted loop controls width="80%">
+                  <source src="media/videos/open/open_category.mp4" type="video/mp4">
+                </video>
+                <p>[Generalization Type 3] <br>([Example Variation])</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-block" id="task-insert">
+        <h4 class="title is-4">[Task 3 Name]: [Task 3 Description]</h4>
+        <div class="columns">
+          <div class="column has-text-centered left-column">
+            <video id="dist1" autoplay muted loop controls width="72%">
+              <source src="media/videos/insert/insert_train.mp4" type="video/mp4">
+            </video>
+            <p>Training Scenario</p>
+          </div>
+          <div class="column right-column">
+            <div class="columns">
+              <div class="column has-text-centered">
+                <video id="dist1" autoplay muted loop controls width="80%">
+                  <source src="media/videos/insert/insert_pose.mp4" type="video/mp4">
+                </video>
+                <p>[Generalization Type 1]</p>
+              </div>
+              <div class="column has-text-centered">
+                <video id="dist1" autoplay muted loop controls width="80%">
+                  <source src="media/videos/insert/insert_instance.mp4" type="video/mp4">
+                </video>
+                <p>[Generalization Type 2] ([Example])</p>
+              </div>
+            </div>
+            <div class="columns">
+              <div class="column has-text-centered">
+                <video id="dist1" autoplay muted loop controls width="80%">
+                  <source src="media/videos/insert/insert_category.mp4" type="video/mp4">
+                </video>
+                <p>[Generalization Type 3] <br> ([Example Variation])</p>
+              </div>
+              <div class="column has-text-centered">
+                <video id="dist1" autoplay muted loop controls width="80%">
+                  <source src="media/videos/insert/insert_instruction.mp4" type="video/mp4">
+                </video>
+                <p>[Generalization Type 4] <br> ([Example Change])</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- rows -->
+  </div>
+</section>
+
+<section class="section hide">
+  <div class="container is-max-widescreen">
+    <div class="rows">
+      <h2 class="title is-3">Real-World Experiments</h2>
+      <p class="content has-text-justified">We further demonstrate our method's effectiveness in real-world scenarios. Each experiment uses [training setup description].</p>
+
+      <div class="task-picker">
+        <label for="video-selector" class="label mb-0">Select task:</label>
+        <div class="select">
+          <select id="video-selector">
+            <option value="pour">[Task 1 Name]</option>
+            <option value="open">[Task 2 Name]</option>
+            <option value="insert">[Task 3 Name]</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="video-block" id="bottom-pour">
+        <h4 class="title is-4">[Task 1 Name]: [Task 1 Real-World Description]</h4>
+        <div class="columns">
+          <div class="column has-text-centered">
+            <video autoplay muted loop controls width="99%">
+              <source src="media/videos/real-speedup/pour.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+
+      <div class="video-block" id="bottom-open">
+        <h4 class="title is-4">[Task 2 Name]: [Task 2 Real-World Description]</h4>
+        <div class="columns">
+          <div class="column has-text-centered">
+            <video autoplay muted loop controls width="99%">
+              <source src="media/videos/real-speedup/open.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+
+      <div class="video-block" id="bottom-insert">
+        <h4 class="title is-4">[Task 3 Name]: [Task 3 Real-World Description]</h4>
+        <div class="columns">
+          <div class="column has-text-centered">
+            <video autoplay muted loop controls width="99%">
+              <source src="media/videos/real-speedup/insert.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- rows -->
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column">
+        <div class="content has-text-centered">
+          <!-- <p>
+            Website template borrowed from
+            <a href="https://github.com/nerfies/nerfies.github.io">NeRFies</a>,
+            <a href="https://rekep-robot.github.io/">ReKep</a>,
+            <a href="https://dex-cap.github.io/">DexCap</a>, and
+            <a href="https://transic-robot.github.io/">TRANSIC</a>.
+          </p> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- JS that expects elements still exists (sections are hidden, not removed) -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const selector = document.getElementById('task-selector');
+    const blocks   = document.querySelectorAll('.task-block');
+    const showTask = (name) => {
+      if (!selector) return; // safe-guard
+      blocks.forEach(b => b.classList.toggle('is-active', b.id === 'task-' + name));
+    };
+    if (selector) {
+      showTask(selector.value);
+      selector.addEventListener('change', () => showTask(selector.value));
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const vidSel  = document.getElementById('video-selector');
+    const vids    = document.querySelectorAll('.video-block');
+    const showVid = (name) => {
+      if (!vidSel) return; // safe-guard
+      vids.forEach(v => v.classList.toggle('show', v.id === 'bottom-' + name));
+    };
+    if (vidSel) {
+      showVid(vidSel.value);
+      vidSel.addEventListener('change', () => showVid(vidSel.value));
+    }
+  });
+</script>
+
+</body>
+</html>

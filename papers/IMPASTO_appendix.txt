@@ -1,0 +1,157 @@
+           IMPASTO: Integrating Model-Based Planning with
+     Learned Dynamics Models for Robotic Oil Painting Reproduction
+                                                             Appendix
+
+
+                                                                     render each candidate stroke as a rasterized, disk-stamped
+                                                                     footprint. Along the centerline—either a straight segment or
+                                                                     a quadratic arc, depending on the absolute bend—we place
+                                                                     N uniformly spaced centers and stamp filled circles at each
+                                                                     center. The circle radius follows a force–to–width power law:
+                                                                                         r(F ) = rmin + k F γ ,                  (2)
+                                                                     where F is the applied force, rmin is a baseline radius, k is
+                                                                     a scale factor, and γ > 0 controls the nonlinearity. Colors
+                                                                     are treated as grayscale for simplicity: we emit three identical
+                                                                     RGB channels (no hue variation) for compatibility with RGB
+           Fig. 1: The f/t sensor and the mounter.                   loaders, and set the alpha channel to fully opaque. After
+                                                                     rendering all circles, we resize the canvas to 100 × 100.
+
+       A PPENDIX A. ROBOTIC H ARDWARE S YSTEM                        Baseline Implementation Details
+   We use a 7-DoF Franka Emika Panda equipped with a                    The Heuristic-only method recovers a stroke’s geometry
+6-axis force/torque sensor (Kunwei Tech Inc.) mounted at             directly from a binary mask without learning. We skeletonize
+the tip, as shown in Fig. 1. The mount is designed and               the mask via iterative, topology-preserving thinning to obtain
+3D-printed, with a grasping lugs for the Franka’s parallel           a 1 -pixel-wide centerline, then identify endpoints as skeleton
+grippers, a flange for the f/t sensor, and a brush holder for the    pixels with exactly one 8-neighborhood neighbor (degree=
+oil painting brush. To reduce common-mode noise and mains            1). With endpoints p0 , p1 , we define a local frame along the
+interference, we ground the acquisition chain by connecting          chord p0 → p1 , project skeleton points onto the tangent–
+a grounding wire to the data-acquisition module’s adapter.           normal basis, and estimate b (bend) as the signed maximal
+Sensor readouts are first bias-corrected (offset removal) at         lateral deviation (thresholded to suppress noise); l (length)
+the beginning of each primitive skill and then smoothed with         is ∥p1 − p0 ∥ and α (angle) is the chord heading.
+an exponential moving average (EMA):                                    FRIDA-CNN maps a 3D geometric parameter vector
+                                                                     (l, b, F ) to a grayscale stroke mask. A BatchNorm
+         x̃t = xt − b̂,     yt = α x̃t + (1 − α) yt−1 ,       (1)    layer followed by a lightweight MLP produces a flattened
+                                                                     100×100 field, which is reshaped and refined by a small
+where xt denotes the raw force/torque reading at time step t;
+                                                                     convolutional layer, yielding M ∈ [0, 1]100×100 . Since
+b̂ is the per-primitive bias (static offset) estimated before each
+                                                                     M encodes geometry without translation and rotation, we
+primitive skill from a short stationary window collected right
+                                                                     transform M using the remaining 3D geometric parameter
+before the primitive starts; α ∈ (0, 1] is the EMA coefficient.
+                                                                     (p0 (x0 ), p0 (y0 ), α).
+    The RGB observations of the canvas are captured at
+                                                                        Baselines FRIDA-CNN, IMPASTO-LR, and Heuristics
+1920 × 1080 by a single Intel RealSense D435 camera
+                                                                     predict only the incremental stroke, rather than the full
+mounted above the canvas.
+                                                                     next state image as IMPASTO-UNet does. To place the
+    Dynamics model training uses Distributed Data Parallel
+                                                                     stroke on a base image B ∈ [0, 1]100×100 with per-sample
+(DDP) on NVIDIA GPUs, including RTX A5000, RTX
+                                                                     grayscale value c ∈ [0, 1] and opacity a ∈ [0, 1], we form
+3090, and A40. Deployment uses NVIDIA RTX 4090 GPUs.
+                                                                     a convex combination controlled by an effective opacity
+    A PPENDIX B. L EARNING THE DYNAMICS M ODELS                      Aeff = clip(M · a, 0, 1):
+   The detailed neural network architecture is shown in                           Iout = B · (1 − Aeff ) + c · Aeff .            (3)
+Fig. 2, where we use a U-Net–style encoder–decoder that
+fuses image evidence with action parameters. We train with           Color Prediction Module
+the Adam optimizer (learning rate 5 × 10−4 , weight decay               The palette tray physically contains 24 slots, while only a
+10−3 ) using a batch size of 120 for 1000 epochs. The                task-specific subset of premixed colors is used in the reported
+learning rate follows a multi-step schedule with milestones          experiments, depending on the target painting. The color
+every 100 epochs, each decayed by a factor of 0.75. We               patch database (partially shown in Fig. 3) stores multiple
+                               Fig. 2: The neural network architecture for the pixel dynamics model.
+
+
+measured patches per color/transparency condition. In the
+single-stroke trajectory following pipeline, we build a dif-
+ference mask S by thresholding base-target pixel differences
+and obtain per-pixel weights wp from a distance transform.
+In the multi-step planning pipeline, we obtain S as the in-
+tersection between the foreground region of the pre-rendered
+predicted stroke and a disk centered at the stroke’s geometric
+center:
+             
+      S = p ∈ Ω Mpred (p) = 1 ∧ ∥p − c∥ ≤ r , (4)
+
+where Mpred is the binary mask of the pre-rendered stroke,
+c is its geometric center, and r is a chosen radius. The
+representative color for the stroke is the weighted mean over
+the mask,                P
+                           p∈S wp Op
+                 µ = P                  ∈ R3 ,            (5)              Fig. 3: A subset of the color patch database.
+                             p∈S wp
+
+   where Op is the target image in linear RGB at pixel
+p. We classify µ by nearest prototype in a 25 × 25 patch            where we predict transparent if ratio < τ , with Bp the
+database (a subset is shown in Fig. 3) using the Mahalanobis        base image in linear RGB, ε > 0 for numerical safety, and
+metric. Covariances Σi for each label i are estimated from          threshold τ .
+the corresponding patch images:                                                     A PPENDIX C. P LANNING
+ i   ⋆                     ⊤
+         = arg min (µ − µi )   Σ−1
+                                i (µ − µi ),
+                                                   ⋆
+                                                 C = µ . (6)
+                                                         i⋆         PCA-RANSAC multi-way splitter
+                 i
+                                                                       The PCA–RANSAC multi-way splitter constructs K dis-
+Transparency is decided by a simple ratio that compares the
+                                                                    joint stroke masks from the difference map Dt obtained from
+median magnitude of the observed change to the palette-to-
+                                                                    the base image It and the target image It+n . We segment
+base contrast for the selected color:
+                                                                    Dt with k-means in a spatial feature space by embedding
+                         medianp∈S ∥Op − Bp ∥1                      each pixel at [x/W, y/H] where (x, y) are image coordinates
+              ratio =                              ,          (7)
+                        medianp∈S ∥C ⋆ − Bp ∥1 + ε                  and W and H are image width and height. Each resulting
+                           Fig. 4: Example visualizations produced by the PCA-RANSAC Splitter.
+
+
+segment is treated as a candidate group of stroke pixels.                    A PPENDIX D. A DDITIONAL R ESULTS
+For every segment we compute a local PCA frame; letting               For the complex paintings shown in the video, the robot
+µ ∈ R2 be the segment mean and v0 , v1 ∈ R2 the principal          follows the human artist step by step using CMA-ES to
+directions, a pixel (x, y) is projected to (s, t) as               complete this artwork. Additional visualization results are
+                                                                   shown in Fig. 5, 6, and 7, comparing human strokes with
+                     ⊤
+                    s      v0
+                                [x, y]⊤ − µ .
+                                            
+                       = ⊤                            (8)          robot strokes.
+                    t      v1
+We apply Random Sample Consensus (RANSAC) to robustly
+fit either a line t ≈ p s + q or a quadratic t ≈ p s2 + q s + r
+to the (s, t) samples. The RANSAC inliers define a thin
+candidate mask. We select K non-overlapping strokes by
+maximizing coverage of the unexplained region with penal-
+ties on curvature and mutual overlap,
+         score = cover − λb bend − λo overlap,              (9)
+and thicken each selected mask into a single-connected
+stroke via centerline seeding and constrained region growing,
+yielding K heuristic initializations for the MPPI optimiza-
+tion. An example of the resulting visualization from the
+PCA-RANSAC Splitter is shown in Fig. 4.
+Stochastic Sampling with CMA-Style Adaptive Covariance
+   At each MPPI optimization iteration, we assemble a can-
+didate set by inserting the current nominal sequence U and
+drawing the remaining K−1 samples from a time-indexed
+Gaussian. Concretely, for each time index t we generate
+standard normal noise zt ∼ N (0, I), apply the current
+covariance structure via a Cholesky factor At of Σt , where
+Σt = A t A ⊤
+           t , and form perturbed controls
+
+                     Ũt = Ut + σt At zt .                 (10)
+The full sequences are clipped to action bounds. This yields
+a batch of candidates centered at U but shaped by (σt , Σt )
+at every timestep.
+   From all K candidates, we select the top Ke by terminal
+cost and compute temperature-weighted softmax weights
+with temperature β over the elite set. Using those weights,
+we update the nominal sequence via an exponential moving
+average (EMA) toward the elite mean and perform CMA-
+style per-timestep adaptation: the step-size path ps (t) updates
+σt , and the covariance path pc (t) together with a rank-µ term
+updates Σt .
+Fig. 5: IMPASTO is able to closely approximate a complex oil painting with 40 strokes (not all steps are shown).
+Fig. 6: IMPASTO is able to closely approximate a complex oil painting with 180 strokes (not all steps are shown).
+Fig. 7: IMPASTO is able to closely approximate a complex oil painting with 204 strokes (not all steps are shown).
+
