@@ -16,3 +16,8 @@ def test_contact_and_pigment_are_required_for_deposition():
 def test_same_seed_gives_same_canvas_tooth():
     a, b = Canvas(resolution=64, seed=11), Canvas(resolution=64, seed=11)
     np.testing.assert_array_equal(a.tooth, b.tooth)
+
+
+def test_world_positive_y_maps_to_image_top():
+    c = Canvas(resolution=128)
+    assert c.pixel([0.0, 0.10])[1] < c.pixel([0.0, -0.10])[1]

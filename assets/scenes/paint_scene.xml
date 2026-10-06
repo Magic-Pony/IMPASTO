@@ -144,7 +144,8 @@
     <material name="pigment_23" rgba="0.592 0.745 0.745 1" specular="0.02" shininess="0.05" />
   </asset>
   <worldbody>
-    <light name="top" pos="0 0 2" mode="trackcom" />
+    <!-- Keep the canvas legible while the dynamic pigment texture is updated. -->
+    <light name="top" pos="0 0 2" mode="trackcom" castshadow="false" />
     <body name="link0" childclass="panda">
       <inertial mass="0.629769" pos="-0.041018 -0.00014 0.049974" fullinertia="0.00315 0.00388 0.004285 8.2904e-7 0.00015 8.2299e-6" />
       <geom mesh="link0_0" material="off_white" class="visual" />

@@ -73,6 +73,7 @@ class PaintingEnv:
         mujoco.mj_resetDataKeyframe(self.model, self.data, 0)
         mujoco.mj_forward(self.model, self.data)
         self.home_q = self.data.qpos[:7].copy()
+        self.last_q_target = self.home_q.copy()
         self.home_tip_rot = self.data.site_xmat[self.tip_site].reshape(3, 3).copy()
         self.tip_world_offset = self.data.site_xpos[self.tip_site].copy() - self.data.xpos[
             _id(self.model, mujoco.mjtObj.mjOBJ_BODY, "hand")
@@ -178,16 +179,25 @@ class PaintingEnv:
         if phase:
             self._set_phase(phase)
         q_target = self._ik(target_xyz)
+        target_qvel = np.clip(
+            (q_target - self.last_q_target) / max(self.dt, 1e-9),
+            -4.0,
+            4.0,
+        )
+        self.last_q_target = q_target.copy()
         self.data.ctrl[:7] = q_target
         # The Menagerie model's high-gain general actuators provide the Panda
         # servo behavior; this bounded Cartesian-to-joint correction removes
         # the small gravity/friction steady-state error that otherwise matters
         # at the 10^-4 m brush-to-canvas clearance scale.
-        applied_gain = 1400.0
-        self.data.qfrc_applied[:7] = np.clip(
-            applied_gain * (q_target - self.data.qpos[:7]) - 26.0 * self.data.qvel[:7],
-            -80.0, 80.0,
+        applied_gain = float(self.config.get("joint_position_gain", 1400.0))
+        applied_damping = float(self.config.get("joint_velocity_gain", 26.0))
+        servo_torque = (
+            applied_gain * (q_target - self.data.qpos[:7])
+            + applied_damping * (target_qvel - self.data.qvel[:7])
         )
+        gravity_comp = self.data.qfrc_bias[:7] if self.config.get("gravity_compensation", False) else 0.0
+        self.data.qfrc_applied[:7] = np.clip(servo_torque + gravity_comp, -80.0, 80.0)
         if self.model.nu > 7:
             self.data.ctrl[7] = 255.0
         for _ in range(self.decimation):
@@ -355,7 +365,10 @@ class PaintingEnv:
             )
         # Keep the physical MuJoCo canvas and the contact-driven paint state in
         # the same image. This is the texture a camera would actually observe.
-        rgb = np.asarray(np.flipud(self.canvas.image()), dtype=np.uint8)
+        # Canvas.pixel() already maps world +y to image row 0. MuJoCo's box
+        # texture samples that row at the world +y edge, so flipping here
+        # would mirror every stroke vertically in the camera image.
+        rgb = np.asarray(self.canvas.image(), dtype=np.uint8)
         tex_adr = int(self.model.tex_adr[self.canvas_tex])
         tex_size = int(self.model.tex_width[self.canvas_tex] * self.model.tex_height[self.canvas_tex] * self.model.tex_nchannel[self.canvas_tex])
         self.model.tex_data[tex_adr:tex_adr + tex_size] = rgb.reshape(-1)
