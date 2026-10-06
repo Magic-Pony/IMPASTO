@@ -1,0 +1,950 @@
+{
+  "config": {
+    "seed": 42,
+    "timestep": 0.002,
+    "control_decimation": 2,
+    "canvas_resolution": 512,
+    "brush_stiffness": 350.0,
+    "brush_damping": 2.5,
+    "force_ema": 0.9,
+    "force_limit": 4.0,
+    "force_tolerance": 0.04,
+    "force_settle_time": 0.16,
+    "force_timeout": 8.0,
+    "stroke_force_admittance_gain": 0.006,
+    "joint_position_gain": 2400.0,
+    "joint_velocity_gain": 26.0,
+    "gravity_compensation": true,
+    "stroke_speed": 0.045,
+    "camera_width": 960,
+    "camera_height": 540,
+    "render_fps": 24,
+    "notes": "Paper robot family, 18x21 inch canvas, 24 wells, short 50 mm brush and Fig. A1 mount structure. Unpublished assembly dimensions estimated locally. Axial spring brush and continuous height-feedback force servo are simulation approximations.",
+    "stroke_force_speed_limit": 0.008
+  },
+  "static_workstations": [
+    {
+      "target_m": [
+        0.3075,
+        -0.405,
+        0.07200000000000001
+      ],
+      "position_error_m": 3.352637588336081e-05,
+      "tilt_deg": 0.004278633028422578
+    },
+    {
+      "target_m": [
+        0.3425,
+        -0.405,
+        0.07200000000000001
+      ],
+      "position_error_m": 2.734961333981519e-05,
+      "tilt_deg": 0.0037068763442159496
+    },
+    {
+      "target_m": [
+        0.3775,
+        -0.405,
+        0.07200000000000001
+      ],
+      "position_error_m": 2.3621283619151872e-05,
+      "tilt_deg": 0.0033081372297655933
+    },
+    {
+      "target_m": [
+        0.4125,
+        -0.405,
+        0.07200000000000001
+      ],
+      "position_error_m": 3.5263844713752035e-05,
+      "tilt_deg": 0.004282911651198497
+    },
+    {
+      "target_m": [
+        0.4475,
+        -0.405,
+        0.07200000000000001
+      ],
+      "position_error_m": 3.366571760338463e-05,
+      "tilt_deg": 0.003713579921601407
+    },
+    {
+      "target_m": [
+        0.4825,
+        -0.405,
+        0.07200000000000001
+      ],
+      "position_error_m": 1.705097484903511e-05,
+      "tilt_deg": 0.0020941200156912878
+    },
+    {
+      "target_m": [
+        0.5175,
+        -0.405,
+        0.07200000000000001
+      ],
+      "position_error_m": 2.4549461493523594e-05,
+      "tilt_deg": 0.0021158369674644435
+    },
+    {
+      "target_m": [
+        0.5525,
+        -0.405,
+        0.07200000000000001
+      ],
+      "position_error_m": 3.0442282695085474e-05,
+      "tilt_deg": 0.0025277512711188847
+    },
+    {
+      "target_m": [
+        0.3075,
+        -0.37,
+        0.07200000000000001
+      ],
+      "position_error_m": 3.053967774081823e-05,
+      "tilt_deg": 0.004013088985521002
+    },
+    {
+      "target_m": [
+        0.3425,
+        -0.37,
+        0.07200000000000001
+      ],
+      "position_error_m": 2.6980877086248027e-05,
+      "tilt_deg": 0.0037242085012481863
+    },
+    {
+      "target_m": [
+        0.3775,
+        -0.37,
+        0.07200000000000001
+      ],
+      "position_error_m": 3.756470981273951e-05,
+      "tilt_deg": 0.005126514057920463
+    },
+    {
+      "target_m": [
+        0.4125,
+        -0.37,
+        0.07200000000000001
+      ],
+      "position_error_m": 2.4489542796424434e-05,
+      "tilt_deg": 0.003385305743415421
+    },
+    {
+      "target_m": [
+        0.4475,
+        -0.37,
+        0.07200000000000001
+      ],
+      "position_error_m": 2.0460897106851676e-05,
+      "tilt_deg": 0.002732808881397986
+    },
+    {
+      "target_m": [
+        0.4825,
+        -0.37,
+        0.07200000000000001
+      ],
+      "position_error_m": 2.276826268146424e-05,
+      "tilt_deg": 0.0025558644937133754
+    },
+    {
+      "target_m": [
+        0.5175,
+        -0.37,
+        0.07200000000000001
+      ],
+      "position_error_m": 1.5747980932793347e-05,
+      "tilt_deg": 0.0018542446239608475
+    },
+    {
+      "target_m": [
+        0.5525,
+        -0.37,
+        0.07200000000000001
+      ],
+      "position_error_m": 1.4856469426307733e-05,
+      "tilt_deg": 0.0015339233398316417
+    },
+    {
+      "target_m": [
+        0.3075,
+        -0.335,
+        0.07200000000000001
+      ],
+      "position_error_m": 2.87940245868408e-05,
+      "tilt_deg": 0.0038435096443256273
+    },
+    {
+      "target_m": [
+        0.3425,
+        -0.335,
+        0.07200000000000001
+      ],
+      "position_error_m": 4.8761198403350514e-05,
+      "tilt_deg": 0.006618546648955626
+    },
+    {
+      "target_m": [
+        0.3775,
+        -0.335,
+        0.07200000000000001
+      ],
+      "position_error_m": 3.551354664739302e-05,
+      "tilt_deg": 0.005072436148996656
+    },
+    {
+      "target_m": [
+        0.4125,
+        -0.335,
+        0.07200000000000001
+      ],
+      "position_error_m": 2.5074433213150056e-05,
+      "tilt_deg": 0.003642784522218656
+    },
+    {
+      "target_m": [
+        0.4475,
+        -0.335,
+        0.07200000000000001
+      ],
+      "position_error_m": 2.1004979575333915e-05,
+      "tilt_deg": 0.0030208674922370298
+    },
+    {
+      "target_m": [
+        0.4825,
+        -0.335,
+        0.07200000000000001
+      ],
+      "position_error_m": 1.8209913367108723e-05,
+      "tilt_deg": 0.0024532944687319746
+    },
+    {
+      "target_m": [
+        0.5175,
+        -0.335,
+        0.07200000000000001
+      ],
+      "position_error_m": 3.39550700228165e-05,
+      "tilt_deg": 0.0035576925073808525
+    },
+    {
+      "target_m": [
+        0.5525,
+        -0.335,
+        0.07200000000000001
+      ],
+      "position_error_m": 1.677027919426933e-05,
+      "tilt_deg": 0.0015093119570457586
+    },
+    {
+      "target_m": [
+        0.43,
+        0.37,
+        0.07200000000000001
+      ],
+      "position_error_m": 2.086343774931746e-05,
+      "tilt_deg": 0.002986315566632614
+    }
+  ],
+  "dynamic_visits": [
+    {
+      "phase": "DIP",
+      "geom": "well_00",
+      "time": 12.500000000000844,
+      "xy_error_m": 3.050637887676312e-05,
+      "immersion_m": 0.005046872532460112,
+      "tilt_deg": 0.0028760622084949656,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 26.715999999996072,
+      "xy_error_m": 2.6546256666802944e-05,
+      "immersion_m": 0.015044788007002444,
+      "tilt_deg": 0.0027408300312562776,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_01",
+      "time": 40.3920000000034,
+      "xy_error_m": 2.984222985151758e-05,
+      "immersion_m": 0.0050475188702509,
+      "tilt_deg": 0.0030242432961385722,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 54.568000000020724,
+      "xy_error_m": 2.6386439800376274e-05,
+      "immersion_m": 0.015044803557757072,
+      "tilt_deg": 0.0027249449566663134,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_02",
+      "time": 68.22000000002241,
+      "xy_error_m": 2.847613194523749e-05,
+      "immersion_m": 0.0050467638160430345,
+      "tilt_deg": 0.0030727530592607063,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 82.37199999998943,
+      "xy_error_m": 2.6502423900401537e-05,
+      "immersion_m": 0.015044792464019824,
+      "tilt_deg": 0.0027364636093565146,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_03",
+      "time": 96.00799999995765,
+      "xy_error_m": 2.66927781091633e-05,
+      "immersion_m": 0.005045368457076843,
+      "tilt_deg": 0.0030986933221170644,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 110.1439999999247,
+      "xy_error_m": 2.6372727594135184e-05,
+      "immersion_m": 0.015046248511348642,
+      "tilt_deg": 0.0028011794197564093,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_04",
+      "time": 123.77999999989292,
+      "xy_error_m": 2.425700362340019e-05,
+      "immersion_m": 0.00504493694031545,
+      "tilt_deg": 0.0031623839248731828,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 137.91599999993042,
+      "xy_error_m": 2.646065867181554e-05,
+      "immersion_m": 0.01504624061383282,
+      "tilt_deg": 0.0028100963179650985,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_05",
+      "time": 151.5679999999956,
+      "xy_error_m": 2.147590122720684e-05,
+      "immersion_m": 0.005044158794805964,
+      "tilt_deg": 0.003253498816127254,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 165.72000000006318,
+      "xy_error_m": 2.6481635006692644e-05,
+      "immersion_m": 0.015046238874486847,
+      "tilt_deg": 0.0028122381176882362,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_06",
+      "time": 179.39600000012848,
+      "xy_error_m": 1.80073890513427e-05,
+      "immersion_m": 0.005043022721098592,
+      "tilt_deg": 0.0032995299574906855,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 193.57200000019617,
+      "xy_error_m": 2.6637492094464802e-05,
+      "immersion_m": 0.015046225008492092,
+      "tilt_deg": 0.0028281646056802614,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_07",
+      "time": 207.28800000026166,
+      "xy_error_m": 1.4211220583014746e-05,
+      "immersion_m": 0.005041545421085883,
+      "tilt_deg": 0.003346747391200317,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 221.50000000032952,
+      "xy_error_m": 2.6810423846825427e-05,
+      "immersion_m": 0.015046209897177767,
+      "tilt_deg": 0.0028459943574499344,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_08",
+      "time": 234.92800000039364,
+      "xy_error_m": 2.9571228949254234e-05,
+      "immersion_m": 0.005046513169132405,
+      "tilt_deg": 0.00246553953322123,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 248.85600000046014,
+      "xy_error_m": 2.6002336927277916e-05,
+      "immersion_m": 0.01504484140081723,
+      "tilt_deg": 0.002687255366087513,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_09",
+      "time": 262.24400000052407,
+      "xy_error_m": 2.9326077402027845e-05,
+      "immersion_m": 0.005047015401331761,
+      "tilt_deg": 0.002620827837093567,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 276.1320000005904,
+      "xy_error_m": 2.5881895334868767e-05,
+      "immersion_m": 0.01504485379788846,
+      "tilt_deg": 0.002675588076919823,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_10",
+      "time": 289.4920000006542,
+      "xy_error_m": 2.8439711172661413e-05,
+      "immersion_m": 0.005046311678835999,
+      "tilt_deg": 0.0026893302026164806,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 303.35200000072035,
+      "xy_error_m": 2.6008266111416247e-05,
+      "immersion_m": 0.015044841067883244,
+      "tilt_deg": 0.002687834160325572,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_11",
+      "time": 316.69600000078407,
+      "xy_error_m": 2.70759415271299e-05,
+      "immersion_m": 0.005045063204606209,
+      "tilt_deg": 0.00272729074592411,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 330.54000000085017,
+      "xy_error_m": 2.6193734822483065e-05,
+      "immersion_m": 0.015044822630363733,
+      "tilt_deg": 0.0027059444892023592,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_12",
+      "time": 343.8840000009139,
+      "xy_error_m": 2.4963223174052777e-05,
+      "immersion_m": 0.005044772587582985,
+      "tilt_deg": 0.0027927493228929938,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 357.72800000098,
+      "xy_error_m": 2.6344981172102794e-05,
+      "immersion_m": 0.015044807895937692,
+      "tilt_deg": 0.0027208377050121917,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_13",
+      "time": 371.0880000010438,
+      "xy_error_m": 2.248414221424994e-05,
+      "immersion_m": 0.005044134253650856,
+      "tilt_deg": 0.0028608291115654067,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 384.94800000110996,
+      "xy_error_m": 2.6375777730306206e-05,
+      "immersion_m": 0.015044805084400578,
+      "tilt_deg": 0.0027238919973531224,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_14",
+      "time": 398.3360000011739,
+      "xy_error_m": 1.9426021117699057e-05,
+      "immersion_m": 0.005043158790425772,
+      "tilt_deg": 0.0029227975330331597,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 412.2240000012402,
+      "xy_error_m": 2.645874063774771e-05,
+      "immersion_m": 0.015044797238098234,
+      "tilt_deg": 0.002732129295394789,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_15",
+      "time": 425.6520000013043,
+      "xy_error_m": 1.5744957231131606e-05,
+      "immersion_m": 0.005041838959117445,
+      "tilt_deg": 0.0029613146000363917,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 439.5800000013708,
+      "xy_error_m": 2.660675078011473e-05,
+      "immersion_m": 0.015044783251336694,
+      "tilt_deg": 0.0027469042945643452,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_16",
+      "time": 452.72000000143356,
+      "xy_error_m": 2.8828019470324274e-05,
+      "immersion_m": 0.0050460331576639705,
+      "tilt_deg": 0.002130531363473342,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 466.3600000014987,
+      "xy_error_m": 2.563643140797012e-05,
+      "immersion_m": 0.01504487917721302,
+      "tilt_deg": 0.002652013078836068,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_17",
+      "time": 479.4560000015612,
+      "xy_error_m": 2.8767692821360243e-05,
+      "immersion_m": 0.005046051362668391,
+      "tilt_deg": 0.002256743721277007,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 493.05200000162614,
+      "xy_error_m": 2.5501514409326772e-05,
+      "immersion_m": 0.015044893339981644,
+      "tilt_deg": 0.0026391382193130804,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_18",
+      "time": 506.12000000168854,
+      "xy_error_m": 2.799543699925041e-05,
+      "immersion_m": 0.00504629844611551,
+      "tilt_deg": 0.002387528046551708,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 519.6880000015348,
+      "xy_error_m": 2.5603911508011877e-05,
+      "immersion_m": 0.015044882650680172,
+      "tilt_deg": 0.002648883612795797,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_19",
+      "time": 532.744000001226,
+      "xy_error_m": 2.7038864452385363e-05,
+      "immersion_m": 0.0050450806535239645,
+      "tilt_deg": 0.002425125369275781,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 546.3000000009055,
+      "xy_error_m": 2.578669495824263e-05,
+      "immersion_m": 0.015044863945205308,
+      "tilt_deg": 0.0026664227151461423,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_20",
+      "time": 559.3560000005967,
+      "xy_error_m": 2.5263285098484082e-05,
+      "immersion_m": 0.005044863482135731,
+      "tilt_deg": 0.0024927398008474265,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 572.9120000002762,
+      "xy_error_m": 2.595195435582127e-05,
+      "immersion_m": 0.015044846971009829,
+      "tilt_deg": 0.002682358019376595,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_21",
+      "time": 585.9799999999672,
+      "xy_error_m": 2.3028820075892885e-05,
+      "immersion_m": 0.0050443331618869325,
+      "tilt_deg": 0.002539196458916222,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 599.5479999996463,
+      "xy_error_m": 2.6031957313810626e-05,
+      "immersion_m": 0.015044839068916141,
+      "tilt_deg": 0.002690135763158032,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_22",
+      "time": 612.6439999993366,
+      "xy_error_m": 2.0383594976582408e-05,
+      "immersion_m": 0.005043480160278516,
+      "tilt_deg": 0.0025987057846022193,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 626.2399999990151,
+      "xy_error_m": 2.604568311556048e-05,
+      "immersion_m": 0.015044837906050337,
+      "tilt_deg": 0.00269148374135936,
+      "success": true
+    },
+    {
+      "phase": "DIP",
+      "geom": "well_23",
+      "time": 639.3799999987044,
+      "xy_error_m": 1.698433226297533e-05,
+      "immersion_m": 0.005042303073119481,
+      "tilt_deg": 0.0026277840796837993,
+      "success": true
+    },
+    {
+      "phase": "CLEAN",
+      "geom": "washer_water",
+      "time": 653.0199999983819,
+      "xy_error_m": 2.616490348808746e-05,
+      "immersion_m": 0.015044826199580738,
+      "tilt_deg": 0.0027031391851894374,
+      "success": true
+    }
+  ],
+  "static_max_error_m": 4.8761198403350514e-05,
+  "dynamic_max_xy_error_m": 3.050637887676312e-05,
+  "dynamic_max_immersion_tilt_deg": 0.003346747391200317,
+  "all_movement_max_tilt_deg": 0.9574266868205444,
+  "unexpected_penetrations_over_0_5mm": [],
+  "canvas_grid_5x5": [
+    {
+      "target_m": [
+        0.29000000000000004,
+        -0.25,
+        0.063
+      ],
+      "position_error_m": 3.178598728080497e-05,
+      "tilt_deg": 0.00411693149191611
+    },
+    {
+      "target_m": [
+        0.29000000000000004,
+        -0.125,
+        0.063
+      ],
+      "position_error_m": 3.5433420055004565e-05,
+      "tilt_deg": 0.004253895471311071
+    },
+    {
+      "target_m": [
+        0.29000000000000004,
+        0.0,
+        0.063
+      ],
+      "position_error_m": 3.355749576384135e-05,
+      "tilt_deg": 0.004244857993594065
+    },
+    {
+      "target_m": [
+        0.29000000000000004,
+        0.125,
+        0.063
+      ],
+      "position_error_m": 3.543342005508747e-05,
+      "tilt_deg": 0.0042538956426668145
+    },
+    {
+      "target_m": [
+        0.29000000000000004,
+        0.25,
+        0.063
+      ],
+      "position_error_m": 3.178598728091087e-05,
+      "tilt_deg": 0.004116931846029075
+    },
+    {
+      "target_m": [
+        0.395,
+        -0.25,
+        0.063
+      ],
+      "position_error_m": 2.611247786470341e-05,
+      "tilt_deg": 0.0038258136297246435
+    },
+    {
+      "target_m": [
+        0.395,
+        -0.125,
+        0.063
+      ],
+      "position_error_m": 4.881690347059922e-05,
+      "tilt_deg": 0.006574745939194452
+    },
+    {
+      "target_m": [
+        0.395,
+        0.0,
+        0.063
+      ],
+      "position_error_m": 2.9262959148748274e-05,
+      "tilt_deg": 0.004024147762810337
+    },
+    {
+      "target_m": [
+        0.395,
+        0.125,
+        0.063
+      ],
+      "position_error_m": 4.8816903470232846e-05,
+      "tilt_deg": 0.006574745772892334
+    },
+    {
+      "target_m": [
+        0.395,
+        0.25,
+        0.063
+      ],
+      "position_error_m": 2.6112477864803483e-05,
+      "tilt_deg": 0.0038258141060477638
+    },
+    {
+      "target_m": [
+        0.5,
+        -0.25,
+        0.063
+      ],
+      "position_error_m": 1.9651773861872632e-05,
+      "tilt_deg": 0.0030012357569528885
+    },
+    {
+      "target_m": [
+        0.5,
+        -0.125,
+        0.063
+      ],
+      "position_error_m": 4.984764051318726e-05,
+      "tilt_deg": 0.008222925008836495
+    },
+    {
+      "target_m": [
+        0.5,
+        0.0,
+        0.063
+      ],
+      "position_error_m": 2.9299983046932416e-05,
+      "tilt_deg": 0.004248088459643978
+    },
+    {
+      "target_m": [
+        0.5,
+        0.125,
+        0.063
+      ],
+      "position_error_m": 4.9847640512982895e-05,
+      "tilt_deg": 0.008222925053159497
+    },
+    {
+      "target_m": [
+        0.5,
+        0.25,
+        0.063
+      ],
+      "position_error_m": 1.9651773861918193e-05,
+      "tilt_deg": 0.0030012358783911034
+    },
+    {
+      "target_m": [
+        0.605,
+        -0.25,
+        0.063
+      ],
+      "position_error_m": 3.601788220781363e-05,
+      "tilt_deg": 0.003120233855379605
+    },
+    {
+      "target_m": [
+        0.605,
+        -0.125,
+        0.063
+      ],
+      "position_error_m": 1.195475585609846e-05,
+      "tilt_deg": 0.0014889163724347788
+    },
+    {
+      "target_m": [
+        0.605,
+        0.0,
+        0.063
+      ],
+      "position_error_m": 1.405774893146511e-05,
+      "tilt_deg": 0.0018579929115989256
+    },
+    {
+      "target_m": [
+        0.605,
+        0.125,
+        0.063
+      ],
+      "position_error_m": 1.1954755855951286e-05,
+      "tilt_deg": 0.001488915638078942
+    },
+    {
+      "target_m": [
+        0.605,
+        0.25,
+        0.063
+      ],
+      "position_error_m": 3.601788220760194e-05,
+      "tilt_deg": 0.003120233621765876
+    },
+    {
+      "target_m": [
+        0.71,
+        -0.25,
+        0.063
+      ],
+      "position_error_m": 3.3839970772166665e-05,
+      "tilt_deg": 0.0023832283503099822
+    },
+    {
+      "target_m": [
+        0.71,
+        -0.125,
+        0.063
+      ],
+      "position_error_m": 3.304375163715165e-05,
+      "tilt_deg": 0.0024662011025151373
+    },
+    {
+      "target_m": [
+        0.71,
+        0.0,
+        0.063
+      ],
+      "position_error_m": 4.0738332571439465e-05,
+      "tilt_deg": 0.0034263880926987725
+    },
+    {
+      "target_m": [
+        0.71,
+        0.125,
+        0.063
+      ],
+      "position_error_m": 3.304375163749456e-05,
+      "tilt_deg": 0.0024662006591635163
+    },
+    {
+      "target_m": [
+        0.71,
+        0.25,
+        0.063
+      ],
+      "position_error_m": 3.383997077264037e-05,
+      "tilt_deg": 0.002383228197380981
+    }
+  ],
+  "stroke": {
+    "success": true,
+    "reason": "ok",
+    "force_acquired": true,
+    "target_force_N": 0.6,
+    "contact_samples": 397,
+    "force_samples": 397,
+    "contact_fraction": 1.0,
+    "force_all_samples_rmse_N": 0.024846580503860793,
+    "force_mean_N": 0.5776640396098005,
+    "force_rmse_N": 0.024846580503860793,
+    "force_max_N": 0.5932519059008641,
+    "force_std_N": 0.010883815332054974,
+    "force_range_N": 0.03273327455710984,
+    "brush_tilt_mean_deg": 0.010162669192802792,
+    "brush_tilt_max_deg": 0.014693219785842713,
+    "trajectory_rmse_m": 0.002498205146049662,
+    "wall_seconds": 3.330483807993005
+  },
+  "force_source": "unscaled brush/canvas contact; mount 6-axis sensor separately available",
+  "dimensions_mm": {
+    "cut_brush_length": 50,
+    "inserted_length": 16,
+    "exposed_length": 34,
+    "retained_handle": 14,
+    "ferrule": 16,
+    "bristles": 20,
+    "sensor_diameter": 54,
+    "sensor_height": 30,
+    "hand_to_unloaded_brush_end": 221,
+    "hand_to_nominal_tip_center": 217
+  }
+}

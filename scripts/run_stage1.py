@@ -83,37 +83,39 @@ def fish_strokes():
 
 def run_demo(config, seed, strokes, video_name=None):
     env = PaintingEnv(config, seed=seed, render=video_name is not None)
-    frames_overview, frames_top = [], []
     render_fps = float(config.get("render_fps", 24))
+    writer_overview = writer_top = None
+    if video_name:
+        opts = dict(fps=render_fps, codec="libx264", macro_block_size=None)
+        writer_overview = imageio.get_writer(VID / f"{video_name}_scene.mp4", **opts)
+        writer_top = imageio.get_writer(VID / f"{video_name}_topdown.mp4", **opts)
     frame_period = 1.0 / max(render_fps, 1.0)
     next_frame_time = 0.0
-    last_frame_time = -np.inf
 
     def hook(e, obs):
-        nonlocal next_frame_time, last_frame_time
+        nonlocal next_frame_time
         if video_name and obs.time + 1e-9 >= next_frame_time:
             title = f"Stage 1 | {e.phase} | t={obs.time:.2f}s | F={obs.normal_force:.2f} N"
-            frames_overview.append(overview_frame(e, title=title))
-            frames_top.append(topdown_frame(e, title=f"canvas | {e.phase}"))
-            last_frame_time = obs.time
-            next_frame_time = (np.floor(obs.time / frame_period) + 1.0) * frame_period
+            writer_overview.append_data(overview_frame(e, title=title))
+            writer_top.append_data(topdown_frame(e, title=f"canvas | {e.phase}"))
+            # Match the sampling comparison's tolerance when advancing the
+            # clock, avoiding duplicate frames at floating-point boundaries.
+            next_frame_time = (np.floor((obs.time + 1e-9) / frame_period) + 1.0) * frame_period
 
     wall_start = time.perf_counter()
-    results = [env.execute_stroke(s, render_hook=hook) for s in strokes]
+    try:
+        results = [env.execute_stroke(s, render_hook=hook) for s in strokes]
+        if video_name:
+            final_overview = overview_frame(env, title=f"Stage 1 complete | t={env.data.time:.2f}s")
+            final_top = topdown_frame(env, title="canvas | complete")
+            for _ in range(10):
+                writer_overview.append_data(final_overview)
+                writer_top.append_data(final_top)
+    finally:
+        if writer_overview is not None:
+            writer_overview.close()
+            writer_top.close()
     wall = time.perf_counter() - wall_start
-    if video_name:
-        # Include the terminal state when the last scheduled sample fell just
-        # before the end of the episode.
-        if env.observations and env.data.time - last_frame_time > frame_period * .5:
-            obs = env.observations[-1]
-            frames_overview.append(overview_frame(env, title=f"Stage 1 | {env.phase} | t={obs.time:.2f}s | F={obs.normal_force:.2f} N"))
-            frames_top.append(topdown_frame(env, title=f"canvas | {env.phase}"))
-        # Hold the final frame briefly so the result is inspectable in a player.
-        if frames_overview:
-            frames_overview.extend([frames_overview[-1]] * 10)
-            frames_top.extend([frames_top[-1]] * 10)
-        imageio.mimsave(VID / f"{video_name}_scene.mp4", frames_overview, fps=render_fps, codec="libx264", macro_block_size=None)
-        imageio.mimsave(VID / f"{video_name}_topdown.mp4", frames_top, fps=render_fps, codec="libx264", macro_block_size=None)
     return env, results, wall
 
 
@@ -134,7 +136,7 @@ def stage_plots(config, env, results, multi_strokes):
     scene.paste(Image.fromarray(env.render("canvas_camera", 340, 340)), (650, 80))
     d = ImageDraw.Draw(scene)
     d.text((15, 20), "MuJoCo overview", fill=(20, 20, 20), font=font(24))
-    d.text((665, 20), "Canvas camera (live texture)", fill=(20, 20, 20), font=font(24))
+    d.text((665, 20), "Canvas camera", fill=(20, 20, 20), font=font(24))
     scene.save(FIG / "scene_layout.png")
 
     before = Image.new("RGB", (512, 256), "white")
@@ -176,7 +178,7 @@ def stage_plots(config, env, results, multi_strokes):
     stroke_targets = [r.get("target_force_N", np.nan) for r in results if r.get("success")]
     if stroke_targets:
         plt.axhline(float(np.mean(stroke_targets)), color="tab:red", ls="--", label=f"mean target {np.mean(stroke_targets):.2f} N")
-    plt.xlabel("simulation time (s)"); plt.ylabel("calibrated normal force (N)"); plt.title("Force acquisition and stroke tracking")
+    plt.xlabel("simulation time (s)"); plt.ylabel("brush/canvas contact force (N)"); plt.title("Force acquisition and stroke tracking")
     plt.legend(); plt.grid(alpha=.2); plt.tight_layout(); plt.savefig(FIG / "force_tracking.png", dpi=160); plt.close()
 
     plt.figure(figsize=(7, 7))
@@ -253,7 +255,9 @@ def main():
 
     # Re-open a final non-rendering copy for stable plots and exact data.
     plot_env = PaintingEnv(config, seed=202, render=True)
+    plot_start = time.perf_counter()
     plot_results = [plot_env.execute_stroke(s) for s in multi_strokes]
+    plot_wall = time.perf_counter() - plot_start
     stage_plots(config, plot_env, plot_results, multi_strokes)
     plot_env.close()
 
@@ -282,7 +286,8 @@ def main():
         "deposited_pixels": int(plot_env.canvas.changed_mask().sum()),
         "multi_sim_time_s": float(plot_env.data.time),
         "multi_wall_time_s_with_video": multi_wall,
-        "simulation_realtime_factor_without_render_estimate": float(plot_env.data.time/max(multi_wall, 1e-9)),
+        "simulation_realtime_factor_without_render": float(plot_env.data.time/max(plot_wall, 1e-9)),
+        "minimum_stroke_contact_fraction": float(min(r['contact_fraction'] for r in successful)),
         "throughput": throughput_metrics,
         "mujoco_version": __import__("mujoco").__version__,
     }
@@ -294,7 +299,7 @@ def main():
 
 本报告验证 `/home/lcy-pony/Draw_WS/IMPASTO` 中的阶段 1 环境：MuJoCo Panda、18×21 inch 画布、24 个颜料槽、清洗器、顶视相机、Bezier 笔画、接触力获取、蘸漆/清洗状态和并行仿真接口。演示笔画是固定预设轨迹，用于验收环境执行链路；阶段 2 learned pixel dynamics model、阶段 3 MPC 和论文 baseline 均未实现。
 
-论文对齐部分包括 Panda 7 DoF、画布尺寸、24 色槽、顶视观测、六参数笔画 `(x0,y0,l,b,alpha,F)`、二次 Bezier 几何以及“起笔建立法向力、随后保持高度完成笔画”的控制阶段结构。MuJoCo 刚体接触、刷毛形变、油漆沉积、F/T 读数标定和速度是本地仿真替代或工程选择，详见 `docs/fidelity.md`。
+论文对齐部分包括 Panda 7 DoF、画布尺寸、24 色槽、顶视观测、六参数笔画 `(x0,y0,l,b,alpha,F)`、二次 Bezier 几何、Fig. A1 所示工具装配链以及“起笔建立法向力、随后保持高度完成笔画”的控制阶段结构。MuJoCo 刚体接触、50 mm 画笔的柔顺刷毛、油漆沉积、传感器读数和速度是本地仿真替代或工程选择，详见 `docs/fidelity.md`。
 
 ## 运行结果
 
@@ -304,7 +309,8 @@ def main():
 | 成功笔画数 | {metrics['success_count']} |
 | 接触力获取率 | {metrics['contact_acquisition_rate']:.3f} |
 | 笔画成功率 | {metrics['success_rate']:.3f} |
-| 平均法向力 | {metrics['mean_force_N']:.3f} N |
+| 各笔最低接触比例 | {metrics['minimum_stroke_contact_fraction']:.3f} |
+| 平均刷尖/画布接触力 | {metrics['mean_force_N']:.3f} N |
 | 平均法向力 RMSE | {metrics['mean_force_rmse_N']:.3f} N |
 | 运笔阶段法向力标准差 | {metrics['mean_force_std_N']:.3f} N |
 | 运笔阶段法向力范围 | {metrics['mean_force_range_N']:.3f} N |
@@ -315,6 +321,7 @@ def main():
 | 最终画布沉积像素 | {metrics['deposited_pixels']} |
 | 多笔物理仿真时间 | {metrics['multi_sim_time_s']:.3f} s |
 | 多笔含渲染运行时间 | {metrics['multi_wall_time_s_with_video']:.3f} s |
+| 关闭渲染时仿真/墙钟时间比 | {metrics['simulation_realtime_factor_without_render']:.2f}× |
 | 串行吞吐量 | {throughput_metrics['serial_strokes_per_s']:.3f} stroke/s |
 | {throughput_metrics['workers']} 进程并行吞吐量 | {throughput_metrics['parallel_strokes_per_s']:.3f} stroke/s |
 | 并行加速比 | {throughput_metrics['speedup']:.2f}× |
@@ -340,9 +347,9 @@ def main():
 
 ## 解释和限制
 
-MuJoCo 的离散 penalty contact 在小刷尖上会产生瞬时较大的原始接触冲量，因此报告中的法向力经过固定阶段标定比例，作为虚拟六轴 F/T 传感器读数；`PaintingEnv.normal_force_raw()` 保留原始量。运笔中增加了低带宽的高度修正，以抵消离散接触和关节伺服误差；它用于阶段 1 仿真稳定性验证，不能等同于论文硬件上的六轴传感器力控。沉积由接触、力、速度、刷上颜料量和画布 tooth 驱动，不是 Navier–Stokes 或逐刷毛油画流体模型。视频中的预设笔画不代表 IMPASTO 学习模型已经生成了规划结果。
+MuJoCo 的离散 penalty contact 在小刷尖上仍是接触模型，不是论文硬件的 Kunwei 六轴传感器；报告中的刷尖/画布法向力不再乘固定比例，`PaintingEnv.normal_force_raw()` 与之相同，工具安装点另提供 `tool_wrench()`。运笔中增加了低带宽的高度修正，以抵消离散接触和关节伺服误差；它用于阶段 1 仿真稳定性验证，不能等同于论文硬件上的六轴传感器力控。沉积由接触、力、速度、刷上颜料量和画布 tooth 驱动，不是 Navier–Stokes 或逐刷毛油画流体模型。视频中的预设笔画不代表 IMPASTO 学习模型已经生成了规划结果。
 
-力控流程是先以 `force_ema` 滤波目标力与接触法向力误差，落笔阶段按误差调节高度；达到 ±0.12 N 并持续 0.16 s 后进入运笔。当前实现的内层是关节位置/姿态伺服，外层在每个控制步读取 MuJoCo 接触法向力，并以低带宽高度修正近似实时导纳控制；它不是论文完整的 `J^T F_ff` 力矩注入实现。阶段 1 的 8 笔演示在有效接触样本上的平均力为 {metrics['mean_force_N']:.3f} N，目标力均值为 {float(np.mean([s.force for s in multi_strokes])):.3f} N；逐笔力标准差均值为 {metrics['mean_force_std_N']:.3f} N，逐笔力范围均值为 {metrics['mean_force_range_N']:.3f} N。结果表明本轮仿真绘制期间力基本稳定，但仍有采样接触误差和 MuJoCo 传感器比例标定带来的系统偏差。
+力控流程是先以 `force_ema` 滤波目标力与接触法向力误差，落笔阶段按误差调节高度；达到 ±0.04 N 并持续 0.16 s 后进入运笔。当前实现的内层是关节位置/姿态伺服，外层在每个控制步读取未缩放的 MuJoCo 接触法向力，并以低带宽高度修正近似实时导纳控制；它不是论文完整的 `J^T F_ff` 力矩注入实现。阶段 1 的 8 笔演示在有效接触样本上的平均力为 {metrics['mean_force_N']:.3f} N，目标力均值为 {float(np.mean([s.force for s in multi_strokes])):.3f} N；逐笔力标准差均值为 {metrics['mean_force_std_N']:.3f} N，逐笔力范围均值为 {metrics['mean_force_range_N']:.3f} N。结果表明本轮仿真绘制期间力基本稳定，但仍有接触模型与真实六轴传感器之间的系统差异。
 
 画布状态不是在笔画结束后预先生成：每个控制步都使用实际刷尖位置、实际接触力、实际移动距离和当前载漆量更新；录像按 render_fps 对已更新的动态纹理采样。修正后的画布上传不再额外翻转图像，且关闭主光源投影到画布的阴影，使实际笔迹不会被机器人阴影遮挡。
 

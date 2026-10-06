@@ -43,29 +43,34 @@ class PaintingEnv:
         self.config = dict(config or {})
         self.seed = int(seed)
         self.model = mujoco.MjModel.from_xml_path(str(SCENE))
+        self.model.opt.timestep = float(self.config.get("timestep", self.model.opt.timestep))
+        compression = self.model.joint("bristle_compression").id
+        self.model.jnt_stiffness[compression] = float(self.config.get("brush_stiffness", 350.0))
+        self.model.dof_damping[self.model.jnt_dofadr[compression]] = float(self.config.get("brush_damping", 2.5))
         self.data = mujoco.MjData(self.model)
         self.dt = float(self.model.opt.timestep) * int(self.config.get("control_decimation", 2))
         self.decimation = int(self.config.get("control_decimation", 2))
         self.tip_site = _id(self.model, mujoco.mjtObj.mjOBJ_SITE, "brush_tip_site")
+        self.control_site = self.model.site("brush_nominal_site").id
         self.tip_geom = _id(self.model, mujoco.mjtObj.mjOBJ_GEOM, "brush_tip")
         self.canvas_geom = _id(self.model, mujoco.mjtObj.mjOBJ_GEOM, "canvas_surface")
+        self.palette_well_geoms = [self.model.geom(f"well_{i:02d}").id for i in range(24)]
+        self.washer_water_geom = self.model.geom("washer_water").id
+        self.spinner_mocap = int(self.model.body_mocapid[self.model.body("washer_spinner").id])
         self.camera_ids = {
             name: _id(self.model, mujoco.mjtObj.mjOBJ_CAMERA, name)
             for name in ("top_camera", "canvas_camera", "overview_camera")
         }
         self.canvas = Canvas(
-            float(self.config.get("canvas_width", .4572)),
-            float(self.config.get("canvas_height", .5334)),
+            float(2 * self.model.geom_size[self.canvas_geom, 0]),
+            float(2 * self.model.geom_size[self.canvas_geom, 1]),
             int(self.config.get("canvas_resolution", 512)),
             seed=self.seed,
         )
         self.brush = BrushState()
         self.renderer = None
+        self.renderers = {}
         self.render_enabled = bool(render)
-        if self.render_enabled:
-            w = int(self.config.get("camera_width", 960))
-            h = int(self.config.get("camera_height", 540))
-            self.renderer = mujoco.Renderer(self.model, height=h, width=w)
         self.canvas_tex = _id(self.model, mujoco.mjtObj.mjOBJ_TEXTURE, "canvas_texture")
         self.reset()
 
@@ -82,6 +87,7 @@ class PaintingEnv:
         self.force_integral = 0.0
         self.phase = "IDLE"
         self.events = [{"time": float(self.data.time), "phase": self.phase}]
+        self.workstation_results = []
         self.observations: list[StepObservation] = []
         self.canvas.reset_path()
         self.brush = BrushState()
@@ -103,15 +109,25 @@ class PaintingEnv:
         return float(np.degrees(np.arccos(np.clip(abs(self.brush_axis()[2]), -1.0, 1.0))))
 
     def normal_force(self):
-        """Calibrated virtual F/T sensor reading in Newtons.
+        """Actual simulated brush/canvas contact force in N, without rescaling.
 
-        MuJoCo's stiff penalty contact produces a large impulse at the first
-        discrete contact for this small brush tip.  The configured 0.08 scale
-        is the stage-1 sensor calibration used here so the reported force spans the
-        paper's 0.1 N sensor floor and the action values used in demos.
-        Raw contact forces remain available through ``normal_force_raw``.
+        This contact-only signal excludes tool weight. The separate ideal
+        six-axis mount sensor also includes weight and inertial loads.
         """
-        return float(self.config.get("normal_force_scale", 0.08)) * self.normal_force_raw()
+        return self.normal_force_raw()
+
+    def tool_wrench(self):
+        """Ideal F/T reading in sensor coordinates (N, Nm), including payload."""
+        return np.r_[self.data.sensor("tool_force").data,
+                     self.data.sensor("tool_torque").data].copy()
+
+    def canvas_contact_height(self):
+        return float(self.data.geom_xpos[self.canvas_geom, 2]
+                     + self.model.geom_size[self.canvas_geom, 2]
+                     + self.model.geom_size[self.tip_geom, 0])
+
+    def canvas_xy(self, xy):
+        return self.data.geom_xpos[self.canvas_geom, :2] + np.asarray(xy)
 
     def normal_force_raw(self):
         total = 0.0
@@ -135,15 +151,15 @@ class PaintingEnv:
             self.data.qpos[:7] = q
             self.data.qpos[7:] = old_finger
             mujoco.mj_forward(self.model, self.data)
-            current = self.data.site_xpos[self.tip_site].copy()
-            current_rot = self.data.site_xmat[self.tip_site].reshape(3, 3).copy()
+            current = self.data.site_xpos[self.control_site].copy()
+            current_rot = self.data.site_xmat[self.control_site].reshape(3, 3).copy()
             pos_err = xyz - current
             rot_err = (target_rot * Rotation.from_matrix(current_rot).inv()).as_rotvec()
-            if np.linalg.norm(pos_err) < 0.0007 and np.linalg.norm(rot_err) < 0.03:
+            if np.linalg.norm(pos_err) < 0.00005 and np.linalg.norm(rot_err) < 0.001:
                 break
             jacp = np.zeros((3, self.model.nv))
             jacr = np.zeros((3, self.model.nv))
-            mujoco.mj_jacSite(self.model, self.data, jacp, jacr, self.tip_site)
+            mujoco.mj_jacSite(self.model, self.data, jacp, jacr, self.control_site)
             jac = np.vstack((jacp[:, :7], .45 * jacr[:, :7]))
             err = np.r_[pos_err, .45 * rot_err]
             dq = jac.T @ np.linalg.solve(jac @ jac.T + damping * np.eye(6), err)
@@ -151,7 +167,7 @@ class PaintingEnv:
             # changing the paper's task-space stroke action.
             jpinv = jac.T @ np.linalg.solve(jac @ jac.T + damping * np.eye(6), np.eye(6))
             null = np.eye(7) - jpinv @ jac
-            dq += null @ (0.025 * (self.home_q - q))
+            dq += null @ (0.002 * (self.home_q - q))
             scale = min(1.0, .065 / max(float(np.max(np.abs(dq))), 1e-12))
             q += scale * dq
             for j in range(7):
@@ -199,14 +215,14 @@ class PaintingEnv:
         gravity_comp = self.data.qfrc_bias[:7] if self.config.get("gravity_compensation", False) else 0.0
         self.data.qfrc_applied[:7] = np.clip(servo_torque + gravity_comp, -80.0, 80.0)
         if self.model.nu > 7:
-            self.data.ctrl[7] = 255.0
+            self.data.ctrl[7] = 114.75  # 36 mm gripper opening at grasping lugs
         for _ in range(self.decimation):
             mujoco.mj_step(self.model, self.data)
         force = self.normal_force()
         tip = self.tip_position()
         contacting = force > .02
         if paint:
-            self.canvas.update(tip[:2] - np.array([.50, 0.0]), force, self.brush, self.dt, contacting)
+            self.canvas.update(tip[:2] - self.data.geom_xpos[self.canvas_geom, :2], force, self.brush, self.dt, contacting)
         obs = StepObservation(float(self.data.time), tip, target_xyz.copy(), force, contacting,
                              self.brush_tilt_deg(), self.data.qpos[:7].copy())
         self.observations.append(obs)
@@ -215,21 +231,21 @@ class PaintingEnv:
     def move_linear(self, xyz, phase="MOVE", speed=.30, render_hook=None, paint=False):
         start = self.tip_position()
         xyz = np.asarray(xyz, dtype=float)
-        duration = float(np.linalg.norm(xyz - start)) / max(speed, .005)
+        # Cubic time scaling starts/stops at zero velocity. Its peak derivative
+        # is 1.5, included in duration so speed remains an actual upper bound.
+        duration = 1.5 * float(np.linalg.norm(xyz - start)) / max(speed, .005)
         n = max(1, int(np.ceil(duration / self.dt)))
         for i in range(1, n + 1):
-            p = i / n
+            u = i / n
+            p = u * u * (3 - 2 * u)
             obs = self.step(start * (1-p) + xyz * p, phase=phase, paint=paint)
             if render_hook:
                 render_hook(self, obs)
         return self.tip_position()
 
     def _approach_force(self, target_xy, target_force, render_hook=None):
-        # The canvas top is 0.059 m and the brush-tip radius is 0.010 m.
-        # Start 5 mm above first contact, then acquire the requested force.
-        surface_z = .057 + .002
-        contact_center_z = surface_z + .010
-        target = np.array([target_xy[0] + .50, target_xy[1], contact_center_z + .005])
+        contact_center_z = self.canvas_contact_height()
+        target = np.r_[self.canvas_xy(target_xy), contact_center_z + .005]
         self.move_linear(target, "APPROACH", speed=.12, render_hook=render_hook)
         z_ref = contact_center_z + .005
         filtered = 0.0
@@ -241,9 +257,9 @@ class PaintingEnv:
             filtered = ema * filtered + (1.0 - ema) * f
             err = float(target_force) - filtered
             # Filtered integral force acquisition: positive error lowers the tip.
-            z_ref -= float(np.clip(0.00004 * err, -0.00006, 0.00008))
-            z_ref = max(contact_center_z - .0015, z_ref)
-            obs = self.step([target_xy[0] + .50, target_xy[1], z_ref], phase="FORCE_ACQUIRE")
+            z_ref -= float(np.clip(0.003 * self.dt * err, -0.00006, 0.00008))
+            z_ref = max(contact_center_z - .011, z_ref)
+            obs = self.step([*self.canvas_xy(target_xy), z_ref], phase="FORCE_ACQUIRE")
             if render_hook:
                 render_hook(self, obs)
             stable = stable + 1 if abs(filtered-target_force) <= float(self.config.get("force_tolerance", .12)) else 0
@@ -261,7 +277,7 @@ class PaintingEnv:
             self.dip_brush(stroke.color, render_hook)
         points = stroke.points(np.linspace(0, 1, 60))
         start = points[0]
-        self.move_linear([start[0] + .50, start[1], .13], "MOVE_TO_START", speed=.24,
+        self.move_linear([*self.canvas_xy(start), .13], "MOVE_TO_START", speed=.24,
                          render_hook=render_hook)
         z, acquired = self._approach_force(start, stroke.force, render_hook=render_hook)
         if not acquired:
@@ -269,7 +285,8 @@ class PaintingEnv:
             return {"success": False, "reason": "force_acquisition_timeout", "force_acquired": False,
                     "wall_seconds": time.perf_counter()-start_wall}
         self.canvas.reset_path()
-        # During the drawing phase the normal target remains at its acquired height.
+        # The paper holds acquired height. This simulator retains the documented
+        # continuous force-feedback height correction (not paper Eq. 4).
         length = max(stroke.arc_length(), 1e-9)
         duration = length / float(self.config.get("stroke_speed", .045))
         n = max(2, int(np.ceil(duration / self.dt)))
@@ -285,11 +302,12 @@ class PaintingEnv:
             # penalty contact and joint servo have a measurable steady-state
             # error while the arm translates across the canvas.
             force_ema = ema * force_ema + (1.0 - ema) * self.normal_force()
-            gain = float(self.config.get("stroke_force_admittance_gain", 0.000025))
-            limit = float(self.config.get("stroke_force_admittance_step_limit", 0.000035))
+            gain = float(self.config.get("stroke_force_admittance_gain", 0.006)) * self.dt
+            limit = float(self.config.get("stroke_force_speed_limit", 0.008)) * self.dt
             z_track += float(np.clip(gain * (force_ema - stroke.force), -limit, limit))
-            z_track = float(np.clip(z_track, .0665, .085))
-            obs = self.step([p[0] + .50, p[1], z_track], phase="STROKE", paint=True)
+            z_track = float(np.clip(z_track, self.canvas_contact_height() - .011,
+                                    self.canvas_contact_height() + .005))
+            obs = self.step([*self.canvas_xy(p), z_track], phase="STROKE", paint=True)
             if render_hook:
                 render_hook(self, obs)
         stroke_obs_end = len(self.observations)
@@ -298,10 +316,10 @@ class PaintingEnv:
         contact_ftrace = ftrace[ftrace > .02]
         self.canvas.reset_path()
         end = points[-1]
-        self.move_linear([end[0] + .50, end[1], .13], "RETRACT", speed=.12,
+        self.move_linear([*self.canvas_xy(end), .13], "RETRACT", speed=.12,
                          render_hook=render_hook)
-        actual = np.array([o.tip_xyz[:2] - [0.50, 0.0] for o in stroke_obs if o.contacting])
-        desired = np.array([o.target_xyz[:2] - [0.50, 0.0] for o in stroke_obs if o.contacting])
+        actual = np.array([o.tip_xyz[:2] - self.canvas_xy([0, 0]) for o in stroke_obs if o.contacting])
+        desired = np.array([o.target_xyz[:2] - self.canvas_xy([0, 0]) for o in stroke_obs if o.contacting])
         rmse = float(np.sqrt(np.mean(np.sum((actual-desired)**2, axis=1)))) if len(actual) else float("nan")
         return {
             "success": bool(len(actual) > 5 and np.count_nonzero(ftrace > .02) > 5),
@@ -310,6 +328,8 @@ class PaintingEnv:
             "target_force_N": float(stroke.force),
             "contact_samples": int(np.count_nonzero(ftrace > .02)),
             "force_samples": int(len(ftrace)),
+            "contact_fraction": float(np.mean(ftrace > .02)),
+            "force_all_samples_rmse_N": float(np.sqrt(np.mean((ftrace-stroke.force)**2))),
             "force_mean_N": float(np.mean(contact_ftrace)) if len(contact_ftrace) else 0.0,
             "force_rmse_N": float(np.sqrt(np.mean((contact_ftrace-stroke.force)**2))) if len(contact_ftrace) else 0.0,
             "force_max_N": float(np.max(contact_ftrace)) if len(contact_ftrace) else 0.0,
@@ -321,48 +341,87 @@ class PaintingEnv:
             "wall_seconds": float(time.perf_counter()-start_wall),
         }
 
+    def _surface_target(self, geom_id, depth):
+        """World TCP center for a sphere immersed by depth below a liquid top."""
+        center = self.data.geom_xpos[geom_id].copy()
+        center[2] += self.model.geom_size[geom_id, 1]
+        center[2] += self.model.geom_size[self.tip_geom, 0] - depth
+        return center
+
+    def palette_target(self, color):
+        if int(color) != color or not 0 <= color < 24:
+            raise ValueError("Palette color must be an integer in [0, 23]")
+        return self._surface_target(self.palette_well_geoms[int(color)], .005)
+
+    def washer_target(self):
+        return self._surface_target(self.washer_water_geom, .015)
+
+    def _hold(self, target, duration, phase, render_hook=None, spin=False):
+        for _ in range(max(1, int(np.ceil(duration / self.dt)))):
+            if spin:
+                angle = 2 * np.pi * 2 * self.data.time
+                self.data.mocap_quat[self.spinner_mocap] = [np.cos(angle/2), 0, 0, np.sin(angle/2)]
+            obs = self.step(target, phase=phase, paint=False)
+            if render_hook:
+                render_hook(self, obs)
+
+    def _transfer_above(self, target, phase, render_hook=None):
+        # Lift at the current XY before crossing the canvas or container rims.
+        current = self.tip_position()
+        safe_z = max(.18, float(current[2]))
+        self.move_linear([*current[:2], safe_z], phase + "_LIFT", .12, render_hook)
+        self.move_linear([*target[:2], safe_z], phase, .18, render_hook)
+        self.move_linear([*target[:2], .18], phase + "_ALIGN", .10, render_hook)
+        self._hold([*target[:2], .18], .20, phase + "_SETTLE", render_hook)
+
+    def _verify_immersion(self, geom, phase):
+        pos = self.data.geom_xpos[geom]
+        radius = float(self.model.geom_size[self.tip_geom, 0])
+        tip = self.tip_position()
+        xy_error = float(np.linalg.norm(tip[:2] - pos[:2]))
+        top = float(pos[2] + self.model.geom_size[geom, 1])
+        depth = float(top - (tip[2] - radius))
+        result = {"phase": phase, "geom": self.model.geom(geom).name,
+                  "time": float(self.data.time), "xy_error_m": xy_error,
+                  "immersion_m": depth, "tilt_deg": self.brush_tilt_deg()}
+        result["success"] = bool(
+            xy_error + radius < self.model.geom_size[geom, 0]
+            and .001 < depth < 2 * self.model.geom_size[geom, 1]
+            and self.brush_axis()[2] < -np.cos(np.deg2rad(1.0)))
+        self.workstation_results.append(result)
+        if not result["success"]:
+            raise RuntimeError(f"Workstation immersion check failed: {result}")
+        return result
+
     def dip_brush(self, color, render_hook=None):
-        self._set_phase("MOVE_TO_PALETTE")
-        row, col = divmod(int(color), 8)
-        px = .04 - .1225 + col*.035
-        py = .235 - .0525 + row*.0525
-        # Deposit wells are mapped to a reachable in-scene palette work area.
-        target_xy = np.array([px, py])
-        self.move_linear([target_xy[0], target_xy[1], .15], "MOVE_TO_PALETTE", .24, render_hook)
-        # Approach the selected well from above and lower the tip until the
-        # bristle sphere just enters the premixed paint surface.
-        self.move_linear([target_xy[0], target_xy[1], .091], "DIP", .06, render_hook)
-        self.move_linear([target_xy[0], target_xy[1], .15], "DIP_RETRACT", .10, render_hook)
+        target = self.palette_target(color)
+        self._transfer_above(target, "MOVE_TO_PALETTE", render_hook)
+        self.move_linear(target, "DIP", .035, render_hook)
+        self._hold(target, .30, "DIP_HOLD", render_hook)
+        result = self._verify_immersion(self.palette_well_geoms[int(color)], "DIP")
         self.brush.dip(color)
+        self.move_linear([*target[:2], .18], "DIP_RETRACT", .08, render_hook)
         self._set_phase("IDLE")
+        return result
 
     def clean_brush(self, render_hook=None):
-        self._set_phase("MOVE_TO_CLEANER")
-        # The cleaner is represented as a physical basin plus explicit paint-state wash.
-        xy = np.array([.04, -.235])
-        self.move_linear([xy[0], xy[1], .15], "MOVE_TO_CLEANER", .24, render_hook)
-        self.move_linear([xy[0], xy[1], .099], "CLEAN", .06, render_hook)
-        # A short horizontal swirl is the visible cleaning action. The brush
-        # stays vertical while the bristles move through the water basin.
-        swirl_radius = .022
-        n = max(8, int(np.ceil(.75 / self.dt)))
-        for theta in np.linspace(0.0, 4.0 * np.pi, n):
-            self.step([xy[0] + swirl_radius*np.cos(theta),
-                       xy[1] + swirl_radius*np.sin(theta), .099],
-                      phase="CLEAN_SWIRL", paint=False)
+        target = self.washer_target()
+        self._transfer_above(target, "MOVE_TO_CLEANER", render_hook)
+        self.move_linear(target, "CLEAN", .035, render_hook)
+        # The paper's cleaner rotates water; hold the brush vertical and still.
+        self._hold(target, .80, "CLEAN_SPIN", render_hook, spin=True)
+        result = self._verify_immersion(self.washer_water_geom, "CLEAN")
         self.brush.clean()
-        self.move_linear([xy[0], xy[1], .15], "CLEAN_RETRACT", .10, render_hook)
+        self.move_linear([*target[:2], .18], "CLEAN_RETRACT", .08, render_hook)
         self._set_phase("IDLE")
+        return result
 
     def render(self, camera="overview_camera", width=None, height=None):
-        if self.renderer is None or (width and height and (self.renderer.width != width or self.renderer.height != height)):
-            if self.renderer is not None:
-                self.renderer.close()
-            self.renderer = mujoco.Renderer(
-                self.model,
-                width=int(width or self.config.get("camera_width", 960)),
-                height=int(height or self.config.get("camera_height", 540)),
-            )
+        size = (int(width or self.config.get("camera_width", 960)),
+                int(height or self.config.get("camera_height", 540)))
+        if size not in self.renderers:
+            self.renderers[size] = mujoco.Renderer(self.model, width=size[0], height=size[1])
+        self.renderer = self.renderers[size]
         # Keep the physical MuJoCo canvas and the contact-driven paint state in
         # the same image. This is the texture a camera would actually observe.
         # Canvas.pixel() already maps world +y to image row 0. MuJoCo's box
@@ -378,12 +437,15 @@ class PaintingEnv:
 
     def metadata(self):
         return {"seed": self.seed, "dt_control": self.dt, "sim_time": float(self.data.time),
-                "phase_events": self.events, "mujoco_version": mujoco.__version__}
+                "phase_events": self.events, "workstation_results": self.workstation_results,
+                "force_source": "unscaled MuJoCo brush/canvas contact force in N",
+                "mujoco_version": mujoco.__version__}
 
     def close(self):
-        if self.renderer is not None:
-            self.renderer.close()
-            self.renderer = None
+        for renderer in self.renderers.values():
+            renderer.close()
+        self.renderers.clear()
+        self.renderer = None
 
 
 def write_episode(path, env: PaintingEnv, strokes, metrics):
