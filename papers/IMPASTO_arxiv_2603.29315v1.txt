@@ -1,0 +1,625 @@
+                                                     IMPASTO: Integrating Model-Based Planning with
+                                               Learned Dynamics Models for Robotic Oil Painting Reproduction
+                                                                           Yingke Wang1 , Hao Li1 , Yifeng Zhu2 , Hong-Xing Yu1 ,
+                                                                    Ken Goldberg3 , Li Fei-Fei1 , Jiajun Wu1 , Yunzhu Li4 , and Ruohan Zhang1
+
+
+
+
+arXiv:2603.29315v1 [cs.RO] 31 Mar 2026
+                                         Fig. 1: IMPASTO is a robotic oil painting system that integrates learned neural dynamics models with model-based planning
+                                         algorithms to replicate human artists’ brushstrokes and artworks.
+                                            Abstract— Robotic reproduction of oil paintings using soft       of stroke sequences. These requirements make robot painting
+                                         brushes and pigments requires force-sensitive control of de-        reproduction a significant challenge: the robot must achieve
+                                         formable tools, prediction of brushstroke effects, and multi-step   the same nuanced, variable brushstrokes as a human artist
+                                         stroke planning, often without human step-by-step demonstra-
+                                         tions or faithful simulators. Given only a sequence of target       based on real-world physics.
+                                         oil painting images, can a robot infer and execute the stroke          We ask: Given only a sequence of static images of an oil
+                                         trajectories, forces, and colors needed to reproduce it? We         painting by an expert artist, can a robot infer corresponding
+                                         present IMPASTO, a robotic oil-painting system that integrates      control actions, such as trajectory, orientation, and applied
+                                         learned pixel dynamics models with model-based planning. The        force, to approximately reproduce the painting? This setting
+                                         dynamics models predict canvas updates from image obser-
+                                         vations and parameterized stroke actions; a receding-horizon        is similar to art training exercises—can our robot reach the
+                                         model predictive control optimizer then plans trajectories and      level of beginning art students who are able to replicate
+                                         forces, while a force-sensitive controller executes strokes on a    an oil painting? This is a challenging setting for robotics,
+                                         7-DoF robot arm. IMPASTO integrates low-level force control,        as it simultaneously 1) requires precise low-level control to
+                                         learned dynamics models, and high-level closed-loop planning,       replicate strokes with soft brushes and wet paints; 2) requires
+                                         learns solely from robot self-play, and approximates human
+                                         artists’ single-stroke datasets and multi-stroke artworks, out-     high-level planning to compose multiple strokes; 3) assumes
+                                         performing baselines in reproduction accuracy. Project website:     no access to any form of action demonstration data, either
+                                         https://impasto-robopainting.github.io/.                            through teleoperation or tracking the brushes.
+                                                                                                                One approach to tackling this challenge is learning a
+                                                                    I. I NTRODUCTION                         2D dynamics model for the oil painting domain. Given the
+                                           Robot painting reproduction—enabling machines to ac-              current visual state of the canvas, and a parameterized action,
+                                         curately replicate physical artworks with brushes and               the robot should predict the consequence of its brush action,
+                                         pigments—has a rich history and presents unique technical           i.e., the resulting state of the canvas. We conjecture that
+                                         challenges [1, 2]. In modern times, these robots often paint        such a model can be trained through self-play. Once trained,
+                                         images on canvas by executing sequences of brushstrokes and         the robot can integrate this model with model predictive
+                                         adjusting based on sensory feedback [1, 3, 4]. Unlike digital       control (MPC) applied within local stroke windows to infer
+                                         image generation, a painting robot must master complex              actions to replicate each brushstroke, plan multiple strokes
+                                         low-level control of deformable tools and fluids, force-            to approximate a complex painting. Although learning neural
+                                         sensitive manipulation of a brush against a surface, visual         dynamics models and combining them with MPC have
+                                         perception of the evolving artwork, and high-level planning         become increasingly popular in different robotic tasks [5–
+                                                                                                             9], we believe this is the first attempt to leverage them for
+                                           1 Stanford University.
+                                           2 The University of Texas at Austin.                              robot painting.
+                                           3 University of California, Berkeley.                                We present IMPASTO (Integrating Model-Based
+                                           4 Columbia University.                                            Planning with LeArned DynamicS Models for RoboTic
+Oil Painting Reproduction), a robotic system that combines       planning [16–18], used genetic algorithms for stroke plan-
+learned dynamics models with force-sensitive control and         ning [19], used imitation learning (IL) to leverage human
+model-based planning to approximately reproduce human            demonstrations [20, 21], and employed deep generative mod-
+oil paintings. Our contributions include:                        els to synthesize and stylize brushstrokes [22–25]. Together,
+   • Learned pixel dynamics model: We develop a neural           these approaches push robotic art beyond hand-designed
+     network dynamics model of brushstrokes, trained on          programming toward more autonomous and creative behav-
+     a dataset of robot self-play data. This model learns        iors. It is worth noticing that our problem setting is among
+     the complex relationship between the robot’s action         the most challenging ones: We aim to closely approximate
+     parameters (end-effector trajectory, applied force) and     human experts’ brushstrokes with soft brushes and wet
+     the resulting stroke outcomes to predict stroke shape       pigments. Unlike in the RL settings, we do not rely on a
+     and appearance.                                             painting simulator; unlike in the IL setting, we do not have
+   • Model predictive trajectory and force planning: We          access to human demonstrations.
+     integrate the learned model into a model-based planning     B. Planning with Learned Neural Dynamics Models
+     framework for single or consecutive stroke planning.           Deep neural networks trained on interaction data have
+     Given a desired appearance of stroke(s), the MPC            become a standard way to learn dynamics models for manip-
+     optimizer computes precise trajectories and forces to       ulation, with broad empirical success [6, 7]. Such models can
+     reproduce each brushstroke.                                 be trained directly in pixel space [26–30] or in compact latent
+   • An integrated robot painting system: We implement
+                                                                 spaces that abstract observations [8, 31–35]. Beyond these
+     a complete system on a 7-DoF robotic arm with a             representations, structured scene encodings improve model-
+     force-torque sensor. The system autonomously handles        ing fidelity and generalization, including keypoints [36–39],
+     dipping the brush in paint, cleaning the brush between      particles [40–42], and mesh-based parameterizations [9]. For
+     colors, and painting the strokes on a canvas.               robot painting, a pixel-based dynamics model is a natural
+   We evaluate IMPASTO on both individual strokes and            choice. Planning over learned dynamics is difficult due to
+full paintings drawn by expert human artists. Our results        their nonlinearity and nonconvexity. A prevalent strategy is
+suggest that the learned model plus model-based planning         online sampling-based optimization, most commonly cross-
+approach yields strokes that closely match the appearances       entropy methods (CEM) [43] and Model Predictive Path
+of the human brushstrokes. We demonstrate that the learned       Integral (MPPI) [44], as used by prior work for planning
+dynamics model can better replicate individual and overlaid      in manipulation tasks [5, 27, 29, 37, 45–47]. These methods
+strokes than the baseline methods. We also show closed-loop      require a large number of samples as the action dimension
+painting experiments in which the robot plans and paints a       grows. Meanwhile, gradient-based trajectory optimization
+multi-stroke artwork.                                            [40, 48] is prone to local minima and non-smooth objectives.
+                    II. R ELATED W ORK                                                  III. M ETHOD
+A. Modern Robot Painting                                            We describe the parameterization of brushstrokes, color
+                                                                 prediction, the hardware system setup for oil painting, the
+   The idea of automating art dates back centuries [1].          architecture design and training of the dynamics model,
+Harold Cohen’s AARON in 1986 is widely considered the            the multi-step planning algorithm, and baseline methods for
+first modern robot painter with an open-loop programmed          comparison.
+approach [10]. Recently, painting robots have employed
+closed-loop control. e-David is an industrial robotic arm        A. Brushstroke Model
+equipped with a camera that paints with real brushes and            Although there are several possible ways to model brush-
+continuously adjusts its strategy based on visual feedback       strokes [4, 25, 49, 50], oil paintings require curved strokes
+[3, 11]. Another state-of-the-art system is the FRIDA series
+[4, 12, 13], a collaborative painting robot that introduces a
+differentiable simulation for brushstrokes and a real2sim2real
+planning loop. FRIDA simulates how each stroke will appear
+and, during execution, periodically captures an image of the
+canvas to re-plan the remaining strokes, though FRIDA’s
+primary goal was not exact reproduction of existing artworks.
+These modern robotic painting systems emphasize sophis-
+ticated stroke planning algorithms, from high-level image
+segmentation and stroke sequencing [3] to optimization of
+stroke parameters in simulation [4], all aimed at achieving
+human-like painting results under robotic control.               Fig. 2: Action parameterization. Each brushstroke is repre-
+   Recent advances in robotic painting leverage machine          sented by a quadratic Bézier curve, with a starting location
+learning methods. Researchers have applied reinforcement         p0 = (x0 , y0 ), length l, bend b, orientation α, force F
+learning (RL) to optimize paint coverage [14, 15] and stroke     (controls thickness), and color C ∈ [0, 1]4 (RGBA).
+                 Top-down Camera                                  4N , making it suitable for oil painting. A round synthetic-
+                                                                  filament brush (Zen™ Series 43, size 8) trimmed to 5 cm is
+                                                                  rigidly attached to the end effector and held perpendicular
+                                                                  to the canvas. We control the arm via the Franka Control
+                 Franka Emika Arm                                 Interface in impedance mode and implement a force loop
+                                                                  along the surface normal. At the beginning of each stroke,
+                                                                  an outer normal-force admittance accumulates a smoothed
+                                                F/T sensor        feedforward force as:
+                                      Brush
+                                                                            ff       ff
+                                                                           Fz,k+1 = Fz,k + kf EMAλ [F ⋆ − Fz,k ] ∆t,          (2)
+                                                                                                                          ⋆
+                                                                  where kf is the feedforward admittance gain, F is the
+                                                Cleaner           desired normal force set by the stroke action’s F , Fz,k is the
+                                                                  measured normal force at step k, EMAλ [·] is an exponential
+                                                                  moving average with coefficient λ defined as:
+                Palette                Canvas
+                                                                             ēz,k = λ ēz,k−1 + (1 − λ) (F ⋆ − Fz,k ),       (3)
+       Fig. 3: Hardware system setup of IMPASTO.
+                                                                  where ēz,k denotes the filtered force tracking error. The
+with precise force control. For a compact descriptive repre-      controller injects force Fffb = [0, 0, Fzff ]⊤ in the base frame
+sentation, we parameterize a brushstroke by six parameters,       via the Jacobian transpose:
+as shown in Fig. 2: the starting location p0 = (x0 , y0 ) in
+image pixels, the stroke length l, a scalar bend b that curves                τ = Kp (qd − q) − Kd q̇ + J⊤    ff
+                                                                                                         p s Fee .            (4)
+the stroke up or down, the in-plane orientation α (degrees),      where s is a scaling factor. Once the target contact force
+normal force F that modulates deposited paint thickness           is established at the beginning of a stroke, the controller
+and width, and the paint color C = (R, G, B, A) ∈ [0, 1]4 .       switches to impedance mode for the remainder of the stroke,
+Compared to FRIDA [4], we replace their parameter h, which        maintaining the same vertical position. We found this suf-
+specifies how far the brush is pressed to the canvas, with the    ficient in practice, as the canvas is approximately flat over
+force parameter F , allowing for force-sensitive control. We      the scale of a single stroke. The canvas is an 18 × 21 inch
+use a separate module to predict C = (R, G, B, A), and            board. Premixed pigments (24 colors) are provided in palette
+denote each brushstroke as Bezier [Fig. 2] geometric control      trays; a motorized water spinner cleans the brush between
+parameters:                                                       strokes. A top-down Intel RealSense D435 provides RGB
+                    u = (p0 , l, b, α, F ),                (1)    observations; images are undistorted, homography-warped to
+where we clip u to task-specific bounds U for learning.           the canvas plane, and center-cropped for learning. Additional
+This stroke representation cannot capture highly complex          details about the hardware setup are in Appendix A.
+stroke patterns, such as serif-like endings or abrupt direction   D. The Pixel Dynamics Model and Training
+changes. Brushstroke execution is inherently stochastic and
+                                                                       a) Pixel dynamics model: The core challenge of this
+we account for this by explicitly controlling brush and paint
+                                                                  work is to design and train a forward dynamics model for
+conditions during evaluation.
+                                                                  oil painting. Given the current image observation It and a
+B. Color Prediction                                               candidate stroke action ut , a differentiable dynamics model
+                                                                  predicts the next observation:
+   We separate color estimation from shape prediction, so
+the dynamics model focuses on stroke geometry. We run a                                 Iˆt+1 = fθ (It , ut ).                (5)
+nearest-neighbor search over a patch database of pigments:
+inside the stroke-difference mask, we form a representative           Architecture-wise, we employ an image encoder ϕ and an
+feature and compare it to patch prototypes using a linear-        action encoder ψ whose embeddings are fused by a decoder
+RGB with Mahalanobis distance [51]. Transparency is de-           φ to output Iˆt+1 . We pre-render stroke actions ut as an image
+cided by a ratio test between base and target intensities.        Rt using the color prediction Ct , and concatenate Rt with
+Additional details can be found in Appendix B.                    It . Concretely,
+                                                                              zI = ϕ(Concat(It , Rt )), zu = ψ(ut ),
+C. The Hardware System and Robot Control                                                                                      (6)
+                                                                           Iˆt+1 = φ Concat(zI , zu ) .
+                                                                                                     
+   To execute brushstrokes on a canvas, we use a 7-DoF
+Franka Emika Panda equipped with a 6-axis force/torque               The neural network architecture is shown in Fig. 4. The
+sensor (Kunwei Tech Inc.) mounted at the tip using a 3D-          encoder-decoder follows U-Net [52]. Each action ut is rep-
+printed mounter, as shown in Fig. 3. Using an external force-     resented as a 6D vector of (p0 (x), p0 (y), l, b, F, α).
+torque sensor reduces dependence on robot-specific force             The pre-rendered image Rt bridges the modality gap be-
+estimation and improves reproducibility across manipulators.      tween low-dimensional vector controls and high-dimensional
+The force/torque sensor measures forces from 0.1N to              raster states, enabling the network to perceive footprint,
+Fig. 4: Overview of the learning and planning framework. Top: IMPASTO-UNet’s neural pixel dynamics model, which
+combines an image encoder and an action encoder to predict the effect of a stroke. The model is trained using a weighted
+ℓ1 loss. Bottom: To find one or more consecutive strokes between a base image and a target image, an MPC-based planner
+optimizes stroke parameters with a weighted ℓ1 image objective in a receding-horizon, closed loop.
+
+orientation, and thickness directly in image space. To map         I0 and the goal image Ig , we optimize a sequence of H = 5
+(l, b, α) into a continuous stroke centerline, we construct a      actions and execute the first two before replanning. The
+quadratic Bézier curve with control points                        horizon and execution step are chosen empirically to balance
+                                                                   planning quality and computational cost. We then re-observe
+ q0 = p0 ,    q1 = p0 + 2l tα + b nα ,    q2 = p0 + l tα , (7)
+                                                                   the canvas and re-optimize over the remaining planning
+where tα = [cos α, sin α] and nα = [− sin α, cos α]⊤ . The
+                           ⊤                                       horizon. Concretely, at each replanning cycle, we optimize
+rendered stroke is then produced by rasterizing the curve          a length-H action sequence u = (u0 , . . . , uH−1 ) using a
+with thickness w(F ) and compositing it onto the canvas,           weighted image-space objective:
+colored using Ct . The brush width w(F ) is obtained from
+                                                                               J(u) = w ⊙ IˆH−1 − Ig
+                                                                                                                  
+a calibration curve that monotonically maps normal force to                                                            ,
+                                                                                                                     1      (9)
+footprint width.                                                                    s.t. Iˆt+1 = fθ (Iˆt , ut ), Iˆ0 = I0
+   All the input images of the neural network are cropped
+around the target stroke and resized to 100×100×1 grayscale           where w up-weights goal-relevant pixels (stroke
+patches.                                                           masks). We draw H heuristic initializations through
+      b) Dataset and training: The robot self-supervises to        a PCA–RANSAC multi-way splitter, perform adaptive
+collect a dataset D = {(It , ut , It+1 )} by uniformly randomly    sampling and elite-set updates via MPPI [44], clip to U,
+exploring over (p0 , l, b, α, F ) while cycling a fixed color      select the optimized candidate, execute u⋆t , and re-plan
+set; color-prediction runs use ground-truth color labels. The      (Alg. 1). This closed-loop, sample-and-refine procedure
+main objective is a weighted ℓ1 loss that emphasizes changed       is robust to model error and naturally incorporates action
+pixels near the stroke:                                            bounds and force limits. More details can be found in
+                           1 X                                     Appendix C.
+                                           (i)    (i)
+           Lwℓ1 (θ) = P              wi Iˆt+1 − It+1 ,       (8)
+                            w
+                           i i i                                   F. Baseline Methods
+with w computed from a dilated difference mask between                We denote our main model as IMPASTO-UNet. Now we
+It and It+1 . We apply standard data augmentation (slight          introduce several ablations, which are variants of our method
+random cropping, rotation, and flipping) to augment the            or from related work, including:
+dataset. We train fθ end-to-end with the Adam optimizer.           IMPASTO-LR: Instead of using a U-Net backbone, this
+Additional details of the dynamics model design and training       ablation fits a linear regressor that maps the force F into
+can be found in Appendix B.                                        the stroke thickness, and renders u = (p0 , l, b, α, F ) directly
+                                                                   to an alpha map, which is then composited with the base
+E. Multi-Step Stroke Planning
+                                                                   image and a constant stroke color. This is similar to the
+   The learned forward dynamics model allows multi-step            method used in Spline-FRIDA [13], where F ∈ [0, 1] are
+planning to complete a full painting. At test time, we plan        mapped to a global stroke thickness τ :
+in the action space with receding-horizon model predictive
+control (MPC). Starting from the current canvas observation                        τ (F ) = softplus(aF + β) + ε               (10)
+Algorithm 1 Receding-Horizon MPC with Adaptive Covari-
+ance
+Require: Current observation I0 , goal image Ig , dynamics
+    model fθ , cost c ( Lwℓ1 ), candidates K, elite ratio ρ,
+    temperature β, horizon H, EMA ema
+Ensure: Action sequence U⋆ = (u⋆0 , . . . , u⋆H−1 )
+ 1: U ← I NIT F ROM M ASKS(I0 , Ig ) ▷ splitter → initial H
+ 2: for t = 0, . . . , H−1 do ▷ MPC recedes, feeds next step
+ 3:     for iter = 1, . . . , M do          ▷ sample-and-refine
+ 4:         A ← {U}                    ▷ null particle (no noise)
+ 5:         A ← A ∪ S AMPLE A DAPTIVE(U, K−|A|)
+ 6:         for all Ũ ∈ A do
+ 7:             IˆH ← ROLLOUT(fθ , It , Ũ)
+ 8:             J(Ũ) ← ∥w ⊙ (IˆH − Ig )∥1 ▷ terminal Lwℓ1          Fig. 5: Training and evaluation Lℓ1 (unweighted) of
+                                                                    IMPASTO’s dynamics model vs. number of training samples
+ 9:         E ← top-Ke by P     J                 ▷ Ke = ⌊ρK⌋
+                                                                    (log–log scale).
+10:         U ← ema ·             Ũ∈E S OFTMAX   β (−J) Ũ    +
+    (1−ema) · U
+11:         (Σt , σt )t ← CMAU PDATE(E)                  ▷ update   Q1. Can IMPASTO’s pixel dynamics model be trained to
+    per-timestep cov/step-size                                      predict the stroke effects with high fidelity?
+12:         U ← C LIP U to action bounds                               As shown in Fig. 5, as the number of training samples
+13:     It+1 ← EXECUTE(It , u⋆t )           ▷ Apply to system /     increases, the dynamics model achieves lower prediction
+    obtain next obs.                                                error when predicting the next canvas state. The validation set
+14: return U⋆                                                       is fixed at 10% of the total dataset size. We observe that with
+                                                                    a reasonable amount of self-play data (n = 900), the model
+                                                                    can achieve a prediction with unweighted Lℓ1 = 0.0285.
+and a parabolic trajectory represented by (p0 , l, b, α) is         Q2. Can IMPASTO reproduce human individual strokes
+rasterized by a sequence of spheres with τ as radius.               with lower error and higher visual similarity than baseline
+Heuristics-only: For single-step stroke planning, we skele-         methods?
+tonize the frame-to-frame difference mask and use the two              We compare IMPASTO-UNet with the baselines. Since
+farthest skeleton endpoints (for p0 and l), their direction (for    real brush-paint interaction is inherently stochastic, we ex-
+α), and the skeleton’s maximum signed normal offset (for            plicitly controlled the execution conditions in the final re-
+b), with a fixed force F = 0.5.                                     ported experiments. In particular, we matched the brush state
+FRIDA-CNN: FRIDA [4] was not developed to exactly                   and pigment condition for each stroke across baselines as
+reproduce brushstrokes. FRIDA-CNN only uses FRIDA’s                 close as possible, in order to reduce variability across trials
+param2stroke model, a convolutional neural network                  and improve fairness in quantitative comparisons.
+predicting a stroke occupancy field from (l, b, F ), and is a          First, we collected two datasets for evaluation. The first
+variant of our method. The stroke occupancy is transformed          dataset (“Single Strokes”) comes from five trained human
+and blended using (p0 , α, C) over the base image.                  artists, who are experts in oil painting. Every artist con-
+   Additional details of the baselines are in Appendix B. Note      tributed 12 separate brushstrokes that reflected their unique
+that, unlike IMPASTO, all baseline methods operate without          style. The second dataset (“Overlaid Strokes”) was produced
+access to the underlying state context (i.e., the base image).      by the robot, which freely painted 50 random strokes that
+They predict only the incremental stroke rather than the next       were layered on top of each other. Note that these datasets
+full state image. To approximate state prediction, we overlay       are not used for training.
+the predicted increment onto the ground-truth base image. In           Then we integrate the learned dynamics model with the
+evaluation, this places IMPASTO-UNet at a disadvantage in           multi-step planning algorithm described in Sec. III-E. We
+terms of the weighted ℓ1 loss, as it must predict the entire        first set the planning horizon to be 1 step. We measure the
+next image.                                                         accuracy in two stages: the planning stage and the execution
+                                                                    stage. At the planning stage, the 1-step planning algorithm in-
+             IV. E XPERIMENTS AND R ESULTS                          fers the stroke actions, then we use IMPASTO and baselines
+                                                                    to predict and render the strokes, and compare the rendered
+   Our experiments are designed to address three key ques-          strokes with ground-truth strokes. At the execution stage, we
+tions: Q1. How much data is needed to train a dynamics              let the robot execute the stroke action, take a photo of the
+model in our case? Q2. Can IMPASTO reproduce expert                 canvas, and compare that with the ground truth.
+human artists’ strokes with low error and high visual sim-             We use two metrics for evaluation. The first one was
+ilarity? Q3. Can IMPASTO enable closed-loop, multi-step             the weighted ℓ1 loss used as the objective in learning and
+planning to approximate a given oil painting?                       planning. The second one was the popular LPIPS (Learned
+      Stage         Planning       Execution        Planning       Execution
+      Loss          Lwℓ1 ↓      Lwℓ1 ↓   LPIPS↓     Lwℓ1 ↓      Lwℓ1 ↓ LPIPS↓
+   Test Dataset                Artist #1                       Artist #2
+  Heuristics-only    N/A        0.0541     0.2001    N/A        0.0626     0.2001
+   FRIDA-CNN        0.0215      0.0617     0.2736   0.0318      0.0508     0.2348
+  IMPASTO-LR        0.0229      0.0718     0.2511   0.0242      0.0434     0.1711
+ IMPASTO-UNet       0.0197      0.0506     0.1874   0.0225      0.0413     0.1675
+   Test Dataset                Artist #3                       Artist #4
+  Heuristics-only    N/A        0.0834     0.2455    N/A        0.0556     0.2246
+   FRIDA-CNN        0.0278      0.1062     0.3495   0.0256      0.0362     0.2623
+  IMPASTO-LR        0.0202      0.0721     0.2622   0.0271      0.0331     0.2338
+ IMPASTO-UNet       0.0257      0.0745     0.2236   0.0234      0.0346     0.1621
+   Test Dataset                Artist #5                       Overlaid
+  Heuristics-only    N/A        0.0574     0.2017    N/A        0.0940     0.2554
+   FRIDA-CNN        0.0264      0.0515     0.2781   0.0288      0.1034     0.2645
+  IMPASTO-LR        0.0230      0.0402     0.1869   0.0263      0.0929     0.2473
+ IMPASTO-UNet       0.0199      0.0457     0.1633   0.0258      0.0907     0.2209
+
+TABLE I: Learned dynamics models’ planning and execution
+performance in terms of Lwℓ1 and LPIPS losses. All methods
+were evaluated under controlled brush/paint state conditions.
+
+Perceptual Image Patch Similarity) metric [53], which is a
+perceptual metric that measures the similarity between two
+images based on deep neural network feature embeddings,
+aligning better with human visual judgments than pixel-                             Fig. 7: Qualitative results showing the target strokes from
+wise differences. This metric is particularly useful for the                        overlaid strokes and the strokes painted by the robot using
+execution stage due to the differences in canvas color and                          different methods. Instances with the best performances are
+lighting conditions.                                                                highlighted with bold borders. The difference with Fig. 6
+                                                                                    is that the base images (canvas states) already have painted
+                                                                                    strokes. This requires the dynamics models to make predic-
+                                                                                    tions with low prediction errors given the noisy background.
+                                                                                    The numbers shown are the weighted ℓ1 loss. Note that
+                                                                                    the loss is only calculated around the target stroke area.
+                                                                                    IMPASTO-UNet is more accurate in reproducing brush-
+                                                                                    strokes given the noisy base images.
+
+
+                                                                                    human stroke styles.
+                                                                                       IMPASTO also performs better than all the baselines in
+                                                                                    the “Overlaid” dataset, suggesting that it can make predic-
+                                                                                    tions with lower prediction errors given noisy base images.
+Fig. 6: Target brushstrokes from five human artists (two                            IMPASTO-UNet reduces planning Lwℓ1 loss by 10.42%
+examples per artist) and the strokes reproduced by the                              vs. FRIDA-CNN and 1.90% vs. IMPASTO-LR; execution
+robot using different methods. The numbers shown are the                            Lwℓ1 loss 12.28%, 2.37%, and 3.51% vs. FRIDA-CNN,
+weighted ℓ1 loss between the target and the painted strokes.                        IMPASTO-LR, and Heuristics-only; and LPIPS 16.48%,
+Instances with the best performances are highlighted with                           10.68%, and 13.51%.
+bold borders. Overall, IMPASTO-UNet approximated human
+brushstrokes with lower error and higher visual similarity.                         Q3. Can IMPASTO enable closed-loop, multi-step planning
+   The results are shown in Table I. The visualization of                           to approximate complex oil paintings?
+results can be found in Fig. 6 and Fig. 7. Our U-Net-based                             Next, we show that IMPASTO can integrate long-horizon,
+model consistently performs better than baselines in terms                          multi-step planning to approximate oil paintings with many
+of LPIPS metrics in all cases, although the linear regression                       strokes. We first ask an artist to paint two oil paintings
+variant performs slightly better in terms of the weighted ℓ1                        (“Flower” and “Fish”), consisting of 17 strokes and 18
+loss for some artists. On average across all artists’ data,                         strokes, respectively. We then set the planning horizon to
+IMPASTO-UNet reduces planning Lwℓ1 loss by 16.45%                                   be H = 5, i.e., step 5, 10, 15, and the final images are used
+vs. FRIDA-CNN and 5.28% vs. IMPASTO-LR; execution                                   as target images for receding-horizon planning within each
+Lwℓ1 loss by 19.48%, 5.33%, and 21.21% vs. FRIDA-CNN,                               prediction window. We compare IMPASTO with FRIDA-
+IMPASTO-LR, and Heuristics-only; and LPIPS by 35.36%,                               CNN, the best performing baseline other than IMPASTO’s
+18.21%, and 15.68%, respectively. Notably, although our                             own variant, using the same metrics. The quantitative re-
+dynamics model was trained using self-supervised play data,                         sults are shown in Table II, and the visualizations are in
+it performed reasonably well in reproducing brushstrokes                            Fig. 8. IMPASTO performs better in multi-step planning,
+from different human artists, showing generalization across                         thanks to its better performance in reproducing individual
+    Test Data                Flower                         Fish
+      Stage       Planning       Execution      Planning       Execution
+                                                                                [8] P. Wu, A. Escontrela, D. Hafner, P. Abbeel, and K. Goldberg, “Day-
+      Loss        Lwℓ1 ↓     Lwℓ1 ↓    LPIPS↓   Lwℓ1 ↓     Lwℓ1 ↓ LPIPS↓            dreamer: World models for physical robot learning,” in CoRL, 2023.
+                                                                                [9] Z. Huang, X. Lin, and D. Held, “Mesh-based dynamics model with
+  FRIDA-CNN       0.0597     0.0501   0.1619    0.0519     0.0523   0.1204
+ IMPASTO-UNet     0.0427     0.0464   0.1293    0.0421     0.0452   0.1117          occlusion reasoning for cloth manipulation,” in RSS, 2022.
+                                                                               [10] H. Cohen, “The further exploits of aaron, painter,” Stanford Humani-
+TABLE II: Multi-step stroke planning and execution perfor-                          ties Review, vol. 4, no. 2, pp. 141–158, 1995.
+                                                                               [11] O. Deussen, T. Lindemeier, S. Pirk, and M. Tautzenberger, “Feedback-
+mance. Planning horizon H = 5.                                                      guided stroke placement for a painting machine,” in Proceedings of the
+                                                                                    Eighth Annual Symposium on Computational Aesthetics in Graphics,
+brushstrokes. On average, IMPASTO-UNet reduces planning                             Visualization, and Imaging, 2012, pp. 25–33.
+Lwℓ1 loss by 24.01% vs. FRIDA-CNN; execution Lwℓ1 loss                         [12] P. Schaldenbrand, G. Parmar, J.-Y. Zhu, J. McCann, and J. Oh,
+                                                                                    “Cofrida: Self-supervised fine-tuning for human-robot co-painting,” in
+by 10.55% vs. FRIDA-CNN; and LPIPS by 14.63%.                                       ICRA. IEEE, 2024, pp. 2296–2302.
+  Finally, as shown in Fig. 9, IMPASTO was able to                             [13] L. Chen, P. Schaldenbrand, T. Shankar, L. Coleman, and J. Oh,
+approximate a rather complex painting with high visual                              “Spline-frida: Towards diverse, humanlike robot painting styles with a
+                                                                                    sample-efficient, differentiable brush stroke model,” IEEE RAL, 2025.
+similarity, which requires 204 steps. More examples and the                    [14] E. Berrocal, I. Merino, A. F. Montaño, and B. Sierra, “Reinforcement
+robot painting process can be found in Appendix D and the                           learning for autonomous surface painting with a robotic arm,” Avail-
+supplemental video.                                                                 able at SSRN 5396199.
+                                                                               [15] G. Tiboni, R. Camoriano, and T. Tommasi, “Paintnet: Unstructured
+                           V. C ONCLUSIONS                                          multi-path learning from 3d point clouds for robotic spray painting,”
+                                                                                    in 2023 IROS. IEEE, 2023, pp. 3857–3864.
+   An oil painting robot must address fine-grained control                     [16] P. Schaldenbrand and J. Oh, “Content masked loss: Human-like brush
+of deformable tools and fluid dynamics, execute force-                              stroke planning in a reinforcement learning painting agent,” in AAAI,
+                                                                                    2021.
+sensitive brush-surface interactions, perceive the evolving                    [17] G. Lee, M. Kim, M. Lee, and B.-T. Zhang, “From scratch to
+canvas state, and solve high-level planning of stroke se-                           sketch: Deep decoupled hierarchical reinforcement learning for robotic
+quences. These requirements make robotic oil painting an                            sketching agent,” in 2022 International Conference on Robotics and
+                                                                                    Automation (ICRA). IEEE, 2022, pp. 5553–5559.
+inspiring and ambitious challenge for robotics research. We                    [18] B. Jia and D. Manocha, “Sim-to-real brush manipulation us-
+present IMPASTO, a robot painting system that integrates                            ing behavior cloning and reinforcement learning,” arXiv preprint
+learned dynamics models and model-based planning to ap-                             arXiv:2309.08457, 2023.
+proximate oil paintings. We demonstrate that IMPASTO                           [19] C. Aguilar and H. Lipson, “A robotic system for interpreting images
+                                                                                    into painted artwork,” in International conference on generative art,
+can approximate human artists’ brushstrokes and artworks.                           vol. 11, 2008.
+Through these contributions, we advance robotic painting by                    [20] Y. Park, S. Jeon, and T. Lee, “Robot learning to paint from demon-
+fusing learning and control: the robot gains an understanding                       strations,” in 2022 IEEE/RSJ international conference on intelligent
+                                                                                    robots and systems (IROS). IEEE, 2022, pp. 3053–3060.
+of brush dynamics from data and uses it in a principled                        [21] C. Guo, T. Bai, X. Wang, X. Zhang, Y. Lu, X. Dai, and F.-Y. Wang,
+planning framework. IMPASTO represents a step toward                                “Shadowpainter: Active learning enabled robotic painting through
+robots that can paint with the finesse of a human artist,                           visual measurement and reproduction of the artistic creation process,”
+                                                                                    Journal of Intelligent & Robotic Systems, vol. 105, no. 3, p. 61, 2022.
+manipulating real brushes and paints.                                          [22] R. Wu, Z. Chen, Z. Wang, J. Yang, and S. Marschner, “Brush
+                                                                                    stroke synthesis with a generative adversarial network driven by
+                    ACKNOWLEDGMENT                                                  physically based simulation,” in Proceedings of the joint symposium
+   This work is in part supported by the Stanford Institute                         on computational aesthetics and sketch-based interfaces and modeling
+                                                                                    and non-photorealistic animation and rendering, 2018, pp. 1–10.
+for Human-Centered AI (HAI), the Schmidt Futures Senior                        [23] S. Liu, T. Lin, D. He, F. Li, R. Deng, X. Li, E. Ding, and H. Wang,
+Fellows grant, ONR MURI N00014-21-1-2801, ONR MURI                                  “Paint transformer: Feed forward neural painting with stroke predic-
+N00014-22-1-2740, ONR MURI N00014-24-1-2748, and                                    tion,” in ICCV, 2021, pp. 6598–6607.
+                                                                               [24] J. M. Gülzow, P. Paetzold, and O. Deussen, “Recent developments
+NSF RI #2211258.                                                                    regarding painting robots for research in automatic painting, artificial
+                                                                                    creativity, and machine learning,” Applied Sciences, vol. 10, no. 10,
+                             R EFERENCES                                            p. 3396, 2020.
+                                                                               [25] D. Guo and G. Yan, “B-bsmg: Bézier brush stroke model-based
+[1] L. Scalera, A. Gasparetto, S. Seriani, and P. Gallina, “History of
+                                                                                    generator for robotic chinese calligraphy,” International Journal of
+    drawing robots,” in International Symposium on History of Machines
+                                                                                    Computational Intelligence Systems, vol. 17, no. 1, p. 104, 2024.
+    and Mechanisms. Springer, 2024, pp. 3–17.
+[2] A. Karimov, E. Kopets, S. Leonov, L. Scalera, and D. Butusov, “A           [26] C. Finn, I. Goodfellow, and S. Levine, “Unsupervised learning
+    robot for artistic painting in authentic colors,” Journal of Intelligent        for physical interaction through video prediction,” arXiv preprint
+    & Robotic Systems, vol. 107, no. 3, p. 34, 2023.                                arXiv:1605.07157, 2016.
+[3] T. Lindemeier, S. Pirk, and O. Deussen, “Image stylization with            [27] F. Ebert, C. Finn, A. X. Lee, and S. Levine, “Self-supervised visual
+    a painting machine using semantic hints,” Computers & Graphics,                 planning with temporal skip connections.” in CoRL, 2017.
+    vol. 37, no. 5, pp. 293–301, 2013.                                         [28] F. Ebert, C. Finn, S. Dasari, A. Xie, A. Lee, and S. Levine, “Visual
+[4] P. Schaldenbrand, J. McCann, and J. Oh, “Frida: A collaborative robot           foresight: Model-based deep reinforcement learning for vision-based
+    painter with a differentiable, real2sim2real planning environment,” in          robotic control,” arXiv preprint arXiv:1812.00568, 2018.
+    2023 IEEE International Conference on Robotics and Automation              [29] L. Yen-Chen, M. Bauza, and P. Isola, “Experience-embedded visual
+    (ICRA). IEEE, 2023, pp. 11 712–11 718.                                          foresight,” in CoRL. PMLR, 2020, pp. 1015–1024.
+[5] C. Finn and S. Levine, “Deep visual foresight for planning robot           [30] H. Suh and R. Tedrake, “The surprising effectiveness of linear mod-
+    motion,” in 2017 IEEE International Conference on Robotics and                  els for visual foresight in object pile manipulation,” arXiv preprint
+    Automation (ICRA). IEEE, 2017, pp. 2786–2793.                                   arXiv:2002.09093, 2020.
+[6] H. Shi, H. Xu, S. Clarke, Y. Li, and J. Wu, “Robocook: Long-horizon        [31] M. Watter, J. T. Springenberg, J. Boedecker, and M. Riedmiller,
+    elasto-plastic object manipulation with diverse tools,” 2023.                   “Embed to control: A locally linear latent dynamics model for control
+[7] Y. Wang, Y. Li, K. Driggs-Campbell, L. Fei-Fei, and J. Wu, “Dynamic-            from raw images,” arXiv preprint arXiv:1506.07365, 2015.
+    resolution model learning for object pile manipulation,” in RSS, 2023.     [32] P. Agrawal, A. Nair, P. Abbeel, J. Malik, and S. Levine, “Learning
+Fig. 8: Qualitative results showing the target paintings and the painting produced by the robot using IMPASTO vs. FRIDA.
+The planning horizon was set to H = 5, and the framed images are the targets for MPC within each prediction window.
+IMPASTO can approximate oil paintings with better details in terms of forces and shapes, as shown by quantitative results
+in Table II.
+
+                                                                                  learning,” arXiv preprint arXiv:2009.05085, 2020.
+                                                                             [38] Y. Li, A. Torralba, A. Anandkumar, D. Fox, and A. Garg, “Causal
+                                                                                  discovery in physical systems from videos,” Advances in Neural
+                                                                                  Information Processing Systems, vol. 33, 2020.
+                                                                             [39] K. Shen, J. Yu, J. Barreiros, H. Zhang, and Y. Li, “Bab-nd: Long-
+                                                                                  horizon motion planning with branch-and-bound and neural dynam-
+                                                                                  ics,” in The Thirteenth ICLR.
+                                                                             [40] Y. Li, J. Wu, R. Tedrake, J. B. Tenenbaum, and A. Torralba, “Learning
+                                                                                  particle dynamics for manipulating rigid bodies, deformable objects,
+                                                                                  and fluids,” arXiv preprint arXiv:1810.01566, 2018.
+                                                                             [41] H. Shi, H. Xu, Z. Huang, Y. Li, and J. Wu, “Robocraft: Learning to
+                                                                                  see, simulate, and shape elasto-plastic objects with graph networks,”
+                                                                                  arXiv preprint arXiv:2205.02909, 2022.
+                                                                             [42] K. Zhang, B. Li, K. Hauser, and Y. Li, “Adaptigraph: Material-
+                                                                                  adaptive graph-based neural dynamics for robotic manipulation,” in
+                                                                                  Proceedings of Robotics: Science and Systems (RSS), 2024.
+                                                                             [43] R. Y. Rubinstein and D. P. Kroese, The cross-entropy method: a unified
+                                                                                  approach to combinatorial optimization, Monte-Carlo simulation and
+                                                                                  machine learning. Springer Science & Business Media, 2013.
+                                                                             [44] G. Williams, A. Aldrich, and E. A. Theodorou, “Model predictive
+                                                                                  path integral control: From theory to parallel computation,” Journal
+                                                                                  of Guidance, Control, and Dynamics, pp. 344–357, 2017.
+                                                                             [45] A. Nagabandi, K. Konolige, S. Levine, and V. Kumar, “Deep dynamics
+                                                                                  models for learning dexterous manipulation,” in CoRL, 2020.
+                                                                             [46] J. Sacks, R. Rana, K. Huang, A. Spitzer, G. Shi, and B. Boots, “Deep
+                                                                                  model predictive optimization,” 2023.
+                                                                             [47] T. Han, A. Liu, A. Li, A. Spitzer, G. Shi, and B. Boots, “Model
+                                                                                  predictive control for aggressive driving over uneven terrain,” 2024.
+                                                                             [48] Y. Li, J. Wu, J.-Y. Zhu, J. B. Tenenbaum, A. Torralba, and R. Tedrake,
+                                                                                  “Propagation networks for model-based control under partial observa-
+                                                                                  tion,” in ICRA. IEEE, 2019, pp. 1205–1211.
+                                                                             [49] S. Wang, J. Chen, X. Deng, S. Hutchinson, and F. Dellaert, “Robot
+                                                                                  calligraphy using pseudospectral optimal control in conjunction with a
+                                                                                  novel dynamic brush model,” in IROS. IEEE, 2020, pp. 6696–6703.
+                                                                             [50] T.-M. Li, M. Lukáč, M. Gharbi, and J. Ragan-Kelley, “Differentiable
+Fig. 9: IMPASTO was able to closely approximate a complex                         vector graphics rasterization for editing and learning,” ACM Transac-
+oil painting with 204 strokes (not all steps are shown).                          tions on Graphics (TOG), vol. 39, no. 6, pp. 1–15, 2020.
+                                                                             [51] R. De Maesschalck, D. Jouan-Rimbaud, and D. L. Massart, “The ma-
+     to poke by poking: Experiential learning of intuitive physics,” arXiv        halanobis distance,” Chemometrics and intelligent laboratory systems,
+     preprint arXiv:1606.07419, 2016.                                             vol. 50, no. 1, pp. 1–18, 2000.
+[33] D. Hafner, T. Lillicrap, J. Ba, and M. Norouzi, “Dream to con-          [52] O. Ronneberger, P. Fischer, and T. Brox, “U-net: Convolutional
+     trol: Learning behaviors by latent imagination,” arXiv preprint              networks for biomedical image segmentation,” in International Confer-
+     arXiv:1912.01603, 2019.                                                      ence on Medical image computing and computer-assisted intervention.
+[34] D. Hafner, T. Lillicrap, I. Fischer, R. Villegas, D. Ha, H. Lee, and         Springer, 2015, pp. 234–241.
+     J. Davidson, “Learning latent dynamics for planning from pixels,” in    [53] R. Zhang, P. Isola, A. A. Efros, E. Shechtman, and O. Wang, “The
+     International Conference on Machine Learning, 2019, pp. 2555–2565.           unreasonable effectiveness of deep features as a perceptual metric,” in
+[35] J. Schrittwieser, I. Antonoglou, T. Hubert, K. Simonyan, L. Sifre,           CVPR, 2018, pp. 586–595.
+     S. Schmitt, A. Guez, E. Lockhart, D. Hassabis, T. Graepel et al.,
+     “Mastering atari, go, chess and shogi by planning with a learned
+     model,” Nature, vol. 588, no. 7839, pp. 604–609, 2020.
+[36] T. D. Kulkarni, A. Gupta, C. Ionescu, S. Borgeaud, M. Reynolds,
+     A. Zisserman, and V. Mnih, “Unsupervised learning of object key-
+     points for perception and control,” Advances in neural information
+     processing systems, vol. 32, pp. 10 724–10 734, 2019.
+[37] L. Manuelli, Y. Li, P. Florence, and R. Tedrake, “Keypoints into the
+     future: Self-supervised correspondence in model-based reinforcement
+                           A PPENDIX                                 where F is the applied force, rmin is a baseline radius, k is
+                                                                     a scale factor, and γ > 0 controls the nonlinearity. Colors
+       A PPENDIX A. ROBOTIC H ARDWARE S YSTEM
+                                                                     are treated as grayscale for simplicity: we emit three identical
+   We use a 7-DoF Franka Emika Panda equipped with a                 RGB channels (no hue variation) for compatibility with RGB
+6-axis force/torque sensor (Kunwei Tech Inc.) mounted at             loaders, and set the alpha channel to fully opaque. After
+the tip, as shown in Fig. A1. The mount is designed and              rendering all circles, we resize the canvas to 100 × 100.
+3D-printed, with a grasping lugs for the Franka’s parallel
+grippers, a flange for the f/t sensor, and a brush holder for the    Baseline Implementation Details
+oil painting brush. To reduce common-mode noise and mains               The Heuristic-only method recovers a stroke’s geometry
+interference, we ground the acquisition chain by connecting          directly from a binary mask without learning. We skeletonize
+a grounding wire to the data-acquisition module’s adapter.           the mask via iterative, topology-preserving thinning to obtain
+Sensor readouts are first bias-corrected (offset removal) at         a 1 -pixel-wide centerline, then identify endpoints as skeleton
+the beginning of each primitive skill and then smoothed with         pixels with exactly one 8-neighborhood neighbor (degree=
+an exponential moving average (EMA):                                 1). With endpoints p0 , p1 , we define a local frame along the
+                                                                     chord p0 → p1 , project skeleton points onto the tangent–
+         x̃t = xt − b̂,     yt = α x̃t + (1 − α) yt−1 ,      (11)    normal basis, and estimate b (bend) as the signed maximal
+                                                                     lateral deviation (thresholded to suppress noise); l (length)
+where xt denotes the raw force/torque reading at time step t;
+                                                                     is ∥p1 − p0 ∥ and α (angle) is the chord heading.
+b̂ is the per-primitive bias (static offset) estimated before each
+                                                                        FRIDA-CNN maps a 3D geometric parameter vector
+primitive skill from a short stationary window collected right
+                                                                     (l, b, F ) to a grayscale stroke mask. A BatchNorm
+before the primitive starts; α ∈ (0, 1] is the EMA coefficient.
+                                                                     layer followed by a lightweight MLP produces a flattened
+    The RGB observations of the canvas are captured at
+                                                                     100×100 field, which is reshaped and refined by a small
+1920 × 1080 by a single Intel RealSense D435 camera
+                                                                     convolutional layer, yielding M ∈ [0, 1]100×100 . Since
+mounted above the canvas.
+                                                                     M encodes geometry without translation and rotation, we
+    Dynamics model training uses Distributed Data Parallel
+                                                                     transform M using the remaining 3D geometric parameter
+(DDP) on NVIDIA GPUs, including RTX A5000, RTX
+                                                                     (p0 (x0 ), p0 (y0 ), α).
+3090, and A40. Deployment uses NVIDIA RTX 4090 GPUs.
+                                                                        Baselines FRIDA-CNN, IMPASTO-LR, and Heuristics
+    A PPENDIX B. L EARNING THE DYNAMICS M ODELS                      predict only the incremental stroke, rather than the full
+                                                                     next state image as IMPASTO-UNet does. To place the
+   The detailed neural network architecture is shown in              stroke on a base image B ∈ [0, 1]100×100 with per-sample
+Fig. A2, where we use a U-Net–style encoder–decoder that             grayscale value c ∈ [0, 1] and opacity a ∈ [0, 1], we form
+fuses image evidence with action parameters. We train with           a convex combination controlled by an effective opacity
+the Adam optimizer (learning rate 5 × 10−4 , weight decay            Aeff = clip(M · a, 0, 1):
+10−3 ) using a batch size of 120 for 1000 epochs. The
+learning rate follows a multi-step schedule with milestones                       Iout = B · (1 − Aeff ) + c · Aeff .           (13)
+every 100 epochs, each decayed by a factor of 0.75. We               Color Prediction Module
+render each candidate stroke as a rasterized, disk-stamped
+footprint. Along the centerline—either a straight segment or            The palette tray physically contains 24 slots, while only
+a quadratic arc, depending on the absolute bend—we place             a task-specific subset of premixed colors is used in the
+N uniformly spaced centers and stamp filled circles at each          reported experiments, depending on the target painting. The
+center. The circle radius follows a force–to–width power law:        color patch database (partially shown in Fig. A3) stores
+                                                                     multiple measured patches per color/transparency condition.
+                     r(F ) = rmin + k F γ ,                  (12)    In the single-stroke trajectory following pipeline, we build
+                                                                     a difference mask S by thresholding base-target pixel dif-
+                                                                     ferences and obtain per-pixel weights wp from a distance
+                                                                     transform. In the multi-step planning pipeline, we obtain S
+                                                                     as the intersection between the foreground region of the pre-
+                                                                     rendered predicted stroke and a disk centered at the stroke’s
+                                                                     geometric center:
+                                                                                
+                                                                         S = p ∈ Ω Mpred (p) = 1 ∧ ∥p − c∥ ≤ r ,              (14)
+                                                                     where Mpred is the binary mask of the pre-rendered stroke,
+                                                                     c is its geometric center, and r is a chosen radius. The
+                                                                     representative color for the stroke is the weighted mean over
+                                                                     the mask,                P
+                                                                                                p∈S wp Op
+                                                                                      µ = P                  ∈ R3 ,           (15)
+          Fig. A1: The f/t sensor and the mounter.                                                p∈S wp
+                         Fig. A2: The neural network architecture for the pixel dynamics model.
+
+
+                                                               where we predict transparent if ratio < τ , with Bp the
+                                                               base image in linear RGB, ε > 0 for numerical safety, and
+                                                               threshold τ .
+
+                                                                                A PPENDIX C. P LANNING
+                                                               PCA-RANSAC multi-way splitter
+                                                                  The PCA–RANSAC multi-way splitter constructs K dis-
+                                                               joint stroke masks from the difference map Dt obtained from
+                                                               the base image It and the target image It+n . We segment
+                                                               Dt with k-means in a spatial feature space by embedding
+                                                               each pixel at [x/W, y/H] where (x, y) are image coordinates
+                                                               and W and H are image width and height. Each resulting
+                                                               segment is treated as a candidate group of stroke pixels.
+                                                               For every segment we compute a local PCA frame; letting
+      Fig. A3: A subset of the color patch database.           µ ∈ R2 be the segment mean and v0 , v1 ∈ R2 the principal
+                                                               directions, a pixel (x, y) is projected to (s, t) as
+                                                                                    ⊤
+                                                                                   s      v0
+                                                                                               [x, y]⊤ − µ .
+                                                                                                           
+   where Op is the target image in linear RGB at pixel p. We                          = ⊤                              (18)
+                                                                                   t      v1
+classify µ by nearest prototype in a 25 × 25 patch database
+(a subset is shown in Fig. A3) using the Mahalanobis metric.   We apply Random Sample Consensus (RANSAC) to robustly
+Covariances Σi for each label i are estimated from the         fit either a line t ≈ p s + q or a quadratic t ≈ p s2 + q s + r
+corresponding patch images:                                    to the (s, t) samples. The RANSAC inliers define a thin
+                                                               candidate mask. We select K non-overlapping strokes by
+ i⋆ = arg min (µ−µi )⊤ Σ−1
+                        i (µ−µi ),          C ⋆ = µi⋆ . (16)
+             i                                                 maximizing coverage of the unexplained region with penal-
+Transparency is decided by a simple ratio that compares the    ties on curvature and mutual overlap,
+median magnitude of the observed change to the palette-to-
+                                                                        score = cover − λb bend − λo overlap,            (19)
+base contrast for the selected color:
+                       medianp∈S ∥Op − Bp ∥1                   and thicken each selected mask into a single-connected
+          ratio =                                ,     (17)
+                     medianp∈S ∥C ⋆ − Bp ∥1 + ε                stroke via centerline seeding and constrained region growing,
+                          Fig. A4: Example visualizations produced by the PCA-RANSAC Splitter.
+
+
+yielding K heuristic initializations for the MPPI optimiza-
+tion. An example of the resulting visualization from the
+PCA-RANSAC Splitter is shown in Fig. A4.
+Stochastic Sampling with CMA-Style Adaptive Covariance
+   At each MPPI optimization iteration, we assemble a can-
+didate set by inserting the current nominal sequence U and
+drawing the remaining K−1 samples from a time-indexed
+Gaussian. Concretely, for each time index t we generate
+standard normal noise zt ∼ N (0, I), apply the current
+covariance structure via a Cholesky factor At of Σt , where
+Σt = At A⊤ t , and form perturbed controls
+
+                     Ũt = Ut + σt At zt .                 (20)
+The full sequences are clipped to action bounds. This yields
+a batch of candidates centered at U but shaped by (σt , Σt )
+at every timestep.
+   From all K candidates, we select the top Ke by terminal
+cost and compute temperature-weighted softmax weights
+with temperature β over the elite set. Using those weights,
+we update the nominal sequence via an exponential moving
+average (EMA) toward the elite mean and perform CMA-
+style per-timestep adaptation: the step-size path ps (t) updates
+σt , and the covariance path pc (t) together with a rank-µ term
+updates Σt .
+           A PPENDIX D. A DDITIONAL R ESULTS
+   For the complex paintings shown in the video, the robot
+follows the human artist step by step using CMA-ES to
+complete this artwork. Additional visualization results are
+shown in Fig. A5, A6, and A7, comparing human strokes
+with robot strokes.
+Fig. A5: IMPASTO is able to closely approximate a complex oil painting with 40 strokes (not all steps are shown).
+Fig. A6: IMPASTO is able to closely approximate a complex oil painting with 180 strokes (not all steps are shown).
+Fig. A7: IMPASTO is able to closely approximate a complex oil painting with 204 strokes (not all steps are shown).
+

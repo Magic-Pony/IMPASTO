@@ -1,0 +1,5 @@
+Copied from DeepMind MuJoCo Menagerie.
+Upstream repository: https://github.com/google-deepmind/mujoco_menagerie
+Pinned source commit: f054586a8e90465d49ee5be15335c4a0c7f57caf
+Model directory: franka_emika_panda
+The upstream LICENSE file is included in this directory.

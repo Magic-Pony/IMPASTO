@@ -8,5 +8,4 @@ build/
 data/
 outputs/
 *.part
-papers/IMPASTO_arxiv_2603.29315v1.pdf
 reports/stage1/serve.log
