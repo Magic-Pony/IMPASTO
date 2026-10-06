@@ -1,0 +1,43 @@
+{
+  "scope": "Stage 1 environment validation; preset strokes only, no learned model or MPC planner",
+  "seed": 202,
+  "single_stroke": {
+    "success": true,
+    "reason": "ok",
+    "force_acquired": true,
+    "target_force_N": 0.6,
+    "contact_samples": 397,
+    "force_samples": 397,
+    "force_mean_N": 1.2892906829407205,
+    "force_rmse_N": 0.6951219373630287,
+    "force_max_N": 1.4412780209206215,
+    "trajectory_rmse_m": 0.009712036944455726,
+    "wall_seconds": 2.6929224919986154
+  },
+  "multi_stroke_count": 8,
+  "multi_success_count": 8,
+  "all_stroke_count": 9,
+  "success_count": 9,
+  "contact_acquisition_rate": 1.0,
+  "success_rate": 1.0,
+  "mean_force_N": 1.242155178928388,
+  "mean_force_rmse_N": 0.6681195541664393,
+  "max_force_N": 1.74539071338385,
+  "mean_trajectory_rmse_m": 0.007608187278639828,
+  "deposited_pixels": 9948,
+  "multi_sim_time_s": 63.20400000003128,
+  "multi_wall_time_s_with_video": 17.341856314000324,
+  "simulation_realtime_factor_without_render_estimate": 3.6445925312508676,
+  "throughput": {
+    "count": 8,
+    "workers": 4,
+    "serial_wall_s": 3.560888904001331,
+    "parallel_wall_s": 1.2534047409990308,
+    "serial_strokes_per_s": 2.246630045382907,
+    "parallel_strokes_per_s": 6.382615079007577,
+    "speedup": 2.840972901668707,
+    "serial_success_rate": 1.0,
+    "parallel_success_rate": 1.0
+  },
+  "mujoco_version": "3.15.0"
+}

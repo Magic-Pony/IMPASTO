@@ -2,6 +2,9 @@
 <mujoco model="impasto_stage1">
   <compiler angle="radian" meshdir="../mujoco/franka_emika_panda/assets" autolimits="true" />
   <option integrator="implicitfast" timestep="0.002" iterations="50" />
+  <visual>
+    <global offwidth="1280" offheight="720" />
+  </visual>
   <default>
     <default class="panda">
       <material specular="0.5" shininess="0.25" />
@@ -259,7 +262,7 @@
                         <inertial mass="0.045" pos="0 0 0.16" diaginertia="0.00005 0.00005 0.00001" />
                         <geom name="brush_rod" type="capsule" fromto="0 0 0.02 0 0 0.30" size="0.006" material="brush_wood" contype="0" conaffinity="0" />
                         <geom name="brush_bristles" type="capsule" fromto="0 0 0.285 0 0 0.335" size="0.010" material="brush_bristle" contype="0" conaffinity="0" />
-                        <geom name="brush_tip" type="sphere" pos="0 0 0.345" size="0.010" material="brush_bristle" contype="1" conaffinity="1" friction="0.8 0.05 0.02" solimp="0.9 0.95 0.002" solref="0.008 1" />
+                        <geom name="brush_tip" type="sphere" pos="0 0 0.345" size="0.010" material="brush_bristle" contype="1" conaffinity="1" friction="0.8 0.05 0.02" solimp="0.3 0.5 0.05" solref="0.15 1" />
                         <site name="brush_tip_site" pos="0 0 0.345" size="0.006" rgba="1 0.1 0.1 1" type="sphere" />
                       </body>
                     </body>

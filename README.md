@@ -13,6 +13,18 @@ conda env create --prefix ./.conda --file environment.yml
 激活：`conda activate /home/lcy-pony/Draw_WS/IMPASTO/.conda`。
 推荐通过 `bash scripts/run.sh ...` 运行，避免本机 ROS 的 `PYTHONPATH` 污染独立环境。
 
+阶段 1 完整运行：
+
+```bash
+bash scripts/run.sh scripts/run_stage1.py
+```
+
+测试：
+
+```bash
+bash scripts/run.sh -m pytest -q
+```
+
 ## 文档与结果
 
 - [四阶段计划](docs/reproduction_plan.md)
