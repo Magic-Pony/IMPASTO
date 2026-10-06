@@ -88,3 +88,15 @@ def test_short_brush_stroke_keeps_contact_with_unscaled_newtons():
         assert np.isfinite(env.tool_wrench()).all()
     finally:
         env.close()
+
+
+def test_fast_workstation_transit_preserves_vertical_pose():
+    env = PaintingEnv(config())
+    try:
+        dip = env.dip_brush(0)
+        clean = env.clean_brush()
+        assert dip['duration_s'] < 6.0
+        assert clean['duration_s'] < 6.0
+        assert max(o.brush_tilt_deg for o in env.observations) < 1.0
+    finally:
+        env.close()

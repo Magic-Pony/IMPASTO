@@ -31,6 +31,7 @@ bash scripts/run.sh -m pytest -q
 - [论文一致性和替代假设](docs/fidelity.md)
 - [工具装配与场景审计](docs/scene_audit.md)
 - [本轮修正报告（含视频）](reports/scene_audit/report.md)
+- [取色与清洗加速对比](reports/workstation_speed/report.md)
 - [数据接口](docs/data_contract.md)
 - `papers/`：正文、附录、文本提取和来源清单。
 - `assets/`：机器人资源、许可证及场景。

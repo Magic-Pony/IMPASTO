@@ -288,6 +288,10 @@ def main():
         "multi_wall_time_s_with_video": multi_wall,
         "simulation_realtime_factor_without_render": float(plot_env.data.time/max(plot_wall, 1e-9)),
         "minimum_stroke_contact_fraction": float(min(r['contact_fraction'] for r in successful)),
+        "workstation_dip_mean_s": float(np.mean([r['duration_s'] for r in plot_env.workstation_results if r['phase'] == 'DIP'])),
+        "workstation_dip_max_s": float(np.max([r['duration_s'] for r in plot_env.workstation_results if r['phase'] == 'DIP'])),
+        "workstation_clean_mean_s": float(np.mean([r['duration_s'] for r in plot_env.workstation_results if r['phase'] == 'CLEAN'])),
+        "workstation_clean_max_s": float(np.max([r['duration_s'] for r in plot_env.workstation_results if r['phase'] == 'CLEAN'])),
         "throughput": throughput_metrics,
         "mujoco_version": __import__("mujoco").__version__,
     }
@@ -310,6 +314,8 @@ def main():
 | 接触力获取率 | {metrics['contact_acquisition_rate']:.3f} |
 | 笔画成功率 | {metrics['success_rate']:.3f} |
 | 各笔最低接触比例 | {metrics['minimum_stroke_contact_fraction']:.3f} |
+| 平均取色 / 最大取色时间 | {metrics['workstation_dip_mean_s']:.2f} / {metrics['workstation_dip_max_s']:.2f} s |
+| 平均清洗 / 最大清洗时间 | {metrics['workstation_clean_mean_s']:.2f} / {metrics['workstation_clean_max_s']:.2f} s |
 | 平均刷尖/画布接触力 | {metrics['mean_force_N']:.3f} N |
 | 平均法向力 RMSE | {metrics['mean_force_rmse_N']:.3f} N |
 | 运笔阶段法向力标准差 | {metrics['mean_force_std_N']:.3f} N |

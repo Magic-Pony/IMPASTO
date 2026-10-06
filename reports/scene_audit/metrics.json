@@ -20,7 +20,19 @@
     "camera_height": 540,
     "render_fps": 24,
     "notes": "Paper robot family, 18x21 inch canvas, 24 wells, short 50 mm brush and Fig. A1 mount structure. Unpublished assembly dimensions estimated locally. Axial spring brush and continuous height-feedback force servo are simulation approximations.",
-    "stroke_force_speed_limit": 0.008
+    "stroke_force_speed_limit": 0.008,
+    "workstation_motion": {
+      "clearance_m": 0.025,
+      "travel_speed_m_s": 0.45,
+      "vertical_speed_m_s": 0.25,
+      "insertion_speed_m_s": 0.09,
+      "acceleration_m_s2": 0.6,
+      "settle_timeout_s": 0.8,
+      "dip_hold_s": 0.1,
+      "clean_hold_s": 0.3,
+      "vertical_acceleration_m_s2": 0.6,
+      "travel_acceleration_m_s2": 0.6
+    }
   },
   "static_workstations": [
     {
@@ -253,440 +265,488 @@
     {
       "phase": "DIP",
       "geom": "well_00",
-      "time": 12.500000000000844,
-      "xy_error_m": 3.050637887676312e-05,
-      "immersion_m": 0.005046872532460112,
-      "tilt_deg": 0.0028760622084949656,
-      "success": true
+      "time": 3.399999999999847,
+      "xy_error_m": 2.345324703424477e-05,
+      "immersion_m": 0.005122830734834188,
+      "tilt_deg": 0.009061525709015214,
+      "success": true,
+      "duration_s": 4.075999999999773
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 26.715999999996072,
-      "xy_error_m": 2.6546256666802944e-05,
-      "immersion_m": 0.015044788007002444,
-      "tilt_deg": 0.0027408300312562776,
-      "success": true
+      "time": 8.631999999999552,
+      "xy_error_m": 1.9181823439302057e-05,
+      "immersion_m": 0.015124108814428341,
+      "tilt_deg": 0.00778826897996097,
+      "success": true,
+      "duration_s": 5.232000000000005
     },
     {
       "phase": "DIP",
       "geom": "well_01",
-      "time": 40.3920000000034,
-      "xy_error_m": 2.984222985151758e-05,
-      "immersion_m": 0.0050475188702509,
-      "tilt_deg": 0.0030242432961385722,
-      "success": true
+      "time": 13.644000000001226,
+      "xy_error_m": 2.12149091501993e-05,
+      "immersion_m": 0.005122320086809129,
+      "tilt_deg": 0.008566363191931027,
+      "success": true,
+      "duration_s": 5.012000000001674
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 54.568000000020724,
-      "xy_error_m": 2.6386439800376274e-05,
-      "immersion_m": 0.015044803557757072,
-      "tilt_deg": 0.0027249449566663134,
-      "success": true
+      "time": 18.856000000000428,
+      "xy_error_m": 1.921534238984114e-05,
+      "immersion_m": 0.015124276998127309,
+      "tilt_deg": 0.007799572925363499,
+      "success": true,
+      "duration_s": 5.211999999998602
     },
     {
       "phase": "DIP",
       "geom": "well_02",
-      "time": 68.22000000002241,
-      "xy_error_m": 2.847613194523749e-05,
-      "immersion_m": 0.0050467638160430345,
-      "tilt_deg": 0.0030727530592607063,
-      "success": true
+      "time": 23.855999999997657,
+      "xy_error_m": 1.968151940965132e-05,
+      "immersion_m": 0.005121855602259862,
+      "tilt_deg": 0.008062239338533613,
+      "success": true,
+      "duration_s": 4.999999999997229
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 82.37199999998943,
-      "xy_error_m": 2.6502423900401537e-05,
-      "immersion_m": 0.015044792464019824,
-      "tilt_deg": 0.0027364636093565146,
-      "success": true
+      "time": 29.055999999994775,
+      "xy_error_m": 1.9188832288919438e-05,
+      "immersion_m": 0.0151241735974664,
+      "tilt_deg": 0.007794227467859453,
+      "success": true,
+      "duration_s": 5.199999999997118
     },
     {
       "phase": "DIP",
       "geom": "well_03",
-      "time": 96.00799999995765,
-      "xy_error_m": 2.66927781091633e-05,
-      "immersion_m": 0.005045368457076843,
-      "tilt_deg": 0.0030986933221170644,
-      "success": true
+      "time": 34.047999999995646,
+      "xy_error_m": 1.8870090466538632e-05,
+      "immersion_m": 0.005121694416453826,
+      "tilt_deg": 0.007554121971302877,
+      "success": true,
+      "duration_s": 4.992000000002072
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 110.1439999999247,
-      "xy_error_m": 2.6372727594135184e-05,
-      "immersion_m": 0.015046248511348642,
-      "tilt_deg": 0.0028011794197564093,
-      "success": true
+      "time": 39.24000000000199,
+      "xy_error_m": 1.9218702013237375e-05,
+      "immersion_m": 0.015124255495505654,
+      "tilt_deg": 0.0078004026446172785,
+      "success": true,
+      "duration_s": 5.192000000006345
     },
     {
       "phase": "DIP",
       "geom": "well_04",
-      "time": 123.77999999989292,
-      "xy_error_m": 2.425700362340019e-05,
-      "immersion_m": 0.00504493694031545,
-      "tilt_deg": 0.0031623839248731828,
-      "success": true
+      "time": 44.23200000000809,
+      "xy_error_m": 1.8652192552148922e-05,
+      "immersion_m": 0.005121322628861252,
+      "tilt_deg": 0.007007494696878332,
+      "success": true,
+      "duration_s": 4.992000000006101
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 137.91599999993042,
-      "xy_error_m": 2.646065867181554e-05,
-      "immersion_m": 0.01504624061383282,
-      "tilt_deg": 0.0028100963179650985,
-      "success": true
+      "time": 49.42000000001443,
+      "xy_error_m": 1.8058604684188997e-05,
+      "immersion_m": 0.015121825247165557,
+      "tilt_deg": 0.007568510182479267,
+      "success": true,
+      "duration_s": 5.18800000000634
     },
     {
       "phase": "DIP",
       "geom": "well_05",
-      "time": 151.5679999999956,
-      "xy_error_m": 2.147590122720684e-05,
-      "immersion_m": 0.005044158794805964,
-      "tilt_deg": 0.003253498816127254,
-      "success": true
+      "time": 54.42000000002054,
+      "xy_error_m": 1.8963690149261936e-05,
+      "immersion_m": 0.005121030621932435,
+      "tilt_deg": 0.006420258384576463,
+      "success": true,
+      "duration_s": 5.000000000006111
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 165.72000000006318,
-      "xy_error_m": 2.6481635006692644e-05,
-      "immersion_m": 0.015046238874486847,
-      "tilt_deg": 0.0028122381176882362,
-      "success": true
+      "time": 59.6200000000269,
+      "xy_error_m": 1.928758172854006e-05,
+      "immersion_m": 0.015124462903362959,
+      "tilt_deg": 0.007815577988558066,
+      "success": true,
+      "duration_s": 5.200000000006355
     },
     {
       "phase": "DIP",
       "geom": "well_06",
-      "time": 179.39600000012848,
-      "xy_error_m": 1.80073890513427e-05,
-      "immersion_m": 0.005043022721098592,
-      "tilt_deg": 0.0032995299574906855,
-      "success": true
+      "time": 64.63200000003077,
+      "xy_error_m": 1.9971994835217032e-05,
+      "immersion_m": 0.0051206881899823475,
+      "tilt_deg": 0.005762904634493113,
+      "success": true,
+      "duration_s": 5.012000000001471
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 193.57200000019617,
-      "xy_error_m": 2.6637492094464802e-05,
-      "immersion_m": 0.015046225008492092,
-      "tilt_deg": 0.0028281646056802614,
-      "success": true
+      "time": 69.84000000001863,
+      "xy_error_m": 1.7997346502161918e-05,
+      "immersion_m": 0.015121747569528068,
+      "tilt_deg": 0.0075663760189998465,
+      "success": true,
+      "duration_s": 5.207999999987862
     },
     {
       "phase": "DIP",
       "geom": "well_07",
-      "time": 207.28800000026166,
-      "xy_error_m": 1.4211220583014746e-05,
-      "immersion_m": 0.005041545421085883,
-      "tilt_deg": 0.003346747391200317,
-      "success": true
+      "time": 74.8720000000069,
+      "xy_error_m": 2.2214672799171225e-05,
+      "immersion_m": 0.0051201283704140205,
+      "tilt_deg": 0.004999118906590059,
+      "success": true,
+      "duration_s": 5.0319999999882725
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 221.50000000032952,
-      "xy_error_m": 2.6810423846825427e-05,
-      "immersion_m": 0.015046209897177767,
-      "tilt_deg": 0.0028459943574499344,
-      "success": true
+      "time": 80.09999999999472,
+      "xy_error_m": 1.7965009960288292e-05,
+      "immersion_m": 0.015121705595436144,
+      "tilt_deg": 0.007565095867860948,
+      "success": true,
+      "duration_s": 5.227999999987816
     },
     {
       "phase": "DIP",
       "geom": "well_08",
-      "time": 234.92800000039364,
-      "xy_error_m": 2.9571228949254234e-05,
-      "immersion_m": 0.005046513169132405,
-      "tilt_deg": 0.00246553953322123,
-      "success": true
+      "time": 84.98399999998334,
+      "xy_error_m": 2.4336989944020592e-05,
+      "immersion_m": 0.005122549375565583,
+      "tilt_deg": 0.009322611309441871,
+      "success": true,
+      "duration_s": 4.8839999999886174
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 248.85600000046014,
-      "xy_error_m": 2.6002336927277916e-05,
-      "immersion_m": 0.01504484140081723,
-      "tilt_deg": 0.002687255366087513,
-      "success": true
+      "time": 90.07199999997148,
+      "xy_error_m": 1.9154416213327482e-05,
+      "immersion_m": 0.015123974192138026,
+      "tilt_deg": 0.007777968782678373,
+      "success": true,
+      "duration_s": 5.087999999988142
     },
     {
       "phase": "DIP",
       "geom": "well_09",
-      "time": 262.24400000052407,
-      "xy_error_m": 2.9326077402027845e-05,
-      "immersion_m": 0.005047015401331761,
-      "tilt_deg": 0.002620827837093567,
-      "success": true
+      "time": 94.93999999996014,
+      "xy_error_m": 2.0919892492024286e-05,
+      "immersion_m": 0.0051210874763646524,
+      "tilt_deg": 0.008758204952722387,
+      "success": true,
+      "duration_s": 4.867999999988655
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 276.1320000005904,
-      "xy_error_m": 2.5881895334868767e-05,
-      "immersion_m": 0.01504485379788846,
-      "tilt_deg": 0.002675588076919823,
-      "success": true
+      "time": 100.00799999994832,
+      "xy_error_m": 1.9173983506717864e-05,
+      "immersion_m": 0.015124062397063334,
+      "tilt_deg": 0.007784544107212978,
+      "success": true,
+      "duration_s": 5.067999999988189
     },
     {
       "phase": "DIP",
       "geom": "well_10",
-      "time": 289.4920000006542,
-      "xy_error_m": 2.8439711172661413e-05,
-      "immersion_m": 0.005046311678835999,
-      "tilt_deg": 0.0026893302026164806,
-      "success": true
+      "time": 104.85999999993702,
+      "xy_error_m": 2.065912998414254e-05,
+      "immersion_m": 0.00512395980679102,
+      "tilt_deg": 0.008555138364989032,
+      "success": true,
+      "duration_s": 4.851999999988692
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 303.35200000072035,
-      "xy_error_m": 2.6008266111416247e-05,
-      "immersion_m": 0.015044841067883244,
-      "tilt_deg": 0.002687834160325572,
-      "success": true
+      "time": 109.91199999992524,
+      "xy_error_m": 1.9206647787805983e-05,
+      "immersion_m": 0.01512424586003297,
+      "tilt_deg": 0.007797046450440473,
+      "success": true,
+      "duration_s": 5.051999999988226
     },
     {
       "phase": "DIP",
       "geom": "well_11",
-      "time": 316.69600000078407,
-      "xy_error_m": 2.70759415271299e-05,
-      "immersion_m": 0.005045063204606209,
-      "tilt_deg": 0.00272729074592411,
-      "success": true
+      "time": 114.75999999991394,
+      "xy_error_m": 1.9320960521709782e-05,
+      "immersion_m": 0.005123398261989126,
+      "tilt_deg": 0.008024988840143282,
+      "success": true,
+      "duration_s": 4.847999999988701
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 330.54000000085017,
-      "xy_error_m": 2.6193734822483065e-05,
-      "immersion_m": 0.015044822630363733,
-      "tilt_deg": 0.0027059444892023592,
-      "success": true
+      "time": 119.80799999990218,
+      "xy_error_m": 1.9223427520944565e-05,
+      "immersion_m": 0.015124301157421222,
+      "tilt_deg": 0.007801797273122651,
+      "success": true,
+      "duration_s": 5.047999999988235
     },
     {
       "phase": "DIP",
       "geom": "well_12",
-      "time": 343.8840000009139,
-      "xy_error_m": 2.4963223174052777e-05,
-      "immersion_m": 0.005044772587582985,
-      "tilt_deg": 0.0027927493228929938,
-      "success": true
+      "time": 124.65599999989088,
+      "xy_error_m": 1.8776686112374205e-05,
+      "immersion_m": 0.005123032837456215,
+      "tilt_deg": 0.007485974387346756,
+      "success": true,
+      "duration_s": 4.847999999988701
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 357.72800000098,
-      "xy_error_m": 2.6344981172102794e-05,
-      "immersion_m": 0.015044807895937692,
-      "tilt_deg": 0.0027208377050121917,
-      "success": true
+      "time": 129.7039999998912,
+      "xy_error_m": 1.920202835194665e-05,
+      "immersion_m": 0.015124220617703882,
+      "tilt_deg": 0.007798190331130866,
+      "success": true,
+      "duration_s": 5.048000000005132
     },
     {
       "phase": "DIP",
       "geom": "well_13",
-      "time": 371.0880000010438,
-      "xy_error_m": 2.248414221424994e-05,
-      "immersion_m": 0.005044134253650856,
-      "tilt_deg": 0.0028608291115654067,
-      "success": true
+      "time": 134.55599999991438,
+      "xy_error_m": 1.8775352778424365e-05,
+      "immersion_m": 0.005122754914419866,
+      "tilt_deg": 0.006917136829749092,
+      "success": true,
+      "duration_s": 4.852000000023168
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 384.94800000110996,
-      "xy_error_m": 2.6375777730306206e-05,
-      "immersion_m": 0.015044805084400578,
-      "tilt_deg": 0.0027238919973531224,
-      "success": true
+      "time": 139.6079999999385,
+      "xy_error_m": 1.9222628084638674e-05,
+      "immersion_m": 0.015124287056599114,
+      "tilt_deg": 0.007803624895723352,
+      "success": true,
+      "duration_s": 5.0520000000241225
     },
     {
       "phase": "DIP",
       "geom": "well_14",
-      "time": 398.3360000011739,
-      "xy_error_m": 1.9426021117699057e-05,
-      "immersion_m": 0.005043158790425772,
-      "tilt_deg": 0.0029227975330331597,
-      "success": true
+      "time": 144.47599999996174,
+      "xy_error_m": 1.9441918682592187e-05,
+      "immersion_m": 0.005122288590522384,
+      "tilt_deg": 0.00629260995260355,
+      "success": true,
+      "duration_s": 4.868000000023244
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 412.2240000012402,
-      "xy_error_m": 2.645874063774771e-05,
-      "immersion_m": 0.015044797238098234,
-      "tilt_deg": 0.002732129295394789,
-      "success": true
+      "time": 149.53999999998592,
+      "xy_error_m": 1.7982213497700728e-05,
+      "immersion_m": 0.01512173229350304,
+      "tilt_deg": 0.007564625981572865,
+      "success": true,
+      "duration_s": 5.06400000002418
     },
     {
       "phase": "DIP",
       "geom": "well_15",
-      "time": 425.6520000013043,
-      "xy_error_m": 1.5744957231131606e-05,
-      "immersion_m": 0.005041838959117445,
-      "tilt_deg": 0.0029613146000363917,
-      "success": true
+      "time": 154.42800000000926,
+      "xy_error_m": 2.0868978479088773e-05,
+      "immersion_m": 0.005121812788036667,
+      "tilt_deg": 0.005588183055174709,
+      "success": true,
+      "duration_s": 4.8880000000233395
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 439.5800000013708,
-      "xy_error_m": 2.660675078011473e-05,
-      "immersion_m": 0.015044783251336694,
-      "tilt_deg": 0.0027469042945643452,
-      "success": true
+      "time": 159.51200000003354,
+      "xy_error_m": 1.794490660252328e-05,
+      "immersion_m": 0.015121690530006004,
+      "tilt_deg": 0.00756358868845194,
+      "success": true,
+      "duration_s": 5.084000000024275
     },
     {
       "phase": "DIP",
       "geom": "well_16",
-      "time": 452.72000000143356,
-      "xy_error_m": 2.8828019470324274e-05,
-      "immersion_m": 0.0050460331576639705,
-      "tilt_deg": 0.002130531363473342,
-      "success": true
+      "time": 164.25200000005617,
+      "xy_error_m": 2.409775770016082e-05,
+      "immersion_m": 0.005121837514614716,
+      "tilt_deg": 0.009494307377963201,
+      "success": true,
+      "duration_s": 4.740000000022633
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 466.3600000014987,
-      "xy_error_m": 2.563643140797012e-05,
-      "immersion_m": 0.01504487917721302,
-      "tilt_deg": 0.002652013078836068,
-      "success": true
+      "time": 169.19600000007978,
+      "xy_error_m": 1.915779261645264e-05,
+      "immersion_m": 0.015123898121439536,
+      "tilt_deg": 0.007771085582614338,
+      "success": true,
+      "duration_s": 4.944000000023607
     },
     {
       "phase": "DIP",
       "geom": "well_17",
-      "time": 479.4560000015612,
-      "xy_error_m": 2.8767692821360243e-05,
-      "immersion_m": 0.005046051362668391,
-      "tilt_deg": 0.002256743721277007,
-      "success": true
+      "time": 173.91600000010231,
+      "xy_error_m": 2.2977044226108284e-05,
+      "immersion_m": 0.0051241535650554115,
+      "tilt_deg": 0.009284477320293657,
+      "success": true,
+      "duration_s": 4.720000000022537
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 493.05200000162614,
-      "xy_error_m": 2.5501514409326772e-05,
-      "immersion_m": 0.015044893339981644,
-      "tilt_deg": 0.0026391382193130804,
-      "success": true
+      "time": 178.84000000012583,
+      "xy_error_m": 1.9175562881853787e-05,
+      "immersion_m": 0.015124108591293026,
+      "tilt_deg": 0.007785396119918761,
+      "success": true,
+      "duration_s": 4.924000000023511
     },
     {
       "phase": "DIP",
       "geom": "well_18",
-      "time": 506.12000000168854,
-      "xy_error_m": 2.799543699925041e-05,
-      "immersion_m": 0.00504629844611551,
-      "tilt_deg": 0.002387528046551708,
-      "success": true
+      "time": 183.5440000001483,
+      "xy_error_m": 2.0404111437780905e-05,
+      "immersion_m": 0.005123217565408192,
+      "tilt_deg": 0.00874182839690587,
+      "success": true,
+      "duration_s": 4.704000000022461
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 519.6880000015348,
-      "xy_error_m": 2.5603911508011877e-05,
-      "immersion_m": 0.015044882650680172,
-      "tilt_deg": 0.002648883612795797,
-      "success": true
+      "time": 188.45200000017172,
+      "xy_error_m": 1.915612134275829e-05,
+      "immersion_m": 0.01512398872489297,
+      "tilt_deg": 0.007779306808602791,
+      "success": true,
+      "duration_s": 4.908000000023435
     },
     {
       "phase": "DIP",
       "geom": "well_19",
-      "time": 532.744000001226,
-      "xy_error_m": 2.7038864452385363e-05,
-      "immersion_m": 0.0050450806535239645,
-      "tilt_deg": 0.002425125369275781,
-      "success": true
+      "time": 193.14800000019414,
+      "xy_error_m": 1.8585539272586492e-05,
+      "immersion_m": 0.005122637541055797,
+      "tilt_deg": 0.008211316288208894,
+      "success": true,
+      "duration_s": 4.696000000022423
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 546.3000000009055,
-      "xy_error_m": 2.578669495824263e-05,
-      "immersion_m": 0.015044863945205308,
-      "tilt_deg": 0.0026664227151461423,
-      "success": true
+      "time": 198.04800000021754,
+      "xy_error_m": 1.9181140753078248e-05,
+      "immersion_m": 0.01512409851221215,
+      "tilt_deg": 0.007787663735662848,
+      "success": true,
+      "duration_s": 4.900000000023397
     },
     {
       "phase": "DIP",
       "geom": "well_20",
-      "time": 559.3560000005967,
-      "xy_error_m": 2.5263285098484082e-05,
-      "immersion_m": 0.005044863482135731,
-      "tilt_deg": 0.0024927398008474265,
-      "success": true
+      "time": 202.74800000023998,
+      "xy_error_m": 1.72322342294429e-05,
+      "immersion_m": 0.005121664625894667,
+      "tilt_deg": 0.007649211542943723,
+      "success": true,
+      "duration_s": 4.700000000022442
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 572.9120000002762,
-      "xy_error_m": 2.595195435582127e-05,
-      "immersion_m": 0.015044846971009829,
-      "tilt_deg": 0.002682358019376595,
-      "success": true
+      "time": 207.64800000026338,
+      "xy_error_m": 1.9197382458737175e-05,
+      "immersion_m": 0.015124174946419391,
+      "tilt_deg": 0.0077939602250061465,
+      "success": true,
+      "duration_s": 4.900000000023397
     },
     {
       "phase": "DIP",
       "geom": "well_21",
-      "time": 585.9799999999672,
-      "xy_error_m": 2.3028820075892885e-05,
-      "immersion_m": 0.0050443331618869325,
-      "tilt_deg": 0.002539196458916222,
-      "success": true
+      "time": 212.35600000028586,
+      "xy_error_m": 1.90396046786148e-05,
+      "immersion_m": 0.00512472365173558,
+      "tilt_deg": 0.007388386314016782,
+      "success": true,
+      "duration_s": 4.70800000002248
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 599.5479999996463,
-      "xy_error_m": 2.6031957313810626e-05,
-      "immersion_m": 0.015044839068916141,
-      "tilt_deg": 0.002690135763158032,
-      "success": true
+      "time": 217.2640000003093,
+      "xy_error_m": 1.9241879132526438e-05,
+      "immersion_m": 0.01512434938026673,
+      "tilt_deg": 0.007806368958923293,
+      "success": true,
+      "duration_s": 4.908000000023435
     },
     {
       "phase": "DIP",
       "geom": "well_22",
-      "time": 612.6439999993366,
-      "xy_error_m": 2.0383594976582408e-05,
-      "immersion_m": 0.005043480160278516,
-      "tilt_deg": 0.0025987057846022193,
-      "success": true
+      "time": 221.98800000033185,
+      "xy_error_m": 1.747615382700528e-05,
+      "immersion_m": 0.005120811458342256,
+      "tilt_deg": 0.0064997878002104326,
+      "success": true,
+      "duration_s": 4.724000000022556
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 626.2399999990151,
-      "xy_error_m": 2.604568311556048e-05,
-      "immersion_m": 0.015044837906050337,
-      "tilt_deg": 0.00269148374135936,
-      "success": true
+      "time": 226.91200000035536,
+      "xy_error_m": 1.9269238038676838e-05,
+      "immersion_m": 0.015124417942443721,
+      "tilt_deg": 0.007812208672847395,
+      "success": true,
+      "duration_s": 4.924000000023511
     },
     {
       "phase": "DIP",
       "geom": "well_23",
-      "time": 639.3799999987044,
-      "xy_error_m": 1.698433226297533e-05,
-      "immersion_m": 0.005042303073119481,
-      "tilt_deg": 0.0026277840796837993,
-      "success": true
+      "time": 231.65600000037801,
+      "xy_error_m": 1.8572135674304447e-05,
+      "immersion_m": 0.0051203756688069785,
+      "tilt_deg": 0.005844335926900633,
+      "success": true,
+      "duration_s": 4.744000000022652
     },
     {
       "phase": "CLEAN",
       "geom": "washer_water",
-      "time": 653.0199999983819,
-      "xy_error_m": 2.616490348808746e-05,
-      "immersion_m": 0.015044826199580738,
-      "tilt_deg": 0.0027031391851894374,
-      "success": true
+      "time": 236.5960000004016,
+      "xy_error_m": 1.791912221447999e-05,
+      "immersion_m": 0.015121673820875745,
+      "tilt_deg": 0.007561921002282894,
+      "success": true,
+      "duration_s": 4.940000000023588
     }
   ],
   "static_max_error_m": 4.8761198403350514e-05,
-  "dynamic_max_xy_error_m": 3.050637887676312e-05,
-  "dynamic_max_immersion_tilt_deg": 0.003346747391200317,
-  "all_movement_max_tilt_deg": 0.9574266868205444,
+  "dynamic_max_xy_error_m": 2.4336989944020592e-05,
+  "dynamic_max_immersion_tilt_deg": 0.009494307377963201,
+  "all_movement_max_tilt_deg": 0.9577709420998741,
   "unexpected_penetrations_over_0_5mm": [],
   "canvas_grid_5x5": [
     {
@@ -695,8 +755,8 @@
         -0.25,
         0.063
       ],
-      "position_error_m": 3.178598728080497e-05,
-      "tilt_deg": 0.00411693149191611
+      "position_error_m": 3.178598728045968e-05,
+      "tilt_deg": 0.004116931314859616
     },
     {
       "target_m": [
@@ -704,8 +764,8 @@
         -0.125,
         0.063
       ],
-      "position_error_m": 3.5433420055004565e-05,
-      "tilt_deg": 0.004253895471311071
+      "position_error_m": 3.543342005497173e-05,
+      "tilt_deg": 0.0042538956426668145
     },
     {
       "target_m": [
@@ -713,7 +773,7 @@
         0.0,
         0.063
       ],
-      "position_error_m": 3.355749576384135e-05,
+      "position_error_m": 3.3557495763798636e-05,
       "tilt_deg": 0.004244857993594065
     },
     {
@@ -722,7 +782,7 @@
         0.125,
         0.063
       ],
-      "position_error_m": 3.543342005508747e-05,
+      "position_error_m": 3.543342005464982e-05,
       "tilt_deg": 0.0042538956426668145
     },
     {
@@ -731,8 +791,8 @@
         0.25,
         0.063
       ],
-      "position_error_m": 3.178598728091087e-05,
-      "tilt_deg": 0.004116931846029075
+      "position_error_m": 3.178598728076401e-05,
+      "tilt_deg": 0.004116931668972596
     },
     {
       "target_m": [
@@ -740,8 +800,8 @@
         -0.25,
         0.063
       ],
-      "position_error_m": 2.611247786470341e-05,
-      "tilt_deg": 0.0038258136297246435
+      "position_error_m": 2.611247786500505e-05,
+      "tilt_deg": 0.0038258140107831446
     },
     {
       "target_m": [
@@ -749,8 +809,8 @@
         -0.125,
         0.063
       ],
-      "position_error_m": 4.881690347059922e-05,
-      "tilt_deg": 0.006574745939194452
+      "position_error_m": 4.881690347016655e-05,
+      "tilt_deg": 0.006574745828326374
     },
     {
       "target_m": [
@@ -758,8 +818,8 @@
         0.0,
         0.063
       ],
-      "position_error_m": 2.9262959148748274e-05,
-      "tilt_deg": 0.004024147762810337
+      "position_error_m": 2.9262959148602317e-05,
+      "tilt_deg": 0.004024147853379753
     },
     {
       "target_m": [
@@ -767,8 +827,8 @@
         0.125,
         0.063
       ],
-      "position_error_m": 4.8816903470232846e-05,
-      "tilt_deg": 0.006574745772892334
+      "position_error_m": 4.88169034704104e-05,
+      "tilt_deg": 0.006574745883760414
     },
     {
       "target_m": [
@@ -776,8 +836,8 @@
         0.25,
         0.063
       ],
-      "position_error_m": 2.6112477864803483e-05,
-      "tilt_deg": 0.0038258141060477638
+      "position_error_m": 2.6112477864650343e-05,
+      "tilt_deg": 0.0038258139155185234
     },
     {
       "target_m": [
@@ -785,8 +845,8 @@
         -0.25,
         0.063
       ],
-      "position_error_m": 1.9651773861872632e-05,
-      "tilt_deg": 0.0030012357569528885
+      "position_error_m": 1.9651773861468117e-05,
+      "tilt_deg": 0.0030012347854469937
     },
     {
       "target_m": [
@@ -794,7 +854,7 @@
         -0.125,
         0.063
       ],
-      "position_error_m": 4.984764051318726e-05,
+      "position_error_m": 4.984764051278001e-05,
       "tilt_deg": 0.008222925008836495
     },
     {
@@ -803,8 +863,8 @@
         0.0,
         0.063
       ],
-      "position_error_m": 2.9299983046932416e-05,
-      "tilt_deg": 0.004248088459643978
+      "position_error_m": 2.9299983046816057e-05,
+      "tilt_deg": 0.0042480880306689905
     },
     {
       "target_m": [
@@ -812,8 +872,8 @@
         0.125,
         0.063
       ],
-      "position_error_m": 4.9847640512982895e-05,
-      "tilt_deg": 0.008222925053159497
+      "position_error_m": 4.9847640513075344e-05,
+      "tilt_deg": 0.008222925008836495
     },
     {
       "target_m": [
@@ -821,8 +881,8 @@
         0.25,
         0.063
       ],
-      "position_error_m": 1.9651773861918193e-05,
-      "tilt_deg": 0.0030012358783911034
+      "position_error_m": 1.965177386187402e-05,
+      "tilt_deg": 0.003001235999829313
     },
     {
       "target_m": [
@@ -830,53 +890,53 @@
         -0.25,
         0.063
       ],
-      "position_error_m": 3.601788220781363e-05,
-      "tilt_deg": 0.003120233855379605
-    },
-    {
-      "target_m": [
-        0.605,
-        -0.125,
-        0.063
-      ],
-      "position_error_m": 1.195475585609846e-05,
-      "tilt_deg": 0.0014889163724347788
-    },
-    {
-      "target_m": [
-        0.605,
-        0.0,
-        0.063
-      ],
-      "position_error_m": 1.405774893146511e-05,
-      "tilt_deg": 0.0018579929115989256
-    },
-    {
-      "target_m": [
-        0.605,
-        0.125,
-        0.063
-      ],
-      "position_error_m": 1.1954755855951286e-05,
-      "tilt_deg": 0.001488915638078942
-    },
-    {
-      "target_m": [
-        0.605,
-        0.25,
-        0.063
-      ],
-      "position_error_m": 3.601788220760194e-05,
+      "position_error_m": 3.60178822074094e-05,
       "tilt_deg": 0.003120233621765876
     },
     {
       "target_m": [
+        0.605,
+        -0.125,
+        0.063
+      ],
+      "position_error_m": 1.1954755856216958e-05,
+      "tilt_deg": 0.0014889153932935828
+    },
+    {
+      "target_m": [
+        0.605,
+        0.0,
+        0.063
+      ],
+      "position_error_m": 1.4057748931359069e-05,
+      "tilt_deg": 0.0018579923231174923
+    },
+    {
+      "target_m": [
+        0.605,
+        0.125,
+        0.063
+      ],
+      "position_error_m": 1.1954755855983717e-05,
+      "tilt_deg": 0.0014889153932935828
+    },
+    {
+      "target_m": [
+        0.605,
+        0.25,
+        0.063
+      ],
+      "position_error_m": 3.6017882207557784e-05,
+      "tilt_deg": 0.0031202340889933166
+    },
+    {
+      "target_m": [
         0.71,
         -0.25,
         0.063
       ],
-      "position_error_m": 3.3839970772166665e-05,
-      "tilt_deg": 0.0023832283503099822
+      "position_error_m": 3.383997077239697e-05,
+      "tilt_deg": 0.002383227891522949
     },
     {
       "target_m": [
@@ -884,8 +944,8 @@
         -0.125,
         0.063
       ],
-      "position_error_m": 3.304375163715165e-05,
-      "tilt_deg": 0.0024662011025151373
+      "position_error_m": 3.3043751637333966e-05,
+      "tilt_deg": 0.0024662009547312728
     },
     {
       "target_m": [
@@ -893,8 +953,8 @@
         0.0,
         0.063
       ],
-      "position_error_m": 4.0738332571439465e-05,
-      "tilt_deg": 0.0034263880926987725
+      "position_error_m": 4.073833257178292e-05,
+      "tilt_deg": 0.0034263876672189584
     },
     {
       "target_m": [
@@ -902,8 +962,8 @@
         0.125,
         0.063
       ],
-      "position_error_m": 3.304375163749456e-05,
-      "tilt_deg": 0.0024662006591635163
+      "position_error_m": 3.3043751637259054e-05,
+      "tilt_deg": 0.0024662000680278975
     },
     {
       "target_m": [
@@ -911,8 +971,8 @@
         0.25,
         0.063
       ],
-      "position_error_m": 3.383997077264037e-05,
-      "tilt_deg": 0.002383228197380981
+      "position_error_m": 3.383997077233063e-05,
+      "tilt_deg": 0.00238322804445197
     }
   ],
   "stroke": {
@@ -923,16 +983,16 @@
     "contact_samples": 397,
     "force_samples": 397,
     "contact_fraction": 1.0,
-    "force_all_samples_rmse_N": 0.024846580503860793,
-    "force_mean_N": 0.5776640396098005,
-    "force_rmse_N": 0.024846580503860793,
-    "force_max_N": 0.5932519059008641,
-    "force_std_N": 0.010883815332054974,
-    "force_range_N": 0.03273327455710984,
-    "brush_tilt_mean_deg": 0.010162669192802792,
-    "brush_tilt_max_deg": 0.014693219785842713,
-    "trajectory_rmse_m": 0.002498205146049662,
-    "wall_seconds": 3.330483807993005
+    "force_all_samples_rmse_N": 0.024841787409427083,
+    "force_mean_N": 0.5776641844306859,
+    "force_rmse_N": 0.024841787409427083,
+    "force_max_N": 0.5932696052906874,
+    "force_std_N": 0.01087316626143272,
+    "force_range_N": 0.03274021922724146,
+    "brush_tilt_mean_deg": 0.007888556074905233,
+    "brush_tilt_max_deg": 0.012736676205533513,
+    "trajectory_rmse_m": 0.0025044074246812703,
+    "wall_seconds": 1.9951100409962237
   },
   "force_source": "unscaled brush/canvas contact; mount 6-axis sensor separately available",
   "dimensions_mm": {

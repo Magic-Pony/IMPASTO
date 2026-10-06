@@ -190,7 +190,7 @@ class PaintingEnv:
             q=self.data.qpos[:7].copy(),
         )
 
-    def step(self, target_xyz, phase=None, paint=True):
+    def step(self, target_xyz, phase=None, paint=True, velocity_feedforward=False):
         target_xyz = np.asarray(target_xyz, dtype=float)
         if phase:
             self._set_phase(phase)
@@ -202,6 +202,13 @@ class PaintingEnv:
         )
         self.last_q_target = q_target.copy()
         self.data.ctrl[:7] = q_target
+        if velocity_feedforward:
+            # Compensate the position actuators' velocity damping during free
+            # space moves: K*(q_ref-q) - D*qdot + D*qdot_ref. Painting keeps
+            # its separately validated servo and normal-force controller.
+            stiffness = self.model.actuator_gainprm[:7, 0]
+            damping = -self.model.actuator_biasprm[:7, 2]
+            self.data.ctrl[:7] += (damping / stiffness) * target_qvel
         # The Menagerie model's high-gain general actuators provide the Panda
         # servo behavior; this bounded Cartesian-to-joint correction removes
         # the small gravity/friction steady-state error that otherwise matters
@@ -228,17 +235,26 @@ class PaintingEnv:
         self.observations.append(obs)
         return obs
 
-    def move_linear(self, xyz, phase="MOVE", speed=.30, render_hook=None, paint=False):
+    def move_linear(self, xyz, phase="MOVE", speed=.30, render_hook=None, paint=False,
+                    acceleration=None, velocity_feedforward=False):
         start = self.tip_position()
         xyz = np.asarray(xyz, dtype=float)
         # Cubic time scaling starts/stops at zero velocity. Its peak derivative
         # is 1.5, included in duration so speed remains an actual upper bound.
-        duration = 1.5 * float(np.linalg.norm(xyz - start)) / max(speed, .005)
+        distance = float(np.linalg.norm(xyz - start))
+        duration = 1.5 * distance / max(speed, .005)
+        if acceleration is not None:
+            # Quintic time scaling has zero velocity AND acceleration at both
+            # ends. Bound its peak speed and acceleration for fast transfers.
+            duration = max(1.875 * distance / max(speed, .005),
+                           np.sqrt(5.773503 * distance / acceleration))
         n = max(1, int(np.ceil(duration / self.dt)))
         for i in range(1, n + 1):
             u = i / n
-            p = u * u * (3 - 2 * u)
-            obs = self.step(start * (1-p) + xyz * p, phase=phase, paint=paint)
+            p = (u**3 * (10 - 15*u + 6*u*u) if acceleration is not None
+                 else u * u * (3 - 2 * u))
+            obs = self.step(start * (1-p) + xyz * p, phase=phase, paint=paint,
+                            velocity_feedforward=velocity_feedforward)
             if render_hook:
                 render_hook(self, obs)
         return self.tip_position()
@@ -365,14 +381,51 @@ class PaintingEnv:
             if render_hook:
                 render_hook(self, obs)
 
+    def _station_option(self, name, default):
+        return float(self.config.get("workstation_motion", {}).get(name, default))
+
+    def workstation_clearance_height(self):
+        # Scene-derived height clears the tallest rim plus the contact radius.
+        rims = [self.model.geom(i).id for i in range(self.model.ngeom)
+                if (self.model.geom(i).name or "").startswith(
+                    ("washer_wall_", "palette_divider_", "canvas_surface"))]
+        top = max(self.data.geom_xpos[g, 2] + self.model.geom_size[g, 2] for g in rims)
+        return float(top + self.model.geom_size[self.tip_geom, 0]
+                     + self._station_option("clearance_m", .025))
+
+    def _station_move(self, target, phase, speed, render_hook, acceleration=None):
+        if np.linalg.norm(self.tip_position() - target) < .0001:
+            return
+        self.move_linear(target, phase, speed, render_hook,
+                         acceleration=(self._station_option("acceleration_m_s2", .6)
+                                       if acceleration is None else acceleration),
+                         velocity_feedforward=True)
+
+    def _settle_above_station(self, target, phase, render_hook):
+        # Wait for measured alignment only when the faster transit needs it.
+        for _ in range(int(np.ceil(self._station_option("settle_timeout_s", .8) / self.dt))):
+            speed = float(np.linalg.norm(self.data.qvel[:7]))
+            if (np.linalg.norm(self.tip_position() - target) < .001
+                    and self.brush_tilt_deg() < .7 and speed < .12):
+                return
+            self._hold(target, self.dt, phase, render_hook)
+        raise RuntimeError("Workstation transit did not settle before insertion")
+
     def _transfer_above(self, target, phase, render_hook=None):
-        # Lift at the current XY before crossing the canvas or container rims.
         current = self.tip_position()
-        safe_z = max(.18, float(current[2]))
-        self.move_linear([*current[:2], safe_z], phase + "_LIFT", .12, render_hook)
-        self.move_linear([*target[:2], safe_z], phase, .18, render_hook)
-        self.move_linear([*target[:2], .18], phase + "_ALIGN", .10, render_hook)
-        self._hold([*target[:2], .18], .20, phase + "_SETTLE", render_hook)
+        safe_z = self.workstation_clearance_height()
+        above = np.r_[target[:2], safe_z]
+        # A low pose lifts clear of rims first. A high initial home pose can
+        # take a direct free-space segment whose entire path is above safe_z.
+        if current[2] < safe_z - .0001:
+            self._station_move(np.r_[current[:2], safe_z], phase + "_HEIGHT",
+                               self._station_option("vertical_speed_m_s", .25), render_hook,
+                               self._station_option("vertical_acceleration_m_s2", .6))
+        self._station_move(above, phase,
+                           self._station_option("travel_speed_m_s", .45), render_hook,
+                           self._station_option("travel_acceleration_m_s2", .6))
+        self._settle_above_station(above, phase + "_SETTLE", render_hook)
+        return above
 
     def _verify_immersion(self, geom, phase):
         pos = self.data.geom_xpos[geom]
@@ -394,25 +447,31 @@ class PaintingEnv:
         return result
 
     def dip_brush(self, color, render_hook=None):
+        started = float(self.data.time)
         target = self.palette_target(color)
-        self._transfer_above(target, "MOVE_TO_PALETTE", render_hook)
-        self.move_linear(target, "DIP", .035, render_hook)
-        self._hold(target, .30, "DIP_HOLD", render_hook)
+        above = self._transfer_above(target, "MOVE_TO_PALETTE", render_hook)
+        self._station_move(target, "DIP", self._station_option("insertion_speed_m_s", .09), render_hook)
+        self._hold(target, self._station_option("dip_hold_s", .10), "DIP_HOLD", render_hook)
         result = self._verify_immersion(self.palette_well_geoms[int(color)], "DIP")
         self.brush.dip(color)
-        self.move_linear([*target[:2], .18], "DIP_RETRACT", .08, render_hook)
+        self._station_move(above, "DIP_RETRACT", self._station_option("vertical_speed_m_s", .25), render_hook,
+                           self._station_option("vertical_acceleration_m_s2", .6))
+        result["duration_s"] = float(self.data.time) - started
         self._set_phase("IDLE")
         return result
 
     def clean_brush(self, render_hook=None):
+        started = float(self.data.time)
         target = self.washer_target()
-        self._transfer_above(target, "MOVE_TO_CLEANER", render_hook)
-        self.move_linear(target, "CLEAN", .035, render_hook)
+        above = self._transfer_above(target, "MOVE_TO_CLEANER", render_hook)
+        self._station_move(target, "CLEAN", self._station_option("insertion_speed_m_s", .09), render_hook)
         # The paper's cleaner rotates water; hold the brush vertical and still.
-        self._hold(target, .80, "CLEAN_SPIN", render_hook, spin=True)
+        self._hold(target, self._station_option("clean_hold_s", .30), "CLEAN_SPIN", render_hook, spin=True)
         result = self._verify_immersion(self.washer_water_geom, "CLEAN")
         self.brush.clean()
-        self.move_linear([*target[:2], .18], "CLEAN_RETRACT", .08, render_hook)
+        self._station_move(above, "CLEAN_RETRACT", self._station_option("vertical_speed_m_s", .25), render_hook,
+                           self._station_option("vertical_acceleration_m_s2", .6))
+        result["duration_s"] = float(self.data.time) - started
         self._set_phase("IDLE")
         return result
 

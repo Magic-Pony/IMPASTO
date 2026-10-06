@@ -19,5 +19,17 @@
   "camera_height": 540,
   "render_fps": 24,
   "notes": "Paper robot family, 18x21 inch canvas, 24 wells, short 50 mm brush and Fig. A1 mount structure. Unpublished assembly dimensions estimated locally. Axial spring brush and continuous height-feedback force servo are simulation approximations.",
-  "stroke_force_speed_limit": 0.008
+  "stroke_force_speed_limit": 0.008,
+  "workstation_motion": {
+    "clearance_m": 0.025,
+    "travel_speed_m_s": 0.45,
+    "vertical_speed_m_s": 0.25,
+    "insertion_speed_m_s": 0.09,
+    "acceleration_m_s2": 0.6,
+    "settle_timeout_s": 0.8,
+    "dip_hold_s": 0.10,
+    "clean_hold_s": 0.30,
+    "vertical_acceleration_m_s2": 0.6,
+    "travel_acceleration_m_s2": 0.6
+  }
 }

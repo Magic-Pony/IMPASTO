@@ -17,6 +17,19 @@ def main():
     assert cfg == a['config'], 'Audit must be rerun for the current configuration'
     assert s['minimum_stroke_contact_fraction'] > .99
     assert not a['unexpected_penetrations_over_0_5mm']
+    speed_path = ROOT / 'reports/workstation_speed/metrics.json'
+    speed_md = speed_html = ''
+    if speed_path.exists():
+        speed = json.loads(speed_path.read_text())
+        assert speed['after']['config'] == cfg, 'Rerun the timing comparison for this configuration'
+        timing_rows = [(label, speed['summary'][mode]) for mode, label in [('dip', '取色'), ('clean', '清洗')]]
+        speed_md = ('## 取色与清洗加速\n\n相同四角工位序列，含移位、浸入、停留和抬笔；以仿真秒计。\n\n'
+                    '|动作|原耗时均值|当前耗时均值|减少|\n|---|---:|---:|---:|\n'
+                    + '\n'.join(f"|{label}|{r['before_mean_s']:.2f} s|{r['after_mean_s']:.2f} s|{r['reduction_percent']:.1f}%|" for label, r in timing_rows)
+                    + '\n\n[加速对比与原始数据](../workstation_speed/report.md)\n')
+        speed_html = ('<section class="panel"><h2>取色与清洗已加速</h2><p>相同四角工位序列，包含移位、浸入、停留和抬笔。录像保持正常播放速度。</p><table>'
+                      + ''.join(f"<tr><td>{label}</td><td>{r['before_mean_s']:.2f} → {r['after_mean_s']:.2f} s</td><td>减少 {r['reduction_percent']:.1f}%</td></tr>" for label, r in timing_rows)
+                      + '</table><p>缩短空中路径，以速度前馈改善快速移动的姿态跟踪，并按实测状态确认到位。浸入停留时间属于简化仿真的参数。</p></section>')
     # Side elevation of the local assembly, all coordinates in mm from hand.
     fig, ax = plt.subplots(figsize=(9, 7), constrained_layout=True)
     pieces = [(-25,83,50,24,'#aab1b9','Grasping block: 50 x 36 x 24'),
@@ -48,6 +61,7 @@ def main():
 调色盘与水盆分别放在画布两侧，目标位置从场景几何读取，采用竖直进入与平滑换位。'''
     rows = [
         ('蘸漆 / 清洗实际验证','24 / 24 次，各全部成功'),
+        ('最大取色 / 清洗时间',f"{max(r['duration_s'] for r in a['dynamic_visits'] if r['phase'] == 'DIP'):.2f} / {max(r['duration_s'] for r in a['dynamic_visits'] if r['phase'] == 'CLEAN'):.2f} s"),
         ('工位最大静态 IK 误差',f"{a['static_max_error_m']*1000:.3f} mm"),
         ('浸入时最大 XY 误差',f"{a['dynamic_max_xy_error_m']*1000:.3f} mm"),
         ('整个路径最大刷杆倾角',f"{a['all_movement_max_tilt_deg']:.3f}°"),
@@ -66,6 +80,8 @@ def main():
     md = f'''# IMPASTO：短笔装配与工位布局修正
 
 {summary}
+
+{speed_md}
 
 ![工具近景](tool_closeup.png)
 
@@ -106,6 +122,7 @@ def main():
     html = f'''<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>IMPASTO · 工具与场景修正</title><style>
 body{{margin:0;background:#f1f2ee;color:#202d32;font:17px/1.75 system-ui,sans-serif}}main{{max-width:1120px;margin:0 auto;padding:42px 24px}}h1{{font-size:34px;line-height:1.35}}h2{{margin:32px 0 14px}}p{{white-space:pre-line}}.tag{{color:#34786f;font-weight:700;letter-spacing:2px}}.panel{{background:white;padding:24px;border-radius:14px;margin:20px 0}}.grid{{display:grid;grid-template-columns:1fr 1fr;gap:20px}}img,video{{max-width:100%;display:block;border-radius:6px}}video{{background:#18222a;width:100%}}figure{{margin:0}}figcaption{{font-size:14px;color:#667;padding:8px 0}}table{{border-collapse:collapse;width:100%}}td{{padding:8px 12px;border-bottom:1px solid #ddd}}td:last-child{{text-align:right;font-variant-numeric:tabular-nums}}a{{color:#24677e}}@media(max-width:760px){{.grid{{grid-template-columns:1fr}}h1{{font-size:27px}}}}
 </style><main><span class="tag">IMPASTO / LOCAL SIMULATION</span><h1>短笔装配与工位布局修正</h1><p>{summary}</p>
+{speed_html}
 <div class="grid"><figure><img src="tool_closeup.png"><figcaption>实际 MuJoCo 工具近景</figcaption></figure><figure><img src="tool_dimensions.png"><figcaption>本地估计尺寸（非作者 CAD）</figcaption></figure></div>
 <section class="panel"><h2>实际验收结果</h2><table>{trs}</table></section>
 <div class="grid"><figure><img src="dip_closeup.png"><figcaption>笔尖竖直浸入颜料</figcaption></figure><figure><img src="clean_closeup.png"><figcaption>笔尖竖直浸入水面，旋转器运动</figcaption></figure></div>
