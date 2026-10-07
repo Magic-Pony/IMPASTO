@@ -83,6 +83,9 @@ def test_short_brush_stroke_keeps_contact_with_unscaled_newtons():
         assert result['force_all_samples_rmse_N'] < .08
         assert result['force_std_N'] < .05
         assert result['trajectory_rmse_m'] < .003
+        assert result['force_acquisition_duration_s'] < 2.0
+        assert result['first_contact_delay_s'] < .6
+        assert result['contact_to_stroke_s'] < 1.0
         assert env.normal_force() == env.normal_force_raw()
         assert env.tool_wrench().shape == (6,)
         assert np.isfinite(env.tool_wrench()).all()

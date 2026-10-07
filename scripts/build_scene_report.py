@@ -21,7 +21,10 @@ def main():
     speed_md = speed_html = ''
     if speed_path.exists():
         speed = json.loads(speed_path.read_text())
-        assert speed['after']['config'] == cfg, 'Rerun the timing comparison for this configuration'
+        motion_keys = ('timestep', 'control_decimation', 'joint_position_gain',
+                       'joint_velocity_gain', 'gravity_compensation', 'workstation_motion')
+        assert all(speed['after']['config'].get(k) == cfg.get(k) for k in motion_keys), \
+            'Rerun the timing comparison after changing workstation motion settings'
         timing_rows = [(label, speed['summary'][mode]) for mode, label in [('dip', '取色'), ('clean', '清洗')]]
         speed_md = ('## 取色与清洗加速\n\n相同四角工位序列，含移位、浸入、停留和抬笔；以仿真秒计。\n\n'
                     '|动作|原耗时均值|当前耗时均值|减少|\n|---|---:|---:|---:|\n'
@@ -70,6 +73,7 @@ def main():
         ('单笔 + 多笔绘画',f"{s['success_count']}/{s['all_stroke_count']} 成功，各笔全程接触"),
         ('9 笔平均力 RMSE',f"{s['mean_force_rmse_N']:.3f} N"),
         ('9 笔平均力标准差',f"{s['mean_force_std_N']:.3f} N"),
+        ('平均接触后起笔等待',f"{s['mean_contact_to_stroke_s']:.2f} s"),
         ('9 笔平均轨迹 RMSE',f"{s['mean_trajectory_rmse_m']*1000:.2f} mm"),
         ('无录像的仿真 / 墙钟时间比',f"{s['simulation_realtime_factor_without_render']:.2f}×"),
         ('4 进程吞吐 / 串行加速',f"{s['throughput']['parallel_strokes_per_s']:.2f} 笔/s / {s['throughput']['speedup']:.2f}×")]
@@ -112,6 +116,7 @@ def main():
 - [逐项论文核对](../../docs/scene_audit.md)
 - [工位与单笔原始数值](metrics.json)
 - [力曲线 CSV](force_trace.csv)
+- [逐笔起笔时序 CSV](../stage1/data/stroke_start_timing.csv)
 - [阶段 1 综合数值](../stage1/metrics.json)
 - [阶段 1 完整报告](../stage1/report.md)
 

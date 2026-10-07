@@ -265,6 +265,17 @@ def main():
     all_results = single_results + results
     contact = [r for r in all_results if r.get("force_acquired")]
     successful = [r for r in all_results if r.get("success")]
+    start_timing_rows = [
+        [i, stroke.force, result.get("approach_duration_s"),
+         result.get("force_acquisition_duration_s"), result.get("first_contact_delay_s"),
+         result.get("contact_to_stroke_s"), result.get("peak_acquisition_force_N")]
+        for i, (stroke, result) in enumerate(zip(
+            [Stroke(-.06, -.04, .07, .012, .1, .60, 0)] + multi_strokes, all_results), 1)
+    ]
+    write_csv(DATA / "stroke_start_timing.csv",
+              ["stroke", "target_force_N", "approach_s", "force_acquisition_s",
+               "first_contact_delay_s", "contact_to_stroke_s", "peak_acquisition_force_N"],
+              start_timing_rows)
     metrics = {
         "scope": "Stage 1 environment validation; preset strokes only, no learned model or MPC planner",
         "seed": 202,
@@ -288,6 +299,12 @@ def main():
         "multi_wall_time_s_with_video": multi_wall,
         "simulation_realtime_factor_without_render": float(plot_env.data.time/max(plot_wall, 1e-9)),
         "minimum_stroke_contact_fraction": float(min(r['contact_fraction'] for r in successful)),
+        "mean_approach_duration_s": float(np.mean([r["approach_duration_s"] for r in contact])),
+        "mean_force_acquisition_s": float(np.mean([r["force_acquisition_duration_s"] for r in contact])),
+        "max_force_acquisition_s": float(np.max([r["force_acquisition_duration_s"] for r in contact])),
+        "mean_first_contact_delay_s": float(np.mean([r["first_contact_delay_s"] for r in contact])),
+        "mean_contact_to_stroke_s": float(np.mean([r["contact_to_stroke_s"] for r in contact])),
+        "max_contact_to_stroke_s": float(np.max([r["contact_to_stroke_s"] for r in contact])),
         "workstation_dip_mean_s": float(np.mean([r['duration_s'] for r in plot_env.workstation_results if r['phase'] == 'DIP'])),
         "workstation_dip_max_s": float(np.max([r['duration_s'] for r in plot_env.workstation_results if r['phase'] == 'DIP'])),
         "workstation_clean_mean_s": float(np.mean([r['duration_s'] for r in plot_env.workstation_results if r['phase'] == 'CLEAN'])),
@@ -316,6 +333,9 @@ def main():
 | 各笔最低接触比例 | {metrics['minimum_stroke_contact_fraction']:.3f} |
 | 平均取色 / 最大取色时间 | {metrics['workstation_dip_mean_s']:.2f} / {metrics['workstation_dip_max_s']:.2f} s |
 | 平均清洗 / 最大清洗时间 | {metrics['workstation_clean_mean_s']:.2f} / {metrics['workstation_clean_max_s']:.2f} s |
+| 平均力获取时间 | {metrics['mean_force_acquisition_s']:.2f} s |
+| 平均首次接触后到走笔 | {metrics['mean_contact_to_stroke_s']:.2f} s |
+| 首次接触延迟（进入力获取后） | {metrics['mean_first_contact_delay_s']:.2f} s |
 | 平均刷尖/画布接触力 | {metrics['mean_force_N']:.3f} N |
 | 平均法向力 RMSE | {metrics['mean_force_rmse_N']:.3f} N |
 | 运笔阶段法向力标准差 | {metrics['mean_force_std_N']:.3f} N |
@@ -350,12 +370,13 @@ def main():
 - [力曲线 CSV](data/force_trace.csv)
 - [轨迹 CSV](data/trajectory.csv)
 - [吞吐量 CSV](data/throughput.csv)
+- [逐笔起笔时序 CSV](data/stroke_start_timing.csv)
 
 ## 解释和限制
 
 MuJoCo 的离散 penalty contact 在小刷尖上仍是接触模型，不是论文硬件的 Kunwei 六轴传感器；报告中的刷尖/画布法向力不再乘固定比例，`PaintingEnv.normal_force_raw()` 与之相同，工具安装点另提供 `tool_wrench()`。运笔中增加了低带宽的高度修正，以抵消离散接触和关节伺服误差；它用于阶段 1 仿真稳定性验证，不能等同于论文硬件上的六轴传感器力控。沉积由接触、力、速度、刷上颜料量和画布 tooth 驱动，不是 Navier–Stokes 或逐刷毛油画流体模型。视频中的预设笔画不代表 IMPASTO 学习模型已经生成了规划结果。
 
-力控流程是先以 `force_ema` 滤波目标力与接触法向力误差，落笔阶段按误差调节高度；达到 ±0.04 N 并持续 0.16 s 后进入运笔。当前实现的内层是关节位置/姿态伺服，外层在每个控制步读取未缩放的 MuJoCo 接触法向力，并以低带宽高度修正近似实时导纳控制；它不是论文完整的 `J^T F_ff` 力矩注入实现。阶段 1 的 8 笔演示在有效接触样本上的平均力为 {metrics['mean_force_N']:.3f} N，目标力均值为 {float(np.mean([s.force for s in multi_strokes])):.3f} N；逐笔力标准差均值为 {metrics['mean_force_std_N']:.3f} N，逐笔力范围均值为 {metrics['mean_force_range_N']:.3f} N。结果表明本轮仿真绘制期间力基本稳定，但仍有接触模型与真实六轴传感器之间的系统差异。
+力控流程是先以 `force_ema` 滤波目标力与接触法向力误差，落笔阶段按误差调节高度；达到 ±0.04 N 并持续 0.16 s 后进入运笔。为缩短起笔等待，刷尖先移动到接触面上方 1.5 mm，再以 8 mm/s 的最大下降速度建立目标力；本轮平均建力时间为 {metrics['mean_force_acquisition_s']:.2f} s，其中从首次接触到开始走笔平均 {metrics['mean_contact_to_stroke_s']:.2f} s。当前实现的内层是关节位置/姿态伺服，外层在每个控制步读取未缩放的 MuJoCo 接触法向力，并以低带宽高度修正近似实时导纳控制；它不是论文完整的 `J^T F_ff` 力矩注入实现。阶段 1 的 8 笔演示在有效接触样本上的平均力为 {metrics['mean_force_N']:.3f} N，目标力均值为 {float(np.mean([s.force for s in multi_strokes])):.3f} N；逐笔力标准差均值为 {metrics['mean_force_std_N']:.3f} N，逐笔力范围均值为 {metrics['mean_force_range_N']:.3f} N。结果表明本轮仿真绘制期间力基本稳定，但仍有接触模型与真实六轴传感器之间的系统差异。
 
 画布状态不是在笔画结束后预先生成：每个控制步都使用实际刷尖位置、实际接触力、实际移动距离和当前载漆量更新；录像按 render_fps 对已更新的动态纹理采样。修正后的画布上传不再额外翻转图像，且关闭主光源投影到画布的阴影，使实际笔迹不会被机器人阴影遮挡。
 

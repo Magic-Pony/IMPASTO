@@ -261,27 +261,59 @@ class PaintingEnv:
 
     def _approach_force(self, target_xy, target_force, render_hook=None):
         contact_center_z = self.canvas_contact_height()
-        target = np.r_[self.canvas_xy(target_xy), contact_center_z + .005]
+        clearance = float(self.config.get("force_approach_clearance_m", .0015))
+        approach_started = float(self.data.time)
+        target = np.r_[self.canvas_xy(target_xy), contact_center_z + clearance]
         self.move_linear(target, "APPROACH", speed=.12, render_hook=render_hook)
-        z_ref = contact_center_z + .005
+        approach_duration = float(self.data.time) - approach_started
+        z_ref = contact_center_z + clearance
         filtered = 0.0
         ema = float(self.config.get("force_ema", 0.90))
         stable = 0
+        acquire_started = float(self.data.time)
+        first_contact_time = None
+        peak_acquire_force = 0.0
+        acquire_duration = float(self.config.get("force_timeout", 4.0))
         nmax = int(float(self.config.get("force_timeout", 4.0)) / self.dt)
         for _ in range(nmax):
             f = self.normal_force()
             filtered = ema * filtered + (1.0 - ema) * f
             err = float(target_force) - filtered
-            # Filtered integral force acquisition: positive error lowers the tip.
-            z_ref -= float(np.clip(0.003 * self.dt * err, -0.00006, 0.00008))
+            # Filtered integral force acquisition with bounded axial speed.
+            gain = float(self.config.get("force_acquire_gain_m_per_N_s", .01))
+            down_speed = float(self.config.get("force_acquire_descent_speed_m_s", .008))
+            up_speed = float(self.config.get("force_acquire_ascent_speed_m_s", .004))
+            z_ref -= float(np.clip(gain * self.dt * err,
+                                   -up_speed * self.dt, down_speed * self.dt))
             z_ref = max(contact_center_z - .011, z_ref)
             obs = self.step([*self.canvas_xy(target_xy), z_ref], phase="FORCE_ACQUIRE")
+            if obs.contacting and first_contact_time is None:
+                first_contact_time = float(obs.time) - acquire_started
+            peak_acquire_force = max(peak_acquire_force, obs.normal_force)
             if render_hook:
                 render_hook(self, obs)
             stable = stable + 1 if abs(filtered-target_force) <= float(self.config.get("force_tolerance", .12)) else 0
             if stable * self.dt >= float(self.config.get("force_settle_time", .16)):
+                acquire_duration = float(self.data.time) - acquire_started
                 self._set_phase("STROKE")
+                self.last_force_acquisition = {
+                    "approach_duration_s": approach_duration,
+                    "force_acquisition_duration_s": acquire_duration,
+                    "first_contact_delay_s": first_contact_time,
+                    "contact_to_stroke_s": (acquire_duration - first_contact_time
+                                             if first_contact_time is not None else None),
+                    "peak_acquisition_force_N": peak_acquire_force,
+                }
                 return z_ref, True
+        acquire_duration = float(self.data.time) - acquire_started
+        self.last_force_acquisition = {
+            "approach_duration_s": approach_duration,
+            "force_acquisition_duration_s": acquire_duration,
+            "first_contact_delay_s": first_contact_time,
+            "contact_to_stroke_s": (acquire_duration - first_contact_time
+                                     if first_contact_time is not None else None),
+            "peak_acquisition_force_N": peak_acquire_force,
+        }
         return z_ref, False
 
     def execute_stroke(self, stroke: Stroke, render_hook=None):
@@ -299,6 +331,7 @@ class PaintingEnv:
         if not acquired:
             self._set_phase("FORCE_TIMEOUT")
             return {"success": False, "reason": "force_acquisition_timeout", "force_acquired": False,
+                    **self.last_force_acquisition,
                     "wall_seconds": time.perf_counter()-start_wall}
         self.canvas.reset_path()
         # The paper holds acquired height. This simulator retains the documented
@@ -341,6 +374,7 @@ class PaintingEnv:
             "success": bool(len(actual) > 5 and np.count_nonzero(ftrace > .02) > 5),
             "reason": "ok" if len(actual) > 5 else "no_canvas_contact",
             "force_acquired": True,
+            **self.last_force_acquisition,
             "target_force_N": float(stroke.force),
             "contact_samples": int(np.count_nonzero(ftrace > .02)),
             "force_samples": int(len(ftrace)),

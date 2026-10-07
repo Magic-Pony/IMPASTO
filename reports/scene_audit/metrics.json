@@ -7,6 +7,10 @@
     "brush_stiffness": 350.0,
     "brush_damping": 2.5,
     "force_ema": 0.9,
+    "force_approach_clearance_m": 0.0015,
+    "force_acquire_gain_m_per_N_s": 0.01,
+    "force_acquire_descent_speed_m_s": 0.008,
+    "force_acquire_ascent_speed_m_s": 0.004,
     "force_limit": 4.0,
     "force_tolerance": 0.04,
     "force_settle_time": 0.16,
@@ -746,7 +750,7 @@
   "static_max_error_m": 4.8761198403350514e-05,
   "dynamic_max_xy_error_m": 2.4336989944020592e-05,
   "dynamic_max_immersion_tilt_deg": 0.009494307377963201,
-  "all_movement_max_tilt_deg": 0.9577709420998741,
+  "all_movement_max_tilt_deg": 0.9615195354297899,
   "unexpected_penetrations_over_0_5mm": [],
   "canvas_grid_5x5": [
     {
@@ -755,8 +759,8 @@
         -0.25,
         0.063
       ],
-      "position_error_m": 3.178598728045968e-05,
-      "tilt_deg": 0.004116931314859616
+      "position_error_m": 3.1785987280495185e-05,
+      "tilt_deg": 0.004116931226331367
     },
     {
       "target_m": [
@@ -764,8 +768,8 @@
         -0.125,
         0.063
       ],
-      "position_error_m": 3.543342005497173e-05,
-      "tilt_deg": 0.0042538956426668145
+      "position_error_m": 3.5433420054845e-05,
+      "tilt_deg": 0.004253895814022552
     },
     {
       "target_m": [
@@ -773,8 +777,8 @@
         0.0,
         0.063
       ],
-      "position_error_m": 3.3557495763798636e-05,
-      "tilt_deg": 0.004244857993594065
+      "position_error_m": 3.3557495763916096e-05,
+      "tilt_deg": 0.0042448577360132
     },
     {
       "target_m": [
@@ -782,8 +786,8 @@
         0.125,
         0.063
       ],
-      "position_error_m": 3.543342005464982e-05,
-      "tilt_deg": 0.0042538956426668145
+      "position_error_m": 3.5433420055088854e-05,
+      "tilt_deg": 0.004253895471311071
     },
     {
       "target_m": [
@@ -791,8 +795,8 @@
         0.25,
         0.063
       ],
-      "position_error_m": 3.178598728076401e-05,
-      "tilt_deg": 0.004116931668972596
+      "position_error_m": 3.1785987280488375e-05,
+      "tilt_deg": 0.004116931757500836
     },
     {
       "target_m": [
@@ -800,7 +804,7 @@
         -0.25,
         0.063
       ],
-      "position_error_m": 2.611247786500505e-05,
+      "position_error_m": 2.6112477864914343e-05,
       "tilt_deg": 0.0038258140107831446
     },
     {
@@ -809,8 +813,8 @@
         -0.125,
         0.063
       ],
-      "position_error_m": 4.881690347016655e-05,
-      "tilt_deg": 0.006574745828326374
+      "position_error_m": 4.881690347049366e-05,
+      "tilt_deg": 0.006574745883760414
     },
     {
       "target_m": [
@@ -818,8 +822,8 @@
         0.0,
         0.063
       ],
-      "position_error_m": 2.9262959148602317e-05,
-      "tilt_deg": 0.004024147853379753
+      "position_error_m": 2.9262959148864633e-05,
+      "tilt_deg": 0.004024147762810337
     },
     {
       "target_m": [
@@ -827,8 +831,8 @@
         0.125,
         0.063
       ],
-      "position_error_m": 4.88169034704104e-05,
-      "tilt_deg": 0.006574745883760414
+      "position_error_m": 4.88169034703926e-05,
+      "tilt_deg": 0.006574745772892334
     },
     {
       "target_m": [
@@ -836,8 +840,8 @@
         0.25,
         0.063
       ],
-      "position_error_m": 2.6112477864650343e-05,
-      "tilt_deg": 0.0038258139155185234
+      "position_error_m": 2.611247786496523e-05,
+      "tilt_deg": 0.0038258141060477638
     },
     {
       "target_m": [
@@ -845,8 +849,8 @@
         -0.25,
         0.063
       ],
-      "position_error_m": 1.9651773861468117e-05,
-      "tilt_deg": 0.0030012347854469937
+      "position_error_m": 1.9651773861791273e-05,
+      "tilt_deg": 0.0030012357569528885
     },
     {
       "target_m": [
@@ -854,7 +858,7 @@
         -0.125,
         0.063
       ],
-      "position_error_m": 4.984764051278001e-05,
+      "position_error_m": 4.984764051297903e-05,
       "tilt_deg": 0.008222925008836495
     },
     {
@@ -863,8 +867,8 @@
         0.0,
         0.063
       ],
-      "position_error_m": 2.9299983046816057e-05,
-      "tilt_deg": 0.0042480880306689905
+      "position_error_m": 2.9299983046861953e-05,
+      "tilt_deg": 0.0042480882022589905
     },
     {
       "target_m": [
@@ -872,8 +876,8 @@
         0.125,
         0.063
       ],
-      "position_error_m": 4.9847640513075344e-05,
-      "tilt_deg": 0.008222925008836495
+      "position_error_m": 4.98476405130309e-05,
+      "tilt_deg": 0.008222925053159497
     },
     {
       "target_m": [
@@ -881,8 +885,8 @@
         0.25,
         0.063
       ],
-      "position_error_m": 1.965177386187402e-05,
-      "tilt_deg": 0.003001235999829313
+      "position_error_m": 1.9651773861716894e-05,
+      "tilt_deg": 0.0030012356355146688
     },
     {
       "target_m": [
@@ -890,7 +894,7 @@
         -0.25,
         0.063
       ],
-      "position_error_m": 3.60178822074094e-05,
+      "position_error_m": 3.601788220760435e-05,
       "tilt_deg": 0.003120233621765876
     },
     {
@@ -899,8 +903,8 @@
         -0.125,
         0.063
       ],
-      "position_error_m": 1.1954755856216958e-05,
-      "tilt_deg": 0.0014889153932935828
+      "position_error_m": 1.195475585615807e-05,
+      "tilt_deg": 0.00148891612764954
     },
     {
       "target_m": [
@@ -908,8 +912,8 @@
         0.0,
         0.063
       ],
-      "position_error_m": 1.4057748931359069e-05,
-      "tilt_deg": 0.0018579923231174923
+      "position_error_m": 1.405774893125252e-05,
+      "tilt_deg": 0.0018579921269569733
     },
     {
       "target_m": [
@@ -917,8 +921,8 @@
         0.125,
         0.063
       ],
-      "position_error_m": 1.1954755855983717e-05,
-      "tilt_deg": 0.0014889153932935828
+      "position_error_m": 1.1954755855937574e-05,
+      "tilt_deg": 0.0014889146589372633
     },
     {
       "target_m": [
@@ -926,7 +930,7 @@
         0.25,
         0.063
       ],
-      "position_error_m": 3.6017882207557784e-05,
+      "position_error_m": 3.60178822081135e-05,
       "tilt_deg": 0.0031202340889933166
     },
     {
@@ -935,8 +939,8 @@
         -0.25,
         0.063
       ],
-      "position_error_m": 3.383997077239697e-05,
-      "tilt_deg": 0.002383227891522949
+      "position_error_m": 3.383997077193408e-05,
+      "tilt_deg": 0.00238322804445197
     },
     {
       "target_m": [
@@ -944,8 +948,8 @@
         -0.125,
         0.063
       ],
-      "position_error_m": 3.3043751637333966e-05,
-      "tilt_deg": 0.0024662009547312728
+      "position_error_m": 3.3043751637664986e-05,
+      "tilt_deg": 0.0024662008069473986
     },
     {
       "target_m": [
@@ -953,8 +957,8 @@
         0.0,
         0.063
       ],
-      "position_error_m": 4.073833257178292e-05,
-      "tilt_deg": 0.0034263876672189584
+      "position_error_m": 4.073833257192812e-05,
+      "tilt_deg": 0.003426388199068718
     },
     {
       "target_m": [
@@ -962,7 +966,7 @@
         0.125,
         0.063
       ],
-      "position_error_m": 3.3043751637259054e-05,
+      "position_error_m": 3.304375163745208e-05,
       "tilt_deg": 0.0024662000680278975
     },
     {
@@ -971,28 +975,33 @@
         0.25,
         0.063
       ],
-      "position_error_m": 3.383997077233063e-05,
-      "tilt_deg": 0.00238322804445197
+      "position_error_m": 3.383997077228977e-05,
+      "tilt_deg": 0.002383227891522949
     }
   ],
   "stroke": {
     "success": true,
     "reason": "ok",
     "force_acquired": true,
+    "approach_duration_s": 0.8200000000039154,
+    "force_acquisition_duration_s": 1.1120000000053096,
+    "first_contact_delay_s": 0.32400000000154705,
+    "contact_to_stroke_s": 0.7880000000037626,
+    "peak_acquisition_force_N": 0.5870455653103057,
     "target_force_N": 0.6,
     "contact_samples": 397,
     "force_samples": 397,
     "contact_fraction": 1.0,
-    "force_all_samples_rmse_N": 0.024841787409427083,
-    "force_mean_N": 0.5776641844306859,
-    "force_rmse_N": 0.024841787409427083,
-    "force_max_N": 0.5932696052906874,
-    "force_std_N": 0.01087316626143272,
-    "force_range_N": 0.03274021922724146,
-    "brush_tilt_mean_deg": 0.007888556074905233,
-    "brush_tilt_max_deg": 0.012736676205533513,
-    "trajectory_rmse_m": 0.0025044074246812703,
-    "wall_seconds": 1.9951100409962237
+    "force_all_samples_rmse_N": 0.016592625919027017,
+    "force_mean_N": 0.5847503707935354,
+    "force_rmse_N": 0.016592625919027017,
+    "force_max_N": 0.5942981637726696,
+    "force_std_N": 0.006539422295135255,
+    "force_range_N": 0.0193051709029598,
+    "brush_tilt_mean_deg": 0.00793968960630194,
+    "brush_tilt_max_deg": 0.012557639692697072,
+    "trajectory_rmse_m": 0.0025055851226277646,
+    "wall_seconds": 1.4488031729997601
   },
   "force_source": "unscaled brush/canvas contact; mount 6-axis sensor separately available",
   "dimensions_mm": {
