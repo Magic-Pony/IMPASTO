@@ -11,7 +11,7 @@ dependencies = ["mujoco>=3.3,<4", "numpy>=2,<3", "scipy", "pillow", "matplotlib"
 
 [project.optional-dependencies]
 dev = ["pytest"]
-learning = ["torch", "lpips"]
+learning = ["torch==2.14.1", "lpips"]
 
 [project.scripts]
 impasto = "impasto.cli:main"
