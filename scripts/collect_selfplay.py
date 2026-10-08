@@ -59,14 +59,20 @@ def collect_episode(task):
     color_set = stage2_cfg["palette_colors"]
     try:
         for step in range(int(stage2_cfg["samples_per_episode"])):
-            color = int(color_set[(step // int(stage2_cfg["color_block_size"])) % len(color_set)])
+            color = int(color_set[((step // int(stage2_cfg["color_block_size"])) + episode_id) % len(color_set)])
+            reset_every = int(stage2_cfg.get("reset_canvas_every", 0))
+            if reset_every and step and step % reset_every == 0:
+                env.canvas.rgb[:] = env.canvas.initial
+                env.canvas.film[:] = 0
+                env.canvas.reset_path()
             failed_attempts = []
             for attempt in range(int(stage2_cfg["max_attempts_per_sample"])):
                 stroke = draw_stroke(rng, stage2_cfg, color)
                 crop = crop_for_stroke(stroke, int(stage2_cfg["patch_size"]), float(stage2_cfg["crop_margin_m"]))
                 before = env.canvas.image().copy()
                 current = crop_canvas_gray(before, crop, env.canvas.width, env.canvas.height)
-                rendered = render_stroke_patch(stroke, crop, stage2_cfg["force_radius_m"])
+                rendered = render_stroke_patch(stroke, crop, stage2_cfg["force_radius_m"],
+                                               palette=stage2_cfg.get("palette_rgb"))
                 local_action = patch_action(stroke, crop)
                 normalized = normalize_patch_action(local_action,
                                                     stage2_cfg["action_bounds"]["force_N"],

@@ -1,36 +1,81 @@
 {
   "seed": 2027,
   "stage1_config": "configs/stage1.json",
-  "dataset_dir": "data/stage2",
+  "dataset_dir": "data/stage2_revision",
   "train_samples": 900,
   "validation_samples": 100,
   "episodes": 10,
   "samples_per_episode": 100,
   "collection_workers": 4,
   "max_attempts_per_sample": 5,
-  "palette_colors": [0, 1, 7, 12],
-  "color_block_size": 25,
+  "palette_colors": [
+    8,
+    17,
+    1,
+    2,
+    12,
+    13,
+    23,
+    7
+  ],
+  "color_block_size": 5,
   "action_bounds": {
-    "x_m": [-0.11, 0.04],
-    "y_m": [-0.11, 0.11],
-    "length_m": [0.025, 0.085],
-    "bend_m": [-0.035, 0.035],
-    "angle_rad": [-3.141592653589793, 3.141592653589793],
-    "force_N": [0.4, 1.5]
+    "x_m": [
+      -0.125,
+      0.07
+    ],
+    "y_m": [
+      -0.135,
+      0.135
+    ],
+    "length_m": [
+      0.004,
+      0.105
+    ],
+    "bend_m": [
+      -0.05,
+      0.05
+    ],
+    "angle_rad": [
+      -3.141592653589793,
+      3.141592653589793
+    ],
+    "force_N": [
+      0.4,
+      1.5
+    ]
   },
-  "workspace_abs_limit_m": [0.15, 0.16],
+  "workspace_abs_limit_m": [
+    0.15,
+    0.16
+  ],
   "patch_size": 100,
-  "crop_margin_m": 0.025,
-  "input_channels": ["canvas_gray", "rendered_stroke_gray"],
-  "action_encoder_order": ["x0", "y0", "length", "bend", "force", "angle"],
+  "crop_margin_m": 0.018,
+  "input_channels": [
+    "canvas_gray",
+    "rendered_stroke_gray"
+  ],
+  "action_encoder_order": [
+    "x0",
+    "y0",
+    "length",
+    "bend",
+    "force",
+    "angle"
+  ],
   "action_normalization": "x0/y0/length use patch-width scaling; signed bend maps symmetrically to [0,1] around 0.5; force and angle use min-max mappings",
   "action_embedding_channels": 32,
-  "unet_channels": [32, 64, 128, 256],
+  "unet_channels": [
+    32,
+    64,
+    128,
+    256
+  ],
   "dropout_probability": 0.1,
   "force_radius_m": {
-    "minimum": 0.0018,
-    "scale": 0.0042,
-    "exponent": 0.55
+    "minimum": 0.0004,
+    "scale": 0.0058,
+    "exponent": 1.65
   },
   "training": {
     "epochs": 1000,
@@ -41,14 +86,149 @@
     "lr_gamma": 0.75,
     "changed_pixel_threshold": 0.015,
     "dilation_kernel": 7,
-    "changed_pixel_weight": 4.0,
+    "changed_pixel_weight": 8.0,
     "augmentation_rotation_deg": 5.0,
     "augmentation_translation_px": 3.0
   },
   "split": {
-    "train_episode_ids": [0, 1, 2, 3, 4, 5, 6, 7, 8],
-    "validation_episode_ids": [9],
+    "train_episode_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "validation_episode_ids": [
+      9
+    ],
     "validation_policy": "episode-held-out; 10% of 1000 collected transitions"
   },
-  "notes": "The paper does not publish numeric task action bounds, crop margin, raster width calibration, dropout probability, or weight-map multiplier. Action bounds and these values are local choices; force range follows the verified Stage-1 sampler, not the F/T sensor measurement range."
+  "notes": "900/100 MuJoCo self-play transitions. Revised servo removes ~2.5mm lag; premixed task pigments, brush force/width and short strokes cover paper Figure 8. Resets every 20 strokes balance clean and overlapped contexts. No artwork geometry enters training.",
+  "palette_rgb": [
+    [
+      35,
+      94,
+      162
+    ],
+    [
+      178,
+      49,
+      43
+    ],
+    [
+      219,
+      178,
+      58
+    ],
+    [
+      51,
+      130,
+      84
+    ],
+    [
+      247,
+      246,
+      235
+    ],
+    [
+      39,
+      34,
+      35
+    ],
+    [
+      133,
+      78,
+      46
+    ],
+    [
+      204,
+      122,
+      76
+    ],
+    [
+      132,
+      180,
+      205
+    ],
+    [
+      234,
+      126,
+      148
+    ],
+    [
+      118,
+      88,
+      164
+    ],
+    [
+      44,
+      145,
+      151
+    ],
+    [
+      177,
+      192,
+      113
+    ],
+    [
+      50,
+      113,
+      78
+    ],
+    [
+      147,
+      65,
+      67
+    ],
+    [
+      204,
+      179,
+      133
+    ],
+    [
+      93,
+      117,
+      137
+    ],
+    [
+      69,
+      88,
+      114
+    ],
+    [
+      235,
+      219,
+      164
+    ],
+    [
+      187,
+      116,
+      69
+    ],
+    [
+      151,
+      115,
+      146
+    ],
+    [
+      103,
+      72,
+      51
+    ],
+    [
+      238,
+      160,
+      93
+    ],
+    [
+      184,
+      212,
+      219
+    ]
+  ],
+  "reset_canvas_every": 20
 }

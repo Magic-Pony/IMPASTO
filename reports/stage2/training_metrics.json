@@ -7,12 +7,12 @@
   "validation_samples": 100,
   "epochs": 1000,
   "batch_size": 120,
-  "best_validation_unweighted_l1": 0.009771945476531983,
+  "best_epoch": 605,
+  "best_validation_unweighted_l1": 0.009049568176269531,
   "paper_validation_unweighted_l1": 0.0285,
   "best_checkpoint": "outputs/stage2/impasto_unet_best.pt",
-  "best_checkpoint_sha256": "a89843c33209bf8ab20294ce64bb6b4912a527db283eb2bda7bc23adbeed54d6",
+  "best_checkpoint_sha256": "ba32478044aa68066f2312b88318cd5214dae7cf4468a939fd98509a371ffa7c",
   "last_checkpoint": "outputs/stage2/impasto_unet_last.pt",
-  "training_wall_seconds": 593.1299294680066,
-  "history": "reports/stage2/training_history.csv",
-  "best_epoch": 176
+  "training_wall_seconds": 588.2888130310021,
+  "history": "reports/stage2/training_history.csv"
 }

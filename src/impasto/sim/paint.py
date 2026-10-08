@@ -35,8 +35,13 @@ class BrushState:
 
 
 class Canvas:
-    def __init__(self, width=.4572, height=.5334, resolution=512, seed=0):
+    def __init__(self, width=.4572, height=.5334, resolution=512, seed=0,
+                 paint_config=None):
         self.width, self.height, self.resolution = width, height, resolution
+        self.paint_config = dict(paint_config or {})
+        self.palette = np.asarray(self.paint_config.get("palette_rgb", PALETTE), dtype=float)
+        if self.palette.max() > 1:
+            self.palette = self.palette / 255.0
         rng = np.random.default_rng(seed)
         self.tooth = rng.uniform(.85, 1.15, (resolution, resolution)).astype(np.float32)
         self.rgb = np.ones((resolution, resolution, 3), np.float32) * np.array([.963,.952,.918])
@@ -61,7 +66,10 @@ class Canvas:
         distance = float(np.linalg.norm(xy-prev))
         # One traveled distance determines deposition irrespective of substeps.
         n = max(1, int(np.ceil(distance/.0006)))
-        radius = .0018 + .0042 * max(force, 0)**.55
+        radius_cfg = self.paint_config.get("force_radius_m", {})
+        radius = (radius_cfg.get("minimum", .0018)
+                  + radius_cfg.get("scale", .0042)
+                  * max(force, 0)**radius_cfg.get("exponent", .55))
         for k in range(1, n+1):
             pos = prev+(xy-prev)*k/n
             self._stamp(pos, radius, (distance/n+.002*dt/n), brush)
@@ -83,7 +91,7 @@ class Canvas:
         coverage = 1-np.exp(-ds/.0008 * footprint * self.tooth[y0:y1,x0:x1]
                            * brush.load * brush.opacity)
         region = self.rgb[y0:y1,x0:x1]
-        color = PALETTE[brush.color]
+        color = self.palette[brush.color]
         region[:] = region*(1-coverage[...,None])+color*coverage[...,None]
         self.film[y0:y1,x0:x1] += (coverage*.015).astype(np.float32)
 

@@ -2,20 +2,20 @@
 
 ## Result
 
-The episode-held-out validation set contains 100 transitions from episodes [9]. The best checkpoint is epoch 176; its unweighted next-state L1 is **0.00977**, compared with the paper's **0.0285** reference at 900 training samples. This local simulation score is lower than the reported reference. The same validation set selects the checkpoint, so this is a validation result rather than an untouched test result.
+The episode-held-out validation set contains 100 transitions from episodes [9]. The best checkpoint is epoch 605; its unweighted next-state L1 is **0.00905**, compared with the paper's **0.0285** reference at 900 training samples. This local simulation score is lower than the reported reference. The same validation set selects the checkpoint, so this is a validation result rather than an untouched test result.
 
 |Metric|Value|
 |---|---:|
-|Validation unweighted L1|0.00977|
-|Changed-region L1|0.05066|
-|Background L1|0.00668|
+|Validation unweighted L1|0.00905|
+|Changed-region L1|0.04338|
+|Background L1|0.00360|
 |Paper unweighted L1 reference|0.02850|
-|Changed pixels per patch|7.041%|
+|Changed pixels per patch|13.705%|
 |Training samples|900|
 |Validation samples|100|
 |Epochs / batch size|1000 / 120|
-|Best epoch|176|
-|Training wall time|593.1 s|
+|Best epoch|605|
+|Training wall time|588.3 s|
 |Compute device|NVIDIA GeForce RTX 4090 D|
 |Parameter count|999,361|
 |U-Net feature widths|[32, 64, 128, 256]|
@@ -31,12 +31,12 @@ The episode-held-out validation set contains 100 transitions from episodes [9]. 
 
 ## Simulator data quality
 
-The 1,000 successful transitions came from ten independent 100-stroke episodes. Mean achieved force was 0.977 N against a 0.971 N mean target; mean per-stroke force RMSE was 0.031 N (maximum 0.145 N). Mean contact fraction was 0.99988, minimum 0.99003; mean trajectory RMSE was 2.59 mm. Failed attempts averaged 0.024 per accepted sample.
+The 1,000 successful transitions came from ten independent 100-stroke episodes. Mean achieved force was 1.011 N against a 1.003 N mean target; mean per-stroke force RMSE was 0.024 N (maximum 0.238 N). Mean contact fraction was 0.99964, minimum 0.99005; mean trajectory RMSE was 0.11 mm. Failed attempts averaged 0.093 per accepted sample.
 
 ## Reproducibility
 
 Best checkpoint: `outputs/stage2/impasto_unet_best.pt`  
-SHA-256: `a89843c33209bf8ab20294ce64bb6b4912a527db283eb2bda7bc23adbeed54d6`  
+SHA-256: `ba32478044aa68066f2312b88318cd5214dae7cf4468a939fd98509a371ffa7c`  
 Training history: `reports/stage2/training_history.csv`  
 Dataset manifest: `data/stage2/manifest.json`
 

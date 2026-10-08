@@ -74,19 +74,22 @@ def force_radius(force, radius_cfg):
             + float(radius_cfg["scale"]) * max(float(force), 0.0) ** float(radius_cfg["exponent"]))
 
 
-def color_gray(color):
-    return float(np.dot(PALETTE[int(color)], np.array([.299, .587, .114], dtype=np.float32)))
+def color_gray(color, palette=None):
+    rgb = np.asarray(PALETTE if palette is None else palette)[int(color)].astype(float)
+    if rgb.max() > 1:
+        rgb /= 255.
+    return float(np.dot(rgb, np.array([.299, .587, .114], dtype=np.float32)))
 
 
 def render_stroke_patch(stroke: Stroke, crop: CropTransform, radius_cfg, color_value=None,
-                        samples=None):
+                        samples=None, palette=None):
     """Rasterize a filled disk-stamped quadratic Bezier footprint to [0, 1]."""
     image = np.ones((crop.patch_size, crop.patch_size), dtype=np.float32)
     radius = force_radius(stroke.force, radius_cfg)
     points = stroke.points(np.linspace(0, 1, int(samples or 256)))
     pixels = crop.world_to_patch(points)
     rp = radius / crop.side_m * (crop.patch_size - 1)
-    value = color_gray(stroke.color) if color_value is None else float(color_value)
+    value = color_gray(stroke.color, palette) if color_value is None else float(color_value)
     for px, py in pixels:
         x0, x1 = max(0, int(math.floor(px - rp - 1))), min(crop.patch_size, int(math.ceil(px + rp + 2)))
         y0, y1 = max(0, int(math.floor(py - rp - 1))), min(crop.patch_size, int(math.ceil(py + rp + 2)))

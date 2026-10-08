@@ -66,6 +66,7 @@ class PaintingEnv:
             float(2 * self.model.geom_size[self.canvas_geom, 1]),
             int(self.config.get("canvas_resolution", 512)),
             seed=self.seed,
+            paint_config=self.config.get("paint"),
         )
         self.brush = BrushState()
         self.renderer = None
@@ -323,6 +324,7 @@ class PaintingEnv:
             if self.brush.color >= 0:
                 self.clean_brush(render_hook)
             self.dip_brush(stroke.color, render_hook)
+        self.brush.opacity = stroke.opacity
         points = stroke.points(np.linspace(0, 1, 60))
         start = points[0]
         self.move_linear([*self.canvas_xy(start), .13], "MOVE_TO_START", speed=.24,
@@ -356,7 +358,8 @@ class PaintingEnv:
             z_track += float(np.clip(gain * (force_ema - stroke.force), -limit, limit))
             z_track = float(np.clip(z_track, self.canvas_contact_height() - .011,
                                     self.canvas_contact_height() + .005))
-            obs = self.step([*self.canvas_xy(p), z_track], phase="STROKE", paint=True)
+            obs = self.step([*self.canvas_xy(p), z_track], phase="STROKE", paint=True,
+                            velocity_feedforward=bool(self.config.get("stroke_velocity_feedforward", False)))
             if render_hook:
                 render_hook(self, obs)
         stroke_obs_end = len(self.observations)

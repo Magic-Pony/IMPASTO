@@ -1,0 +1,240 @@
+{
+  "seed": 3037,
+  "opacity_scale": 0.2,
+  "stage1_config": "configs/stage1.json",
+  "stage2_config": "configs/stage2.json",
+  "checkpoint": "outputs/stage2/impasto_unet_best.pt",
+  "report_dir": "reports/stage3",
+  "canvas_width_m": 0.4572,
+  "canvas_height_m": 0.5334,
+  "canvas_resolution": 512,
+  "patch_size": 100,
+  "action_bounds": {
+    "x_m": [
+      -0.125,
+      0.07
+    ],
+    "y_m": [
+      -0.135,
+      0.135
+    ],
+    "length_m": [
+      0.004,
+      0.105
+    ],
+    "bend_m": [
+      -0.05,
+      0.05
+    ],
+    "angle_rad": [
+      -3.141592653589793,
+      3.141592653589793
+    ],
+    "force_N": [
+      0.4,
+      1.5
+    ]
+  },
+  "force_radius_m": {
+    "minimum": 0.0004,
+    "scale": 0.0058,
+    "exponent": 1.65
+  },
+  "color_subset": [
+    8,
+    17,
+    1,
+    2,
+    12,
+    13,
+    23,
+    7
+  ],
+  "planner": {
+    "horizon": 5,
+    "execute_steps": 2,
+    "candidates": 64,
+    "iterations": 18,
+    "elite_ratio": 0.2,
+    "temperature": 0.0005,
+    "ema": 0.8,
+    "initial_sigma": [
+      0.003,
+      0.003,
+      0.004,
+      0.005,
+      0.1,
+      0.12
+    ],
+    "minimum_sigma": [
+      0.0003,
+      0.0003,
+      0.0006,
+      0.0008,
+      0.01,
+      0.02
+    ],
+    "maximum_sigma": [
+      0.01,
+      0.01,
+      0.012,
+      0.015,
+      0.3,
+      0.4
+    ],
+    "seed_trust_region": [
+      0.004,
+      0.004,
+      0.01,
+      0.006,
+      0.1,
+      0.25
+    ],
+    "covariance_floor": 1e-07,
+    "objective_threshold": 0.015,
+    "objective_dilation_kernel": 9,
+    "objective_changed_weight": 4.0,
+    "splitter_components": 5,
+    "splitter_kmeans_iterations": 25,
+    "splitter_ransac_iterations": 80,
+    "splitter_ransac_threshold_px": 2.5,
+    "splitter_min_pixels": 18,
+    "splitter_curvature_penalty": 0.01,
+    "splitter_overlap_penalty": 0.15,
+    "allow_random_fill": false,
+    "splitter_color_guided": true
+  },
+  "experiments": {
+    "single_stroke_seed": 3101,
+    "flower_seed": 3102,
+    "fish_seed": 3103,
+    "run_single_stroke": true,
+    "run_flower": true,
+    "run_fish": true,
+    "use_published_prefix_targets": true,
+    "execution_render": false
+  },
+  "notes": "H=5 and execute_steps=2 follow the paper. Targets are the authors' public Fig. 8 panel crops; original high-resolution paintings and action labels are unavailable. The planner uses the published prefix checkpoints for geometric initialization, live observations for learned rollouts, and opacity_scale=0.2 to calibrate the local fully-loaded brush simulator to the photographed targets. No baseline is implemented.",
+  "palette_rgb": [
+    [
+      35,
+      94,
+      162
+    ],
+    [
+      178,
+      49,
+      43
+    ],
+    [
+      219,
+      178,
+      58
+    ],
+    [
+      51,
+      130,
+      84
+    ],
+    [
+      247,
+      246,
+      235
+    ],
+    [
+      39,
+      34,
+      35
+    ],
+    [
+      133,
+      78,
+      46
+    ],
+    [
+      204,
+      122,
+      76
+    ],
+    [
+      132,
+      180,
+      205
+    ],
+    [
+      234,
+      126,
+      148
+    ],
+    [
+      118,
+      88,
+      164
+    ],
+    [
+      44,
+      145,
+      151
+    ],
+    [
+      177,
+      192,
+      113
+    ],
+    [
+      50,
+      113,
+      78
+    ],
+    [
+      147,
+      65,
+      67
+    ],
+    [
+      204,
+      179,
+      133
+    ],
+    [
+      93,
+      117,
+      137
+    ],
+    [
+      69,
+      88,
+      114
+    ],
+    [
+      235,
+      219,
+      164
+    ],
+    [
+      187,
+      116,
+      69
+    ],
+    [
+      151,
+      115,
+      146
+    ],
+    [
+      103,
+      72,
+      51
+    ],
+    [
+      238,
+      160,
+      93
+    ],
+    [
+      184,
+      212,
+      219
+    ]
+  ]
+}
