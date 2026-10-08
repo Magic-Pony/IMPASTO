@@ -10,3 +10,4 @@ outputs/
 *.part
 reports/stage1/serve.log
 tmp/
+papers/*.pdf
