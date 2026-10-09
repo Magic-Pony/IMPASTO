@@ -1,0 +1,76 @@
+flower: 0->5, horizon 5, cost 0.00869->0.00640
+flower: 2->5, horizon 3, cost 0.00684->0.00571
+flower: 4->5, horizon 1, cost 0.00621->0.00612
+flower: 5->10, horizon 5, cost 0.01326->0.00918
+flower: 7->10, horizon 3, cost 0.01095->0.00919
+flower: 9->10, horizon 1, cost 0.01000->0.00925
+flower: 10->15, horizon 5, cost 0.01843->0.01351
+flower: 12->15, horizon 3, cost 0.01661->0.01269
+flower: 14->15, horizon 1, cost 0.01443->0.01252
+/home/lcy-pony/Draw_WS/IMPASTO/.conda/lib/python3.11/site-packages/numpy/lib/_polynomial_impl.py:674: RuntimeWarning: invalid value encountered in divide
+  lhs /= scale
+/home/lcy-pony/Draw_WS/IMPASTO/src/impasto/stage3/splitter.py:69: RankWarning: Polyfit may be poorly conditioned
+  coeff = np.polyfit(sample[:, 0], sample[:, 1], degree)
+/home/lcy-pony/Draw_WS/IMPASTO/src/impasto/stage3/splitter.py:69: RankWarning: Polyfit may be poorly conditioned
+  coeff = np.polyfit(sample[:, 0], sample[:, 1], degree)
+/home/lcy-pony/Draw_WS/IMPASTO/src/impasto/stage3/splitter.py:69: RankWarning: Polyfit may be poorly conditioned
+  coeff = np.polyfit(sample[:, 0], sample[:, 1], degree)
+/home/lcy-pony/Draw_WS/IMPASTO/src/impasto/stage3/splitter.py:69: RankWarning: Polyfit may be poorly conditioned
+  coeff = np.polyfit(sample[:, 0], sample[:, 1], degree)
+/home/lcy-pony/Draw_WS/IMPASTO/src/impasto/stage3/splitter.py:69: RankWarning: Polyfit may be poorly conditioned
+  coeff = np.polyfit(sample[:, 0], sample[:, 1], degree)
+/home/lcy-pony/Draw_WS/IMPASTO/src/impasto/stage3/splitter.py:69: RankWarning: Polyfit may be poorly conditioned
+  coeff = np.polyfit(sample[:, 0], sample[:, 1], degree)
+/home/lcy-pony/Draw_WS/IMPASTO/src/impasto/stage3/splitter.py:69: RankWarning: Polyfit may be poorly conditioned
+  coeff = np.polyfit(sample[:, 0], sample[:, 1], degree)
+/home/lcy-pony/Draw_WS/IMPASTO/src/impasto/stage3/splitter.py:69: RankWarning: Polyfit may be poorly conditioned
+  coeff = np.polyfit(sample[:, 0], sample[:, 1], degree)
+/home/lcy-pony/Draw_WS/IMPASTO/src/impasto/stage3/splitter.py:69: RankWarning: Polyfit may be poorly conditioned
+  coeff = np.polyfit(sample[:, 0], sample[:, 1], degree)
+/home/lcy-pony/Draw_WS/IMPASTO/src/impasto/stage3/splitter.py:69: RankWarning: Polyfit may be poorly conditioned
+  coeff = np.polyfit(sample[:, 0], sample[:, 1], degree)
+flower: 15->17, horizon 2, cost 0.01509->0.01441
+{"flower": {"unweighted_gray_l1": 0.004026982933282852, "weighted_gray_l1": 0.014652838930487633, "changed_region_gray_l1": 0.06114909425377846, "background_gray_l1": 0.00027927596238441765, "changed_pixel_fraction": 0.0615692138671875, "lpips_alex": null}, "replanning_cycles": 10}
+{
+  "report": "reports/stage3_refined/report.md",
+  "experiments": {
+    "flower": {
+      "unweighted_gray_l1": 0.004026982933282852,
+      "weighted_gray_l1": 0.014652838930487633,
+      "changed_region_gray_l1": 0.06114909425377846,
+      "background_gray_l1": 0.00027927596238441765,
+      "changed_pixel_fraction": 0.0615692138671875,
+      "lpips_alex": null
+    }
+  }
+}
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  5 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  5 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  5 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  5 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value
+ ** On entry to DLASCL parameter number  5 had an illegal value
+ ** On entry to DLASCL parameter number  4 had an illegal value

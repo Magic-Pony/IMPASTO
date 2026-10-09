@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import argparse
 import hashlib
 import json
 import os
@@ -30,14 +31,32 @@ from impasto.stage3.targets import render_single_target, render_target_prefix
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def validate_palette_contract(stage1, stage2, stage3, checkpoint):
+    expected = np.asarray(stage1["paint"]["palette_rgb"])
+    sources = {
+        "training configuration": stage2.get("palette_rgb"),
+        "checkpoint": checkpoint.get("config", {}).get("palette_rgb"),
+        "deployment": stage3.get("deployment_palette_rgb", expected),
+        "color database": stage3.get("color_database", {}).get("palette_rgb", expected),
+    }
+    for name, colors in sources.items():
+        if colors is None or not np.array_equal(expected, np.asarray(colors)):
+            raise ValueError(f"Palette mismatch in {name}; recollect/retrain or use its matching palette")
+
+
 def load_system():
     config_name = os.environ.get("IMPASTO_STAGE3_CONFIG", "configs/stage3.json")
     config_path = Path(config_name)
     if not config_path.is_absolute():
         config_path = ROOT / config_path
     stage3 = json.loads(config_path.read_text())
+    stage3["config_file"] = str(config_path.relative_to(ROOT))
+    if stage3.get("color_database_file"):
+        stage3["color_database"] = json.loads((ROOT / stage3["color_database_file"]).read_text())
     stage2 = json.loads((ROOT / stage3["stage2_config"]).read_text())
     stage1 = json.loads((ROOT / stage3["stage1_config"]).read_text())
+    if stage3.get("deployment_palette_rgb"):
+        stage1["paint"]["palette_rgb"] = stage3["deployment_palette_rgb"]
     stage3["palette_rgb"] = stage1["paint"]["palette_rgb"]
     stage3["color_subset"] = stage2["palette_colors"]
     checkpoint_path = ROOT / stage3["checkpoint"]
@@ -45,6 +64,7 @@ def load_system():
         raise FileNotFoundError(f"Missing Stage-2 checkpoint: {checkpoint_path}")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+    validate_palette_contract(stage1, stage2, stage3, checkpoint)
     model = ImpastoUNet(channels=tuple(stage2["unet_channels"]),
                         action_embedding_channels=int(stage2["action_embedding_channels"]),
                         dropout=float(stage2["dropout_probability"])).to(device)
@@ -240,9 +260,9 @@ def run_single(config, stage2, stage1, model, device, report_dir, lpips_model):
             "execution_trajectory_rmse_mean_m": float(execution["trajectory_rmse_m"]),
             "metrics": result_metrics,
             "wall_seconds": time.perf_counter() - started,
-            "target_image": "reports/stage3/single_target.png",
-            "result_image": "reports/stage3/single_result.png",
-            "video": "reports/stage3/single_stroke.mp4",
+            "target_image": str((report_dir / "single_target.png").relative_to(ROOT)),
+            "result_image": str((report_dir / "single_result.png").relative_to(ROOT)),
+            "video": str((report_dir / "single_stroke.mp4").relative_to(ROOT)),
         }
     finally:
         env.close()
@@ -250,7 +270,7 @@ def run_single(config, stage2, stage1, model, device, report_dir, lpips_model):
 
 def run_artwork(name, config, stage2, stage1, model, device, report_dir, lpips_model):
     seed = int(config["experiments"][f"{name}_seed"])
-    total_strokes = len(render_target_prefix(name, paint_config=stage1.get("paint")).strokes)
+    total_strokes = render_target_prefix(name, paint_config=stage1.get("paint")).stroke_count
     checkpoints = sorted(set([5, 10, 15, total_strokes]))
     target_counts = checkpoints
     # Fig. 8 exposes additional intermediate frames.  When the execution
@@ -271,16 +291,20 @@ def run_artwork(name, config, stage2, stage1, model, device, report_dir, lpips_m
                       seed=seed, render=False)
     planner_cfg = copy.deepcopy(config)
     planner_cfg["seed"] = seed
+    if config.get("task_color_subsets"):
+        planner_cfg["active_color_subset"] = config["task_color_subsets"][name]
     dynamics = LearnedCanvasDynamics(model, device, stage2, planner_cfg)
     planner = AdaptiveMPCPlanner(dynamics, planner_cfg)
     writer = imageio.get_writer(report_dir / f"{name}_painting.mp4", fps=2,
                                 codec="libx264", macro_block_size=None)
     records, cycles, executed = [], [], 0
+    warm_actions = warm_colors = warm_opacities = None
     started = time.perf_counter()
     diagnostics = []
     try:
         append_video_frame(writer, env, final_target.image_rgb, f"{name.title()} | initial")
         for goal_count in checkpoints:
+            warm_actions = warm_colors = warm_opacities = None
             goal = target_frames[goal_count].image_gray
             while executed < goal_count:
                 # The terminal image of a prediction window must correspond to
@@ -311,7 +335,9 @@ def run_artwork(name, config, stage2, stage1, model, device, report_dir, lpips_m
                 plan = planner.plan(
                     observed, goal,
                     color_images=(observed_rgb, target_frames[goal_count].image_rgb),
-                    proposal_images=proposal_images)
+                    proposal_images=proposal_images,
+                    initial=warm_actions, colors=warm_colors, opacities=warm_opacities)
+                print(f"{name}: {executed}->{goal_count}, horizon {len(plan.actions)}, cost {plan.initial_cost:.5f}->{plan.final_cost:.5f}", flush=True)
                 _, predicted_frames = dynamics.rollout(
                     observed, plan.actions, plan.colors, plan.opacities)
                 cycles.append({"goal_stroke_count": goal_count,
@@ -319,7 +345,8 @@ def run_artwork(name, config, stage2, stage1, model, device, report_dir, lpips_m
                                "planning_initial_weighted_l1": plan.initial_cost,
                                "planning_final_weighted_l1": plan.final_cost,
                                "planning_trace": plan.iterations,
-                               "proposals": len(plan.proposals)})
+                               "proposals": len(plan.proposals),
+                               "horizon": len(plan.actions)})
                 count = min(int(config["planner"]["execute_steps"]), goal_count - executed)
                 predicted_after_actions = predicted_frames[count - 1]
                 for i in range(count):
@@ -335,6 +362,10 @@ def run_artwork(name, config, stage2, stage1, model, device, report_dir, lpips_m
                                     "planner_predicted_cost": plan.final_cost})
                     append_video_frame(writer, env, final_target.image_rgb,
                                        f"{name.title()} | executed {executed}/{total_strokes} | target {goal_count}")
+                if config["planner"].get("warm_start", False):
+                    warm_actions = plan.actions[count:].copy()
+                    warm_colors = plan.colors[count:]
+                    warm_opacities = plan.opacities[count:]
                 actual_after_rgb = env.canvas.image()
                 actual_after_gray = canvas_gray(env)
                 _, objective_mask = paper_weights(observed, goal, planner_cfg)
@@ -346,8 +377,19 @@ def run_artwork(name, config, stage2, stage1, model, device, report_dir, lpips_m
                     predicted_after_actions, actual_after_rgb, actual_after_gray,
                     objective_mask, config["canvas_width_m"], config["canvas_height_m"],
                     config["palette_rgb"])
+                np.savez_compressed(report_dir / f"{name}_cycle_{len(cycles):02d}.npz",
+                    before_rgb=observed_rgb, target_rgb=target_frames[goal_count].image_rgb,
+                    after_rgb=actual_after_rgb, predicted=predicted_after_actions,
+                    predicted_terminal=plan.predicted, actions=plan.actions, colors=plan.colors,
+                    opacities=plan.opacities, mask=objective_mask,
+                    seeds=plan.initial_actions, seed_colors=plan.initial_colors,
+                    initialized_from_warm_start=warm_actions is not None,
+                    seed_masks=np.array([p.mask for p in plan.proposals]))
+                Image.fromarray(actual_after_rgb).save(report_dir / f"{name}_after_{executed:02d}.png")
                 cycle_metrics = {
                     "executed_actions": count,
+                    "before_goal_weighted_l1": planner.cost(observed, goal, planner.objective_weights(observed, goal)),
+                    "after_goal_weighted_l1": planner.cost(actual_after_gray, goal, planner.objective_weights(observed, goal)),
                     "prediction_vs_execution_l1": float(prediction_error.mean()),
                     "prediction_vs_execution_goal_region_l1": (
                         float(prediction_error[objective_mask].mean()) if objective_mask.any() else 0.0),
@@ -383,15 +425,17 @@ def run_artwork(name, config, stage2, stage1, model, device, report_dir, lpips_m
             "stroke_records": records,
             "planning_weighted_gray_l1": float(np.mean(
                 [cycle["planning_final_weighted_l1"] for cycle in cycles])),
+            "mean_planning_objective": float(np.mean(
+                [cycle["planning_final_weighted_l1"] for cycle in cycles])),
             "execution_force_rmse_mean_N": float(np.mean(
                 [record["execution"]["force_rmse_N"] for record in records])),
             "execution_trajectory_rmse_mean_m": float(np.mean(
                 [record["execution"]["trajectory_rmse_m"] for record in records])),
             "metrics": result_metrics,
             "wall_seconds": time.perf_counter() - started,
-            "target_image": f"reports/stage3/{name}_target.png",
-            "result_image": f"reports/stage3/{name}_result.png",
-            "video": f"reports/stage3/{name}_painting.mp4",
+            "target_image": str((report_dir / f"{name}_target.png").relative_to(ROOT)),
+            "result_image": str((report_dir / f"{name}_result.png").relative_to(ROOT)),
+            "video": str((report_dir / f"{name}_painting.mp4").relative_to(ROOT)),
         }
     finally:
         writer.close()
@@ -399,6 +443,10 @@ def run_artwork(name, config, stage2, stage1, model, device, report_dir, lpips_m
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--resume", action="store_true",
+                        help="Reuse completed experiments only when resolved settings match")
+    args = parser.parse_args()
     config, stage2, stage1, model, device, checkpoint = load_system()
     report_dir = ROOT / config["report_dir"]
     report_dir.mkdir(parents=True, exist_ok=True)
@@ -413,9 +461,26 @@ def main():
     else:
         lpips_error = ("disabled by default; set IMPASTO_ENABLE_LPIPS=1 after verifying AlexNet weights; "
                        "a previous download did not pass SHA-256 validation")
-    stage2_metrics_path = ROOT / "reports/stage2/training_metrics.json"
+    stage2_metrics_path = ROOT / stage2.get("report_dir", "reports/stage2") / "training_metrics.json"
     stage2_metrics = json.loads(stage2_metrics_path.read_text()) if stage2_metrics_path.is_file() else {}
     checkpoint_sha256 = hashlib.sha256((ROOT / config["checkpoint"]).read_bytes()).hexdigest()
+    completed = {}
+    if args.resume and (report_dir / "metrics.json").is_file():
+        previous_config = json.loads((report_dir / "resolved_config.json").read_text())
+        def relevant_settings(value):
+            value = copy.deepcopy(value)
+            # Enabling another experiment cannot affect a completed experiment.
+            for key in list(value["experiments"]):
+                if key.startswith("run_"):
+                    del value["experiments"][key]
+            return value
+        if relevant_settings(config) != relevant_settings(previous_config):
+            raise ValueError("Resume refused: resolved experiment settings changed")
+        previous = json.loads((report_dir / "metrics.json").read_text())
+        if previous["paper_protocol"]["checkpoint_sha256"] != checkpoint_sha256:
+            raise ValueError("Resume refused: checkpoint changed")
+        completed = previous["experiments"]
+    (report_dir / "resolved_config.json").write_text(json.dumps(config, indent=2))
     results = {
         "paper_protocol": {
             "mpc_horizon": int(config["planner"]["horizon"]),
@@ -424,24 +489,27 @@ def main():
             "checkpoint_sha256": checkpoint_sha256,
             "checkpoint_matches_stage2_report": checkpoint_sha256 == stage2_metrics.get("best_checkpoint_sha256"),
             "target_scope": "public Fig. 8 panel crops; original high-resolution artist files and action annotations unavailable",
-            "unpublished_planner_parameters": "recorded as local engineering choices in configs/stage3.json",
+            "unpublished_planner_parameters": f"local choices in {config['config_file']}",
+            "planning_objective": "weighted gray L1 + RGB auxiliary weight * weighted RGB L1",
+            "rgb_objective_weight": config["planner"].get("rgb_objective_weight", 0),
         },
         "device": str(device),
         "lpips_available": lpips_model is not None,
         "lpips_error": lpips_error or (
             "not run; the attempted torchvision AlexNet weight download failed SHA-256 validation"),
-        "experiments": {},
+        "experiments": completed,
     }
-    if config["experiments"].get("run_single_stroke", True):
+    if config["experiments"].get("run_single_stroke", True) and "single_stroke" not in completed:
         results["experiments"]["single_stroke"] = run_single(
             config, stage2, stage1, model, device, report_dir, lpips_model)
         print(json.dumps({"single_stroke": results["experiments"]["single_stroke"]["metrics"]}), flush=True)
     for name in ("flower", "fish"):
-        if config["experiments"].get(f"run_{name}", True):
+        if config["experiments"].get(f"run_{name}", True) and name not in completed:
             results["experiments"][name] = run_artwork(
                 name, config, stage2, stage1, model, device, report_dir, lpips_model)
             print(json.dumps({name: results["experiments"][name]["metrics"],
                               "replanning_cycles": results["experiments"][name]["replanning_cycles"]}), flush=True)
+            (report_dir / "metrics.json").write_text(json.dumps(results, indent=2))
     (report_dir / "metrics.json").write_text(json.dumps(results, indent=2, allow_nan=True))
     build_report(config, results, report_dir)
     print(json.dumps({"report": str((report_dir / 'report.md').relative_to(ROOT)),
@@ -453,7 +521,7 @@ def build_report(config, results, report_dir):
     for name, item in results["experiments"].items():
         metric = item["metrics"]
         rows.append(f"|{name}|{item.get('target_strokes', 1)}|{item.get('executed_strokes', 1)}|"
-                    f"{item['planning_weighted_gray_l1']:.5f}|{metric['weighted_gray_l1']:.5f}|"
+                    f"{item.get('mean_planning_objective', item['planning_weighted_gray_l1']):.5f}|{metric['weighted_gray_l1']:.5f}|"
                     f"{metric['lpips_alex'] if metric['lpips_alex'] is not None else 'unavailable'}|")
     media = []
     for name, item in results["experiments"].items():
@@ -483,13 +551,13 @@ def build_report(config, results, report_dir):
 
 ## 结果
 
-规划器使用阶段二训练的 IMPASTO-UNet，按照论文执行 PCA–RANSAC 初始化、加权 L1 终端目标、MPPI elite softmax 序列更新及 CMA 风格进化路径/协方差/步长自适应。多笔绘画采用 H={config['planner']['horizon']}，每轮执行 {config['planner']['execute_steps']} 笔后读取仿真画布并重新规划。
+规划器使用阶段二训练的 IMPASTO-UNet、PCA–RANSAC 初始化、MPPI elite softmax 序列更新及 CMA 风格自适应。多笔绘画采用 H={config['planner']['horizon']}，每轮最多执行 {config['planner']['execute_steps']} 笔后读取仿真画布并重新规划。本配置的规划目标为加权灰度 L1 + {config['planner'].get('rgb_objective_weight', 0)} × RGB 辅助损失，后者为本地扩展；不将综合规划代价标作论文的灰度 L1。
 
-|任务|目标笔数|执行笔数|规划加权灰度 L1|执行加权灰度 L1|LPIPS AlexNet|
+|任务|目标笔数|执行笔数|综合规划代价均值|执行加权灰度 L1|LPIPS AlexNet|
 |---|---:|---:|---:|---:|---|
 {chr(10).join(rows)}
 
-规划 L1 是各重规划周期终端预测误差的均值；执行 L1 是最终真实仿真画布与目标图的误差。完整全画布 L1、改变区域 L1、逐周期代价、每笔力控及轨迹数据见 `metrics.json`。本阶段没有运行或比较任何 baseline。{lpips_line}
+规划代价是各重规划周期终端预测代价的均值；执行 L1 是最终真实仿真画布与目标图的误差，两列含义不同。兼容旧日志而保留的 `planning_weighted_gray_l1` 字段在启用 RGB 辅助项时也是综合代价。完整全画布 L1、改变区域 L1、逐周期代价、每笔力控及轨迹数据见 `metrics.json`。本阶段没有运行或比较任何 baseline。{lpips_line}
 
 ## 执行质量
 
@@ -511,21 +579,21 @@ def build_report(config, results, report_dir):
 
 ## 论文对齐与边界
 
-- 单笔：H=1，以目标差分初始化并优化笔画参数，再执行该动作并读取真实仿真画布。
+- 单笔：H=1，以目标差分初始化并优化笔画参数，再执行该动作并读取真实仿真画布。当前 `single_stroke` 是本地生成的诊断曲线，不能代替论文五位画家的人类笔迹实验。
 - Flower/Fish：保留论文所述 17/18 笔目标规模；目标图和 2/5/7/10/12/15 笔公开检查点来自作者 Fig. 8，使用目标笔数 5、10、15 和最终状态作为窗口目标，H=5，每轮执行两笔并闭环重规划。
-- 论文使用的 H=5、每轮两笔及 PCA–RANSAC/MPPI/CMA 规划结构已落实。论文未公开候选数、迭代数、softmax 温度、RANSAC 阈值和 CMA 系数；本地取值见 `configs/stage3.json`。
+- 论文使用的 H=5、每轮两笔及 PCA–RANSAC/MPPI/CMA 规划结构已落实。论文未公开候选数、迭代数、softmax 温度、RANSAC 阈值和 CMA 系数；本地取值见 `{config.get("config_file", "configs/stage3.json")}`。
 - 论文没有随文章发布 artist Flower/Fish 的原始高分辨率文件和逐笔颜色/动作。这里使用作者公开 Fig. 8 的低分辨率目标 panel，保留目标笔画数并由规划器推断动作，不冒充原始逐笔标注或定量复刻。
-    - 颜色分类使用变化区域 RGB 与本地调色板颜色方向的最小残差，并限制在阶段二采样过的 `{config['color_subset']}`；论文使用带协方差的 25×25 实测颜料 patch 数据库，本地无该数据库。
-    - 透明度按论文附录 B 的线性 RGB 变化与颜料对比中位数比估计，再乘本地仿真的 `opacity_scale={config.get('opacity_scale', 1.0):.3f}`；前向模型预测和 MuJoCo 执行使用同一有效透明度。
+    - 修订配置使用仿真执行采集的 25×25 颜料块均值、协方差和 Mahalanobis 分类，几何改变后重新取色。每色两种力，协方差加正则项；这是本地数据库，不是作者的实物数据库。中心带采样近似论文中心圆盘与预测足迹交集。
+    - 历史配置曾把附录 B 的分类比值作为连续透明度，并乘本地系数；该做法与真实沉积不等价，修订配置仅使用不透明分支。当前 `opacity_scale={config.get('opacity_scale', 1.0):.3f}`；不能据此声称实现了论文完整透明度模块。
 - 本地阶段一使用 MuJoCo penalty contact 与简化颜料沉积，故执行结果是仿真验证，不等价于真实油画物理或论文硬件试验。
 - LPIPS AlexNet 未计算：torchvision 预训练 AlexNet 权重下载未通过 SHA-256 校验；不会以随机网络给出感知指标。
 
 ## 可复现文件
 
-- 规划器配置：`configs/stage3.json`
-- 聚合数值和逐笔动作/力控日志：`reports/stage3/metrics.json`
+- 规划器配置：`{config.get("config_file", "configs/stage3.json")}`
+- 聚合数值和逐笔动作/力控日志：`{config["report_dir"]}/metrics.json`
 - Stage-2 checkpoint SHA-256：`{results['paper_protocol']['checkpoint_sha256']}`
-- 运行命令：`bash scripts/run.sh scripts/run_stage3.py`
+- 运行命令：`IMPASTO_STAGE3_CONFIG={config.get("config_file", "configs/stage3.json")} bash scripts/run.sh scripts/run_stage3.py`
 
 ## 逐轮诊断图
 

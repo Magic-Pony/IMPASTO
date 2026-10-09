@@ -320,7 +320,8 @@ class PaintingEnv:
     def execute_stroke(self, stroke: Stroke, render_hook=None):
         start_wall = time.perf_counter()
         force_start = len(self.observations)
-        if self.brush.color != stroke.color or self.brush.load < .08:
+        if (self.brush.color != stroke.color or self.brush.load < .08
+                or self.config.get("reload_brush_each_stroke", False)):
             if self.brush.color >= 0:
                 self.clean_brush(render_hook)
             self.dip_brush(stroke.color, render_hook)

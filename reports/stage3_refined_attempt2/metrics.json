@@ -1,0 +1,2999 @@
+{
+  "paper_protocol": {
+    "mpc_horizon": 5,
+    "execute_steps_before_replan": 2,
+    "baselines": "not reproduced, per project scope",
+    "checkpoint_sha256": "4192beff8dbb7ea7049476d2f481de43990a07f5959c5292abdeb2fc425fa0b9",
+    "checkpoint_matches_stage2_report": true,
+    "target_scope": "public Fig. 8 panel crops; original high-resolution artist files and action annotations unavailable",
+    "unpublished_planner_parameters": "recorded as local engineering choices in configs/stage3.json"
+  },
+  "device": "cuda",
+  "lpips_available": false,
+  "lpips_error": "disabled by default; set IMPASTO_ENABLE_LPIPS=1 after verifying AlexNet weights; a previous download did not pass SHA-256 validation",
+  "experiments": {
+    "flower": {
+      "target_source": "authors' public Fig. 8 target crop",
+      "target_strokes": 17,
+      "executed_strokes": 17,
+      "replanning_cycles": 10,
+      "cycles": [
+        {
+          "goal_stroke_count": 5,
+          "executed_before_replan": 0,
+          "planning_initial_weighted_l1": 0.00835971999913454,
+          "planning_final_weighted_l1": 0.006365831010043621,
+          "planning_trace": [
+            {
+              "iteration": 0,
+              "best_cost": 0.008359115570783615,
+              "elite_cost": 0.011755764484405518,
+              "nominal_cost": 0.008352026343345642,
+              "sigma_mean": 0.043240927159786224
+            },
+            {
+              "iteration": 1,
+              "best_cost": 0.00835142470896244,
+              "elite_cost": 0.010914883576333523,
+              "nominal_cost": 0.008315629325807095,
+              "sigma_mean": 0.03533366695046425
+            },
+            {
+              "iteration": 2,
+              "best_cost": 0.008315063081681728,
+              "elite_cost": 0.01023589726537466,
+              "nominal_cost": 0.008289513178169727,
+              "sigma_mean": 0.028745464980602264
+            },
+            {
+              "iteration": 3,
+              "best_cost": 0.008289044722914696,
+              "elite_cost": 0.009640629403293133,
+              "nominal_cost": 0.00815614964812994,
+              "sigma_mean": 0.023547913879156113
+            },
+            {
+              "iteration": 4,
+              "best_cost": 0.00815560668706894,
+              "elite_cost": 0.008967808447778225,
+              "nominal_cost": 0.008079023100435734,
+              "sigma_mean": 0.020543906837701797
+            },
+            {
+              "iteration": 5,
+              "best_cost": 0.007993287406861782,
+              "elite_cost": 0.008607428520917892,
+              "nominal_cost": 0.007943111471831799,
+              "sigma_mean": 0.019831353798508644
+            },
+            {
+              "iteration": 6,
+              "best_cost": 0.007942593656480312,
+              "elite_cost": 0.008266596123576164,
+              "nominal_cost": 0.007618024945259094,
+              "sigma_mean": 0.01996358297765255
+            },
+            {
+              "iteration": 7,
+              "best_cost": 0.007617345079779625,
+              "elite_cost": 0.008212694898247719,
+              "nominal_cost": 0.007514664903283119,
+              "sigma_mean": 0.019772270694375038
+            },
+            {
+              "iteration": 8,
+              "best_cost": 0.007458070758730173,
+              "elite_cost": 0.007855769246816635,
+              "nominal_cost": 0.007294674403965473,
+              "sigma_mean": 0.01912977732717991
+            },
+            {
+              "iteration": 9,
+              "best_cost": 0.0072939894162118435,
+              "elite_cost": 0.007628997787833214,
+              "nominal_cost": 0.007173292338848114,
+              "sigma_mean": 0.019431715831160545
+            },
+            {
+              "iteration": 10,
+              "best_cost": 0.0071726031601428986,
+              "elite_cost": 0.007494359742850065,
+              "nominal_cost": 0.007109463214874268,
+              "sigma_mean": 0.020240290090441704
+            },
+            {
+              "iteration": 11,
+              "best_cost": 0.007108853664249182,
+              "elite_cost": 0.007407203782349825,
+              "nominal_cost": 0.006931352894753218,
+              "sigma_mean": 0.020374983549118042
+            },
+            {
+              "iteration": 12,
+              "best_cost": 0.006930760107934475,
+              "elite_cost": 0.007254794239997864,
+              "nominal_cost": 0.006967329885810614,
+              "sigma_mean": 0.019491223618388176
+            },
+            {
+              "iteration": 13,
+              "best_cost": 0.006932296324521303,
+              "elite_cost": 0.007085384335368872,
+              "nominal_cost": 0.006761143449693918,
+              "sigma_mean": 0.019661899656057358
+            },
+            {
+              "iteration": 14,
+              "best_cost": 0.0067604961805045605,
+              "elite_cost": 0.007099480833858252,
+              "nominal_cost": 0.006690129637718201,
+              "sigma_mean": 0.019851990044116974
+            },
+            {
+              "iteration": 15,
+              "best_cost": 0.0066895573399960995,
+              "elite_cost": 0.006982647348195314,
+              "nominal_cost": 0.006648941431194544,
+              "sigma_mean": 0.019807690754532814
+            },
+            {
+              "iteration": 16,
+              "best_cost": 0.0066483477130532265,
+              "elite_cost": 0.006853891536593437,
+              "nominal_cost": 0.006630787625908852,
+              "sigma_mean": 0.020047642290592194
+            },
+            {
+              "iteration": 17,
+              "best_cost": 0.006630179472267628,
+              "elite_cost": 0.006879551336169243,
+              "nominal_cost": 0.006592273712158203,
+              "sigma_mean": 0.019193317741155624
+            },
+            {
+              "iteration": 18,
+              "best_cost": 0.006591624114662409,
+              "elite_cost": 0.0068189664743840694,
+              "nominal_cost": 0.006523387506604195,
+              "sigma_mean": 0.0191537793725729
+            },
+            {
+              "iteration": 19,
+              "best_cost": 0.006522935815155506,
+              "elite_cost": 0.006771467626094818,
+              "nominal_cost": 0.006542356219142675,
+              "sigma_mean": 0.01814970001578331
+            },
+            {
+              "iteration": 20,
+              "best_cost": 0.006541728507727385,
+              "elite_cost": 0.006712100934237242,
+              "nominal_cost": 0.006498097907751799,
+              "sigma_mean": 0.016876012086868286
+            },
+            {
+              "iteration": 21,
+              "best_cost": 0.006497482769191265,
+              "elite_cost": 0.0066444664262235165,
+              "nominal_cost": 0.006469386164098978,
+              "sigma_mean": 0.01661192812025547
+            },
+            {
+              "iteration": 22,
+              "best_cost": 0.006468590348958969,
+              "elite_cost": 0.0066200741566717625,
+              "nominal_cost": 0.006422517355531454,
+              "sigma_mean": 0.016580458730459213
+            },
+            {
+              "iteration": 23,
+              "best_cost": 0.006421697326004505,
+              "elite_cost": 0.00656948471441865,
+              "nominal_cost": 0.0063666836358606815,
+              "sigma_mean": 0.018445592373609543
+            },
+            {
+              "iteration": 24,
+              "best_cost": 0.006365831010043621,
+              "elite_cost": 0.006582252681255341,
+              "nominal_cost": 0.006374706979840994,
+              "sigma_mean": 0.01853105239570141
+            },
+            {
+              "iteration": 25,
+              "best_cost": 0.006373908370733261,
+              "elite_cost": 0.006568893324583769,
+              "nominal_cost": 0.006374807562679052,
+              "sigma_mean": 0.017258087173104286
+            },
+            {
+              "iteration": 26,
+              "best_cost": 0.006374016869813204,
+              "elite_cost": 0.006547953933477402,
+              "nominal_cost": 0.006401549093425274,
+              "sigma_mean": 0.017462724819779396
+            },
+            {
+              "iteration": 27,
+              "best_cost": 0.006400700192898512,
+              "elite_cost": 0.006546519231051207,
+              "nominal_cost": 0.006408980581909418,
+              "sigma_mean": 0.01701071672141552
+            },
+            {
+              "iteration": 28,
+              "best_cost": 0.006396843586117029,
+              "elite_cost": 0.006474938243627548,
+              "nominal_cost": 0.0063669015653431416,
+              "sigma_mean": 0.019147839397192
+            },
+            {
+              "iteration": 29,
+              "best_cost": 0.006366305518895388,
+              "elite_cost": 0.00650027533993125,
+              "nominal_cost": 0.006378292106091976,
+              "sigma_mean": 0.018563421443104744
+            }
+          ],
+          "proposals": 5,
+          "prediction_execution": {
+            "executed_actions": 2,
+            "before_goal_weighted_l1": 0.02276804856956005,
+            "after_goal_weighted_l1": 0.012874634005129337,
+            "prediction_vs_execution_l1": 0.0005245263455435634,
+            "prediction_vs_execution_goal_region_l1": 0.011830803006887436,
+            "predicted_after_actions_goal_weighted_l1": 0.012897257693111897,
+            "diagnostic_image": "flower_cycle_01.png"
+          }
+        },
+        {
+          "goal_stroke_count": 5,
+          "executed_before_replan": 2,
+          "planning_initial_weighted_l1": 0.006278885528445244,
+          "planning_final_weighted_l1": 0.0062787653878331184,
+          "planning_trace": [
+            {
+              "iteration": 0,
+              "best_cost": 0.0062787653878331184,
+              "elite_cost": 0.008415707387030125,
+              "nominal_cost": 0.006354744546115398,
+              "sigma_mean": 0.04309335723519325
+            },
+            {
+              "iteration": 1,
+              "best_cost": 0.0063546327874064445,
+              "elite_cost": 0.0077932048588991165,
+              "nominal_cost": 0.006309980992227793,
+              "sigma_mean": 0.03446647524833679
+            },
+            {
+              "iteration": 2,
+              "best_cost": 0.006309854332357645,
+              "elite_cost": 0.007401387672871351,
+              "nominal_cost": 0.006377879995852709,
+              "sigma_mean": 0.027552714571356773
+            },
+            {
+              "iteration": 3,
+              "best_cost": 0.00637778639793396,
+              "elite_cost": 0.007146064657717943,
+              "nominal_cost": 0.006483226083219051,
+              "sigma_mean": 0.022873345762491226
+            },
+            {
+              "iteration": 4,
+              "best_cost": 0.00648314505815506,
+              "elite_cost": 0.006839871406555176,
+              "nominal_cost": 0.006411445327103138,
+              "sigma_mean": 0.02186569944024086
+            },
+            {
+              "iteration": 5,
+              "best_cost": 0.006410662084817886,
+              "elite_cost": 0.006755706388503313,
+              "nominal_cost": 0.006483409088104963,
+              "sigma_mean": 0.018964454531669617
+            },
+            {
+              "iteration": 6,
+              "best_cost": 0.006483287550508976,
+              "elite_cost": 0.00664393650367856,
+              "nominal_cost": 0.006440513301640749,
+              "sigma_mean": 0.01930452138185501
+            },
+            {
+              "iteration": 7,
+              "best_cost": 0.006440410390496254,
+              "elite_cost": 0.006609054747968912,
+              "nominal_cost": 0.006388371344655752,
+              "sigma_mean": 0.01909419521689415
+            },
+            {
+              "iteration": 8,
+              "best_cost": 0.0063882735557854176,
+              "elite_cost": 0.006566633004695177,
+              "nominal_cost": 0.006355428136885166,
+              "sigma_mean": 0.01865646429359913
+            },
+            {
+              "iteration": 9,
+              "best_cost": 0.0063553135842084885,
+              "elite_cost": 0.006528230383992195,
+              "nominal_cost": 0.006394074764102697,
+              "sigma_mean": 0.017011092975735664
+            },
+            {
+              "iteration": 10,
+              "best_cost": 0.006393979769200087,
+              "elite_cost": 0.006459519267082214,
+              "nominal_cost": 0.00637679873034358,
+              "sigma_mean": 0.016589755192399025
+            },
+            {
+              "iteration": 11,
+              "best_cost": 0.006348812486976385,
+              "elite_cost": 0.006424302700906992,
+              "nominal_cost": 0.006298799533396959,
+              "sigma_mean": 0.01587846502661705
+            },
+            {
+              "iteration": 12,
+              "best_cost": 0.00629870081320405,
+              "elite_cost": 0.0064108590595424175,
+              "nominal_cost": 0.006338825915008783,
+              "sigma_mean": 0.015929460525512695
+            },
+            {
+              "iteration": 13,
+              "best_cost": 0.006329749245196581,
+              "elite_cost": 0.0063920896500349045,
+              "nominal_cost": 0.006318479310721159,
+              "sigma_mean": 0.01521525252610445
+            },
+            {
+              "iteration": 14,
+              "best_cost": 0.006318363826721907,
+              "elite_cost": 0.006368556991219521,
+              "nominal_cost": 0.006321240682154894,
+              "sigma_mean": 0.015455570071935654
+            },
+            {
+              "iteration": 15,
+              "best_cost": 0.006321146618574858,
+              "elite_cost": 0.006390312220901251,
+              "nominal_cost": 0.006325828842818737,
+              "sigma_mean": 0.015117877162992954
+            },
+            {
+              "iteration": 16,
+              "best_cost": 0.006303166504949331,
+              "elite_cost": 0.006362892221659422,
+              "nominal_cost": 0.00632735900580883,
+              "sigma_mean": 0.013837511651217937
+            },
+            {
+              "iteration": 17,
+              "best_cost": 0.006319593638181686,
+              "elite_cost": 0.00635552080348134,
+              "nominal_cost": 0.006327733397483826,
+              "sigma_mean": 0.013437090441584587
+            },
+            {
+              "iteration": 18,
+              "best_cost": 0.006316526792943478,
+              "elite_cost": 0.00635020574554801,
+              "nominal_cost": 0.006323131732642651,
+              "sigma_mean": 0.014019721187651157
+            },
+            {
+              "iteration": 19,
+              "best_cost": 0.0063036708161234856,
+              "elite_cost": 0.006338255014270544,
+              "nominal_cost": 0.006298415828496218,
+              "sigma_mean": 0.01414361409842968
+            },
+            {
+              "iteration": 20,
+              "best_cost": 0.006298318970948458,
+              "elite_cost": 0.006343487650156021,
+              "nominal_cost": 0.006290461402386427,
+              "sigma_mean": 0.013659108430147171
+            },
+            {
+              "iteration": 21,
+              "best_cost": 0.0062903533689677715,
+              "elite_cost": 0.0063329413533210754,
+              "nominal_cost": 0.006290710065513849,
+              "sigma_mean": 0.013980980031192303
+            },
+            {
+              "iteration": 22,
+              "best_cost": 0.006290601100772619,
+              "elite_cost": 0.006350551266223192,
+              "nominal_cost": 0.006298585794866085,
+              "sigma_mean": 0.01324812788516283
+            },
+            {
+              "iteration": 23,
+              "best_cost": 0.006298476364463568,
+              "elite_cost": 0.006338973995298147,
+              "nominal_cost": 0.006303380709141493,
+              "sigma_mean": 0.012371715158224106
+            },
+            {
+              "iteration": 24,
+              "best_cost": 0.006303285714238882,
+              "elite_cost": 0.006326615810394287,
+              "nominal_cost": 0.006324649788439274,
+              "sigma_mean": 0.012910340912640095
+            },
+            {
+              "iteration": 25,
+              "best_cost": 0.006280920002609491,
+              "elite_cost": 0.00632390147075057,
+              "nominal_cost": 0.006292397156357765,
+              "sigma_mean": 0.012239372357726097
+            },
+            {
+              "iteration": 26,
+              "best_cost": 0.006292298901826143,
+              "elite_cost": 0.006314816419035196,
+              "nominal_cost": 0.006305032409727573,
+              "sigma_mean": 0.011867567896842957
+            },
+            {
+              "iteration": 27,
+              "best_cost": 0.006291557103395462,
+              "elite_cost": 0.006318008992820978,
+              "nominal_cost": 0.006309018470346928,
+              "sigma_mean": 0.010909762233495712
+            },
+            {
+              "iteration": 28,
+              "best_cost": 0.006283149588853121,
+              "elite_cost": 0.006311267614364624,
+              "nominal_cost": 0.006305281538516283,
+              "sigma_mean": 0.010528947226703167
+            },
+            {
+              "iteration": 29,
+              "best_cost": 0.006293248385190964,
+              "elite_cost": 0.006305707152932882,
+              "nominal_cost": 0.006289317272603512,
+              "sigma_mean": 0.012198753654956818
+            }
+          ],
+          "proposals": 0,
+          "prediction_execution": {
+            "executed_actions": 2,
+            "before_goal_weighted_l1": 0.012864870019257069,
+            "after_goal_weighted_l1": 0.0075717163272202015,
+            "prediction_vs_execution_l1": 0.0003329003229737282,
+            "prediction_vs_execution_goal_region_l1": 0.00846107117831707,
+            "predicted_after_actions_goal_weighted_l1": 0.007705657742917538,
+            "diagnostic_image": "flower_cycle_02.png"
+          }
+        },
+        {
+          "goal_stroke_count": 5,
+          "executed_before_replan": 4,
+          "planning_initial_weighted_l1": 0.00613345205783844,
+          "planning_final_weighted_l1": 0.006121270824223757,
+          "planning_trace": [
+            {
+              "iteration": 0,
+              "best_cost": 0.00613343296572566,
+              "elite_cost": 0.006559282075613737,
+              "nominal_cost": 0.006157931871712208,
+              "sigma_mean": 0.04695810750126839
+            },
+            {
+              "iteration": 1,
+              "best_cost": 0.0061579118482768536,
+              "elite_cost": 0.006381068378686905,
+              "nominal_cost": 0.006147849373519421,
+              "sigma_mean": 0.043205659836530685
+            },
+            {
+              "iteration": 2,
+              "best_cost": 0.006147839594632387,
+              "elite_cost": 0.006430430803447962,
+              "nominal_cost": 0.006167486310005188,
+              "sigma_mean": 0.03877029940485954
+            },
+            {
+              "iteration": 3,
+              "best_cost": 0.0061674644239246845,
+              "elite_cost": 0.006260023918002844,
+              "nominal_cost": 0.0061448183842003345,
+              "sigma_mean": 0.034937191754579544
+            },
+            {
+              "iteration": 4,
+              "best_cost": 0.006144807208329439,
+              "elite_cost": 0.006220164243131876,
+              "nominal_cost": 0.0061296215280890465,
+              "sigma_mean": 0.03145991638302803
+            },
+            {
+              "iteration": 5,
+              "best_cost": 0.006129607558250427,
+              "elite_cost": 0.006191604305058718,
+              "nominal_cost": 0.006132816430181265,
+              "sigma_mean": 0.0291989017277956
+            },
+            {
+              "iteration": 6,
+              "best_cost": 0.006132791750133038,
+              "elite_cost": 0.0061873625963926315,
+              "nominal_cost": 0.006141055375337601,
+              "sigma_mean": 0.024597635492682457
+            },
+            {
+              "iteration": 7,
+              "best_cost": 0.006134321913123131,
+              "elite_cost": 0.006158912554383278,
+              "nominal_cost": 0.006137095857411623,
+              "sigma_mean": 0.022752894088625908
+            },
+            {
+              "iteration": 8,
+              "best_cost": 0.006137070246040821,
+              "elite_cost": 0.006158556789159775,
+              "nominal_cost": 0.006138564553111792,
+              "sigma_mean": 0.020685896277427673
+            },
+            {
+              "iteration": 9,
+              "best_cost": 0.0061385552398860455,
+              "elite_cost": 0.006149986758828163,
+              "nominal_cost": 0.006138068623840809,
+              "sigma_mean": 0.017072055488824844
+            },
+            {
+              "iteration": 10,
+              "best_cost": 0.00612774770706892,
+              "elite_cost": 0.0061377123929560184,
+              "nominal_cost": 0.0061369724571704865,
+              "sigma_mean": 0.01581413857638836
+            },
+            {
+              "iteration": 11,
+              "best_cost": 0.00612911069765687,
+              "elite_cost": 0.006139709148555994,
+              "nominal_cost": 0.006141739897429943,
+              "sigma_mean": 0.016704976558685303
+            },
+            {
+              "iteration": 12,
+              "best_cost": 0.006125219166278839,
+              "elite_cost": 0.0061352974735200405,
+              "nominal_cost": 0.006126054562628269,
+              "sigma_mean": 0.016752904281020164
+            },
+            {
+              "iteration": 13,
+              "best_cost": 0.006126039661467075,
+              "elite_cost": 0.006137495394796133,
+              "nominal_cost": 0.006130092311650515,
+              "sigma_mean": 0.016072329133749008
+            },
+            {
+              "iteration": 14,
+              "best_cost": 0.006130076479166746,
+              "elite_cost": 0.006136516109108925,
+              "nominal_cost": 0.006133188959211111,
+              "sigma_mean": 0.016758007928729057
+            },
+            {
+              "iteration": 15,
+              "best_cost": 0.006125506013631821,
+              "elite_cost": 0.0061336844228208065,
+              "nominal_cost": 0.006126841530203819,
+              "sigma_mean": 0.016234297305345535
+            },
+            {
+              "iteration": 16,
+              "best_cost": 0.0061268252320587635,
+              "elite_cost": 0.006133275106549263,
+              "nominal_cost": 0.006128043867647648,
+              "sigma_mean": 0.013703678734600544
+            },
+            {
+              "iteration": 17,
+              "best_cost": 0.006123657338321209,
+              "elite_cost": 0.006128991488367319,
+              "nominal_cost": 0.00613029208034277,
+              "sigma_mean": 0.013107866048812866
+            },
+            {
+              "iteration": 18,
+              "best_cost": 0.006125697400420904,
+              "elite_cost": 0.006128884386271238,
+              "nominal_cost": 0.006128265056759119,
+              "sigma_mean": 0.011624951846897602
+            },
+            {
+              "iteration": 19,
+              "best_cost": 0.006123998202383518,
+              "elite_cost": 0.006128149572759867,
+              "nominal_cost": 0.0061265272088348866,
+              "sigma_mean": 0.011660811491310596
+            },
+            {
+              "iteration": 20,
+              "best_cost": 0.00612599216401577,
+              "elite_cost": 0.006129791960120201,
+              "nominal_cost": 0.006128883920609951,
+              "sigma_mean": 0.012050092220306396
+            },
+            {
+              "iteration": 21,
+              "best_cost": 0.006126439664512873,
+              "elite_cost": 0.00612826319411397,
+              "nominal_cost": 0.006128347013145685,
+              "sigma_mean": 0.011693690903484821
+            },
+            {
+              "iteration": 22,
+              "best_cost": 0.006125015672296286,
+              "elite_cost": 0.006129074841737747,
+              "nominal_cost": 0.006127391010522842,
+              "sigma_mean": 0.011893643997609615
+            },
+            {
+              "iteration": 23,
+              "best_cost": 0.006125177256762981,
+              "elite_cost": 0.006129261571913958,
+              "nominal_cost": 0.006127273663878441,
+              "sigma_mean": 0.01045024674385786
+            },
+            {
+              "iteration": 24,
+              "best_cost": 0.006125673186033964,
+              "elite_cost": 0.0061272731982171535,
+              "nominal_cost": 0.006128591950982809,
+              "sigma_mean": 0.008871006779372692
+            },
+            {
+              "iteration": 25,
+              "best_cost": 0.006125754676759243,
+              "elite_cost": 0.0061268978752195835,
+              "nominal_cost": 0.006125704851001501,
+              "sigma_mean": 0.00989380944520235
+            },
+            {
+              "iteration": 26,
+              "best_cost": 0.006124849896878004,
+              "elite_cost": 0.006126699969172478,
+              "nominal_cost": 0.0061243209056556225,
+              "sigma_mean": 0.010925193317234516
+            },
+            {
+              "iteration": 27,
+              "best_cost": 0.006121270824223757,
+              "elite_cost": 0.006125365849584341,
+              "nominal_cost": 0.006125125102698803,
+              "sigma_mean": 0.012620641849935055
+            },
+            {
+              "iteration": 28,
+              "best_cost": 0.006123061291873455,
+              "elite_cost": 0.0061264303512871265,
+              "nominal_cost": 0.006127412896603346,
+              "sigma_mean": 0.012976468540728092
+            },
+            {
+              "iteration": 29,
+              "best_cost": 0.00612497515976429,
+              "elite_cost": 0.006127368658781052,
+              "nominal_cost": 0.006125704851001501,
+              "sigma_mean": 0.012302144430577755
+            }
+          ],
+          "proposals": 0,
+          "prediction_execution": {
+            "executed_actions": 1,
+            "before_goal_weighted_l1": 0.007571888621896505,
+            "after_goal_weighted_l1": 0.006242148578166962,
+            "prediction_vs_execution_l1": 0.0001740050211083144,
+            "prediction_vs_execution_goal_region_l1": 0.004480618052184582,
+            "predicted_after_actions_goal_weighted_l1": 0.006121285259723663,
+            "diagnostic_image": "flower_cycle_03.png"
+          }
+        },
+        {
+          "goal_stroke_count": 10,
+          "executed_before_replan": 5,
+          "planning_initial_weighted_l1": 0.013832532800734043,
+          "planning_final_weighted_l1": 0.012128910981118679,
+          "planning_trace": [
+            {
+              "iteration": 0,
+              "best_cost": 0.01383235678076744,
+              "elite_cost": 0.015035291202366352,
+              "nominal_cost": 0.01340639591217041,
+              "sigma_mean": 0.0435568243265152
+            },
+            {
+              "iteration": 1,
+              "best_cost": 0.013406299985945225,
+              "elite_cost": 0.014449406415224075,
+              "nominal_cost": 0.013147050514817238,
+              "sigma_mean": 0.036001384258270264
+            },
+            {
+              "iteration": 2,
+              "best_cost": 0.013147082179784775,
+              "elite_cost": 0.013986409641802311,
+              "nominal_cost": 0.012841775082051754,
+              "sigma_mean": 0.03244921937584877
+            },
+            {
+              "iteration": 3,
+              "best_cost": 0.012841676361858845,
+              "elite_cost": 0.013652943074703217,
+              "nominal_cost": 0.012721956707537174,
+              "sigma_mean": 0.0294259712100029
+            },
+            {
+              "iteration": 4,
+              "best_cost": 0.012721887789666653,
+              "elite_cost": 0.013325754553079605,
+              "nominal_cost": 0.012683235108852386,
+              "sigma_mean": 0.0266514141112566
+            },
+            {
+              "iteration": 5,
+              "best_cost": 0.012683113105595112,
+              "elite_cost": 0.013253476470708847,
+              "nominal_cost": 0.012530962936580181,
+              "sigma_mean": 0.024797672405838966
+            },
+            {
+              "iteration": 6,
+              "best_cost": 0.01253091637045145,
+              "elite_cost": 0.013032940216362476,
+              "nominal_cost": 0.012524884194135666,
+              "sigma_mean": 0.02277655154466629
+            },
+            {
+              "iteration": 7,
+              "best_cost": 0.012524574995040894,
+              "elite_cost": 0.012949839234352112,
+              "nominal_cost": 0.012505383230745792,
+              "sigma_mean": 0.021491501480340958
+            },
+            {
+              "iteration": 8,
+              "best_cost": 0.012442871928215027,
+              "elite_cost": 0.012690394185483456,
+              "nominal_cost": 0.012396917678415775,
+              "sigma_mean": 0.020293744280934334
+            },
+            {
+              "iteration": 9,
+              "best_cost": 0.012396766804158688,
+              "elite_cost": 0.012635196559131145,
+              "nominal_cost": 0.01241052895784378,
+              "sigma_mean": 0.02015160582959652
+            },
+            {
+              "iteration": 10,
+              "best_cost": 0.012410218827426434,
+              "elite_cost": 0.012562363408505917,
+              "nominal_cost": 0.012388570234179497,
+              "sigma_mean": 0.019752493128180504
+            },
+            {
+              "iteration": 11,
+              "best_cost": 0.012388384900987148,
+              "elite_cost": 0.012542915530502796,
+              "nominal_cost": 0.01232985407114029,
+              "sigma_mean": 0.019028302282094955
+            },
+            {
+              "iteration": 12,
+              "best_cost": 0.012329752556979656,
+              "elite_cost": 0.012468195520341396,
+              "nominal_cost": 0.01224523689597845,
+              "sigma_mean": 0.01929658092558384
+            },
+            {
+              "iteration": 13,
+              "best_cost": 0.012245283462107182,
+              "elite_cost": 0.01247526053339243,
+              "nominal_cost": 0.012266076169908047,
+              "sigma_mean": 0.019318517297506332
+            },
+            {
+              "iteration": 14,
+              "best_cost": 0.012265891768038273,
+              "elite_cost": 0.01241662073880434,
+              "nominal_cost": 0.01222558505833149,
+              "sigma_mean": 0.018751176074147224
+            },
+            {
+              "iteration": 15,
+              "best_cost": 0.012225532904267311,
+              "elite_cost": 0.012399572879076004,
+              "nominal_cost": 0.012245018035173416,
+              "sigma_mean": 0.018560463562607765
+            },
+            {
+              "iteration": 16,
+              "best_cost": 0.012244834564626217,
+              "elite_cost": 0.012368489056825638,
+              "nominal_cost": 0.012279432266950607,
+              "sigma_mean": 0.017667105421423912
+            },
+            {
+              "iteration": 17,
+              "best_cost": 0.012262499891221523,
+              "elite_cost": 0.012325379997491837,
+              "nominal_cost": 0.012177841737866402,
+              "sigma_mean": 0.017875613644719124
+            },
+            {
+              "iteration": 18,
+              "best_cost": 0.012177856639027596,
+              "elite_cost": 0.012296099215745926,
+              "nominal_cost": 0.012145466171205044,
+              "sigma_mean": 0.01813632994890213
+            },
+            {
+              "iteration": 19,
+              "best_cost": 0.012145406566560268,
+              "elite_cost": 0.012286054901778698,
+              "nominal_cost": 0.01217076275497675,
+              "sigma_mean": 0.017424296587705612
+            },
+            {
+              "iteration": 20,
+              "best_cost": 0.012170739471912384,
+              "elite_cost": 0.012276994995772839,
+              "nominal_cost": 0.012170999310910702,
+              "sigma_mean": 0.017552712932229042
+            },
+            {
+              "iteration": 21,
+              "best_cost": 0.012170874513685703,
+              "elite_cost": 0.012259799055755138,
+              "nominal_cost": 0.012137309648096561,
+              "sigma_mean": 0.016920946538448334
+            },
+            {
+              "iteration": 22,
+              "best_cost": 0.012137229554355145,
+              "elite_cost": 0.012216784991323948,
+              "nominal_cost": 0.012166962958872318,
+              "sigma_mean": 0.01700506918132305
+            },
+            {
+              "iteration": 23,
+              "best_cost": 0.012166875414550304,
+              "elite_cost": 0.012214981950819492,
+              "nominal_cost": 0.0121370954439044,
+              "sigma_mean": 0.01771398074924946
+            },
+            {
+              "iteration": 24,
+              "best_cost": 0.012136991135776043,
+              "elite_cost": 0.012227856554090977,
+              "nominal_cost": 0.012129006907343864,
+              "sigma_mean": 0.016966959461569786
+            },
+            {
+              "iteration": 25,
+              "best_cost": 0.012128910981118679,
+              "elite_cost": 0.012203138321638107,
+              "nominal_cost": 0.012140044011175632,
+              "sigma_mean": 0.01648213341832161
+            },
+            {
+              "iteration": 26,
+              "best_cost": 0.012139908969402313,
+              "elite_cost": 0.01220371201634407,
+              "nominal_cost": 0.012142111547291279,
+              "sigma_mean": 0.015742072835564613
+            },
+            {
+              "iteration": 27,
+              "best_cost": 0.01213432289659977,
+              "elite_cost": 0.012179664336144924,
+              "nominal_cost": 0.012147328816354275,
+              "sigma_mean": 0.01672467030584812
+            },
+            {
+              "iteration": 28,
+              "best_cost": 0.012147126719355583,
+              "elite_cost": 0.012194633483886719,
+              "nominal_cost": 0.012139841914176941,
+              "sigma_mean": 0.01590847782790661
+            },
+            {
+              "iteration": 29,
+              "best_cost": 0.012139705941081047,
+              "elite_cost": 0.012177988886833191,
+              "nominal_cost": 0.012132602743804455,
+              "sigma_mean": 0.01583259180188179
+            }
+          ],
+          "proposals": 5,
+          "prediction_execution": {
+            "executed_actions": 2,
+            "before_goal_weighted_l1": 0.02034004032611847,
+            "after_goal_weighted_l1": 0.014353422448039055,
+            "prediction_vs_execution_l1": 0.0008729874971322715,
+            "prediction_vs_execution_goal_region_l1": 0.018672829493880272,
+            "predicted_after_actions_goal_weighted_l1": 0.013982969336211681,
+            "diagnostic_image": "flower_cycle_04.png"
+          }
+        },
+        {
+          "goal_stroke_count": 10,
+          "executed_before_replan": 7,
+          "planning_initial_weighted_l1": 0.012505820952355862,
+          "planning_final_weighted_l1": 0.012444852851331234,
+          "planning_trace": [
+            {
+              "iteration": 0,
+              "best_cost": 0.012505682185292244,
+              "elite_cost": 0.013175271451473236,
+              "nominal_cost": 0.012594428844749928,
+              "sigma_mean": 0.043632108718156815
+            },
+            {
+              "iteration": 1,
+              "best_cost": 0.012594283558428288,
+              "elite_cost": 0.01294765155762434,
+              "nominal_cost": 0.012600257061421871,
+              "sigma_mean": 0.03941645473241806
+            },
+            {
+              "iteration": 2,
+              "best_cost": 0.012600107118487358,
+              "elite_cost": 0.012828543782234192,
+              "nominal_cost": 0.012591187842190266,
+              "sigma_mean": 0.03553071245551109
+            },
+            {
+              "iteration": 3,
+              "best_cost": 0.012591066770255566,
+              "elite_cost": 0.012749982066452503,
+              "nominal_cost": 0.012572511099278927,
+              "sigma_mean": 0.036494795233011246
+            },
+            {
+              "iteration": 4,
+              "best_cost": 0.012572390027344227,
+              "elite_cost": 0.012750640511512756,
+              "nominal_cost": 0.012549072504043579,
+              "sigma_mean": 0.03299906849861145
+            },
+            {
+              "iteration": 5,
+              "best_cost": 0.012548968195915222,
+              "elite_cost": 0.012673570774495602,
+              "nominal_cost": 0.01253473199903965,
+              "sigma_mean": 0.032146308571100235
+            },
+            {
+              "iteration": 6,
+              "best_cost": 0.012534615583717823,
+              "elite_cost": 0.012652001343667507,
+              "nominal_cost": 0.01253124512732029,
+              "sigma_mean": 0.032646212726831436
+            },
+            {
+              "iteration": 7,
+              "best_cost": 0.012531125918030739,
+              "elite_cost": 0.012637917883694172,
+              "nominal_cost": 0.012530356645584106,
+              "sigma_mean": 0.03087439201772213
+            },
+            {
+              "iteration": 8,
+              "best_cost": 0.012530248612165451,
+              "elite_cost": 0.012618672102689743,
+              "nominal_cost": 0.012547229416668415,
+              "sigma_mean": 0.0298300888389349
+            },
+            {
+              "iteration": 9,
+              "best_cost": 0.012538999319076538,
+              "elite_cost": 0.012583852745592594,
+              "nominal_cost": 0.012523175217211246,
+              "sigma_mean": 0.029876478016376495
+            },
+            {
+              "iteration": 10,
+              "best_cost": 0.012523064389824867,
+              "elite_cost": 0.012591672129929066,
+              "nominal_cost": 0.012517215684056282,
+              "sigma_mean": 0.028126925230026245
+            },
+            {
+              "iteration": 11,
+              "best_cost": 0.012512272223830223,
+              "elite_cost": 0.012558738701045513,
+              "nominal_cost": 0.012506094761192799,
+              "sigma_mean": 0.027035078033804893
+            },
+            {
+              "iteration": 12,
+              "best_cost": 0.012505973689258099,
+              "elite_cost": 0.012535852380096912,
+              "nominal_cost": 0.01250159926712513,
+              "sigma_mean": 0.02675890177488327
+            },
+            {
+              "iteration": 13,
+              "best_cost": 0.0125014903023839,
+              "elite_cost": 0.012538514100015163,
+              "nominal_cost": 0.012508033774793148,
+              "sigma_mean": 0.026518307626247406
+            },
+            {
+              "iteration": 14,
+              "best_cost": 0.012503608129918575,
+              "elite_cost": 0.01252939086407423,
+              "nominal_cost": 0.012485560961067677,
+              "sigma_mean": 0.02757987380027771
+            },
+            {
+              "iteration": 15,
+              "best_cost": 0.012483061291277409,
+              "elite_cost": 0.01250725332647562,
+              "nominal_cost": 0.012477514334022999,
+              "sigma_mean": 0.029623571783304214
+            },
+            {
+              "iteration": 16,
+              "best_cost": 0.012477408163249493,
+              "elite_cost": 0.012521584518253803,
+              "nominal_cost": 0.01248576957732439,
+              "sigma_mean": 0.02723260223865509
+            },
+            {
+              "iteration": 17,
+              "best_cost": 0.012485685758292675,
+              "elite_cost": 0.012514390051364899,
+              "nominal_cost": 0.012478863820433617,
+              "sigma_mean": 0.025371212512254715
+            },
+            {
+              "iteration": 18,
+              "best_cost": 0.01247804518789053,
+              "elite_cost": 0.012494423426687717,
+              "nominal_cost": 0.012476862408220768,
+              "sigma_mean": 0.024282164871692657
+            },
+            {
+              "iteration": 19,
+              "best_cost": 0.012476765550673008,
+              "elite_cost": 0.012495550327003002,
+              "nominal_cost": 0.012474353425204754,
+              "sigma_mean": 0.02343566156923771
+            },
+            {
+              "iteration": 20,
+              "best_cost": 0.012474268674850464,
+              "elite_cost": 0.012493633665144444,
+              "nominal_cost": 0.012481744401156902,
+              "sigma_mean": 0.024065757170319557
+            },
+            {
+              "iteration": 21,
+              "best_cost": 0.012475992552936077,
+              "elite_cost": 0.012491288594901562,
+              "nominal_cost": 0.012468846514821053,
+              "sigma_mean": 0.023674754425883293
+            },
+            {
+              "iteration": 22,
+              "best_cost": 0.012468739412724972,
+              "elite_cost": 0.012483887374401093,
+              "nominal_cost": 0.012471863068640232,
+              "sigma_mean": 0.023013953119516373
+            },
+            {
+              "iteration": 23,
+              "best_cost": 0.012471776455640793,
+              "elite_cost": 0.012484502047300339,
+              "nominal_cost": 0.012478427961468697,
+              "sigma_mean": 0.02142317034304142
+            },
+            {
+              "iteration": 24,
+              "best_cost": 0.012475020252168179,
+              "elite_cost": 0.012482397258281708,
+              "nominal_cost": 0.012468184344470501,
+              "sigma_mean": 0.021535616368055344
+            },
+            {
+              "iteration": 25,
+              "best_cost": 0.012468105182051659,
+              "elite_cost": 0.012479640543460846,
+              "nominal_cost": 0.01247774250805378,
+              "sigma_mean": 0.021434642374515533
+            },
+            {
+              "iteration": 26,
+              "best_cost": 0.012461828999221325,
+              "elite_cost": 0.012479051016271114,
+              "nominal_cost": 0.012467189691960812,
+              "sigma_mean": 0.019827647134661674
+            },
+            {
+              "iteration": 27,
+              "best_cost": 0.012450268492102623,
+              "elite_cost": 0.012476476840674877,
+              "nominal_cost": 0.01247321255505085,
+              "sigma_mean": 0.0200644563883543
+            },
+            {
+              "iteration": 28,
+              "best_cost": 0.012453907169401646,
+              "elite_cost": 0.012472470290958881,
+              "nominal_cost": 0.012475121766328812,
+              "sigma_mean": 0.022258056327700615
+            },
+            {
+              "iteration": 29,
+              "best_cost": 0.012464570812880993,
+              "elite_cost": 0.012471270747482777,
+              "nominal_cost": 0.012444852851331234,
+              "sigma_mean": 0.023364152759313583
+            }
+          ],
+          "proposals": 0,
+          "prediction_execution": {
+            "executed_actions": 2,
+            "before_goal_weighted_l1": 0.01434857863932848,
+            "after_goal_weighted_l1": 0.012709606438875198,
+            "prediction_vs_execution_l1": 0.00040794993401505053,
+            "prediction_vs_execution_goal_region_l1": 0.009236421436071396,
+            "predicted_after_actions_goal_weighted_l1": 0.012507084757089615,
+            "diagnostic_image": "flower_cycle_05.png"
+          }
+        },
+        {
+          "goal_stroke_count": 10,
+          "executed_before_replan": 9,
+          "planning_initial_weighted_l1": 0.01261000707745552,
+          "planning_final_weighted_l1": 0.01260023470968008,
+          "planning_trace": [
+            {
+              "iteration": 0,
+              "best_cost": 0.012610013596713543,
+              "elite_cost": 0.012645485810935497,
+              "nominal_cost": 0.012610413134098053,
+              "sigma_mean": 0.04771282896399498
+            },
+            {
+              "iteration": 1,
+              "best_cost": 0.012610419653356075,
+              "elite_cost": 0.012641042470932007,
+              "nominal_cost": 0.012615632265806198,
+              "sigma_mean": 0.05207185074687004
+            },
+            {
+              "iteration": 2,
+              "best_cost": 0.012615637853741646,
+              "elite_cost": 0.012642829678952694,
+              "nominal_cost": 0.012612401507794857,
+              "sigma_mean": 0.04722366854548454
+            },
+            {
+              "iteration": 3,
+              "best_cost": 0.012612405233085155,
+              "elite_cost": 0.01262405514717102,
+              "nominal_cost": 0.012609155848622322,
+              "sigma_mean": 0.040330078452825546
+            },
+            {
+              "iteration": 4,
+              "best_cost": 0.01260915957391262,
+              "elite_cost": 0.012623774819076061,
+              "nominal_cost": 0.012615465559065342,
+              "sigma_mean": 0.034406933933496475
+            },
+            {
+              "iteration": 5,
+              "best_cost": 0.012612354010343552,
+              "elite_cost": 0.012617235071957111,
+              "nominal_cost": 0.012615789659321308,
+              "sigma_mean": 0.030705446377396584
+            },
+            {
+              "iteration": 6,
+              "best_cost": 0.012612376362085342,
+              "elite_cost": 0.012615176849067211,
+              "nominal_cost": 0.012606114149093628,
+              "sigma_mean": 0.02979464828968048
+            },
+            {
+              "iteration": 7,
+              "best_cost": 0.012604545801877975,
+              "elite_cost": 0.01261045876890421,
+              "nominal_cost": 0.012607285752892494,
+              "sigma_mean": 0.027783697471022606
+            },
+            {
+              "iteration": 8,
+              "best_cost": 0.012604708783328533,
+              "elite_cost": 0.012607998214662075,
+              "nominal_cost": 0.012606211006641388,
+              "sigma_mean": 0.023660868406295776
+            },
+            {
+              "iteration": 9,
+              "best_cost": 0.012603485025465488,
+              "elite_cost": 0.012607083655893803,
+              "nominal_cost": 0.012605362571775913,
+              "sigma_mean": 0.023505792021751404
+            },
+            {
+              "iteration": 10,
+              "best_cost": 0.012603805400431156,
+              "elite_cost": 0.012605756521224976,
+              "nominal_cost": 0.012605649419128895,
+              "sigma_mean": 0.024443751201033592
+            },
+            {
+              "iteration": 11,
+              "best_cost": 0.012603573501110077,
+              "elite_cost": 0.012605695985257626,
+              "nominal_cost": 0.012605984695255756,
+              "sigma_mean": 0.022828051820397377
+            },
+            {
+              "iteration": 12,
+              "best_cost": 0.012603471986949444,
+              "elite_cost": 0.012605692259967327,
+              "nominal_cost": 0.012605765834450722,
+              "sigma_mean": 0.022404303774237633
+            },
+            {
+              "iteration": 13,
+              "best_cost": 0.01260307151824236,
+              "elite_cost": 0.012605671770870686,
+              "nominal_cost": 0.01260640099644661,
+              "sigma_mean": 0.020233655348420143
+            },
+            {
+              "iteration": 14,
+              "best_cost": 0.012602441944181919,
+              "elite_cost": 0.012604504823684692,
+              "nominal_cost": 0.012604223564267159,
+              "sigma_mean": 0.020822513848543167
+            },
+            {
+              "iteration": 15,
+              "best_cost": 0.01260332204401493,
+              "elite_cost": 0.0126045485958457,
+              "nominal_cost": 0.012601884081959724,
+              "sigma_mean": 0.021769976243376732
+            },
+            {
+              "iteration": 16,
+              "best_cost": 0.012601738795638084,
+              "elite_cost": 0.012603084556758404,
+              "nominal_cost": 0.012602472677826881,
+              "sigma_mean": 0.02012249454855919
+            },
+            {
+              "iteration": 17,
+              "best_cost": 0.012600968591868877,
+              "elite_cost": 0.012603037059307098,
+              "nominal_cost": 0.012601764872670174,
+              "sigma_mean": 0.019326239824295044
+            },
+            {
+              "iteration": 18,
+              "best_cost": 0.01260063610970974,
+              "elite_cost": 0.01260324940085411,
+              "nominal_cost": 0.012602292001247406,
+              "sigma_mean": 0.017939472571015358
+            },
+            {
+              "iteration": 19,
+              "best_cost": 0.012601161375641823,
+              "elite_cost": 0.01260236743837595,
+              "nominal_cost": 0.012602685019373894,
+              "sigma_mean": 0.01814018376171589
+            },
+            {
+              "iteration": 20,
+              "best_cost": 0.012601117603480816,
+              "elite_cost": 0.012602496892213821,
+              "nominal_cost": 0.012603741139173508,
+              "sigma_mean": 0.01670003868639469
+            },
+            {
+              "iteration": 21,
+              "best_cost": 0.01260023470968008,
+              "elite_cost": 0.012602128088474274,
+              "nominal_cost": 0.012603829614818096,
+              "sigma_mean": 0.01740354113280773
+            },
+            {
+              "iteration": 22,
+              "best_cost": 0.012601620517671108,
+              "elite_cost": 0.012602838687598705,
+              "nominal_cost": 0.012600836344063282,
+              "sigma_mean": 0.017289046198129654
+            },
+            {
+              "iteration": 23,
+              "best_cost": 0.012600851245224476,
+              "elite_cost": 0.01260283961892128,
+              "nominal_cost": 0.012603829614818096,
+              "sigma_mean": 0.015916401520371437
+            },
+            {
+              "iteration": 24,
+              "best_cost": 0.012601749040186405,
+              "elite_cost": 0.012602977454662323,
+              "nominal_cost": 0.012602719478309155,
+              "sigma_mean": 0.015995042398571968
+            },
+            {
+              "iteration": 25,
+              "best_cost": 0.012600726447999477,
+              "elite_cost": 0.012602034956216812,
+              "nominal_cost": 0.012601897120475769,
+              "sigma_mean": 0.014324498362839222
+            },
+            {
+              "iteration": 26,
+              "best_cost": 0.012601597234606743,
+              "elite_cost": 0.012602169066667557,
+              "nominal_cost": 0.012602518312633038,
+              "sigma_mean": 0.01421575527638197
+            },
+            {
+              "iteration": 27,
+              "best_cost": 0.012600470334291458,
+              "elite_cost": 0.01260231900960207,
+              "nominal_cost": 0.01260270643979311,
+              "sigma_mean": 0.015129570849239826
+            },
+            {
+              "iteration": 28,
+              "best_cost": 0.012601107358932495,
+              "elite_cost": 0.012602188624441624,
+              "nominal_cost": 0.012601884081959724,
+              "sigma_mean": 0.01633390784263611
+            },
+            {
+              "iteration": 29,
+              "best_cost": 0.012601891532540321,
+              "elite_cost": 0.012602802366018295,
+              "nominal_cost": 0.012602918781340122,
+              "sigma_mean": 0.014002588577568531
+            }
+          ],
+          "proposals": 0,
+          "prediction_execution": {
+            "executed_actions": 1,
+            "before_goal_weighted_l1": 0.012709606438875198,
+            "after_goal_weighted_l1": 0.01264786534011364,
+            "prediction_vs_execution_l1": 9.75604634732008e-05,
+            "prediction_vs_execution_goal_region_l1": 0.0019769156351685524,
+            "predicted_after_actions_goal_weighted_l1": 0.01260022260248661,
+            "diagnostic_image": "flower_cycle_06.png"
+          }
+        },
+        {
+          "goal_stroke_count": 15,
+          "executed_before_replan": 10,
+          "planning_initial_weighted_l1": 0.0200168676674366,
+          "planning_final_weighted_l1": 0.016623083502054214,
+          "planning_trace": [
+            {
+              "iteration": 0,
+              "best_cost": 0.020016280934214592,
+              "elite_cost": 0.020800551399588585,
+              "nominal_cost": 0.019625691697001457,
+              "sigma_mean": 0.04714255779981613
+            },
+            {
+              "iteration": 1,
+              "best_cost": 0.01943831332027912,
+              "elite_cost": 0.02028953842818737,
+              "nominal_cost": 0.019162818789482117,
+              "sigma_mean": 0.04569537565112114
+            },
+            {
+              "iteration": 2,
+              "best_cost": 0.01916228048503399,
+              "elite_cost": 0.01975664682686329,
+              "nominal_cost": 0.018917687237262726,
+              "sigma_mean": 0.04371693357825279
+            },
+            {
+              "iteration": 3,
+              "best_cost": 0.018917154520750046,
+              "elite_cost": 0.019382530823349953,
+              "nominal_cost": 0.018647275865077972,
+              "sigma_mean": 0.04410748556256294
+            },
+            {
+              "iteration": 4,
+              "best_cost": 0.018327444791793823,
+              "elite_cost": 0.01901891827583313,
+              "nominal_cost": 0.018084997311234474,
+              "sigma_mean": 0.045777928084135056
+            },
+            {
+              "iteration": 5,
+              "best_cost": 0.01808437891304493,
+              "elite_cost": 0.019114889204502106,
+              "nominal_cost": 0.017893025651574135,
+              "sigma_mean": 0.04430558159947395
+            },
+            {
+              "iteration": 6,
+              "best_cost": 0.017892565578222275,
+              "elite_cost": 0.018676141276955605,
+              "nominal_cost": 0.017684221267700195,
+              "sigma_mean": 0.041162483394145966
+            },
+            {
+              "iteration": 7,
+              "best_cost": 0.0176839679479599,
+              "elite_cost": 0.018213115632534027,
+              "nominal_cost": 0.017650313675403595,
+              "sigma_mean": 0.036720432341098785
+            },
+            {
+              "iteration": 8,
+              "best_cost": 0.017649782821536064,
+              "elite_cost": 0.01810569129884243,
+              "nominal_cost": 0.017565477639436722,
+              "sigma_mean": 0.03454181179404259
+            },
+            {
+              "iteration": 9,
+              "best_cost": 0.017564963549375534,
+              "elite_cost": 0.017886416986584663,
+              "nominal_cost": 0.017436495050787926,
+              "sigma_mean": 0.03495718911290169
+            },
+            {
+              "iteration": 10,
+              "best_cost": 0.0174358282238245,
+              "elite_cost": 0.017669254913926125,
+              "nominal_cost": 0.01707613654434681,
+              "sigma_mean": 0.03598463162779808
+            },
+            {
+              "iteration": 11,
+              "best_cost": 0.01707538403570652,
+              "elite_cost": 0.017572568729519844,
+              "nominal_cost": 0.017129942774772644,
+              "sigma_mean": 0.03330342844128609
+            },
+            {
+              "iteration": 12,
+              "best_cost": 0.01712908409535885,
+              "elite_cost": 0.017400579527020454,
+              "nominal_cost": 0.017007213085889816,
+              "sigma_mean": 0.0330720953643322
+            },
+            {
+              "iteration": 13,
+              "best_cost": 0.017006801441311836,
+              "elite_cost": 0.017326612025499344,
+              "nominal_cost": 0.016995379701256752,
+              "sigma_mean": 0.032576315104961395
+            },
+            {
+              "iteration": 14,
+              "best_cost": 0.016995137557387352,
+              "elite_cost": 0.017226068302989006,
+              "nominal_cost": 0.016947763040661812,
+              "sigma_mean": 0.03078548051416874
+            },
+            {
+              "iteration": 15,
+              "best_cost": 0.01694715954363346,
+              "elite_cost": 0.01714804209768772,
+              "nominal_cost": 0.01691432110965252,
+              "sigma_mean": 0.03004332445561886
+            },
+            {
+              "iteration": 16,
+              "best_cost": 0.016913773491978645,
+              "elite_cost": 0.017071528360247612,
+              "nominal_cost": 0.016827207058668137,
+              "sigma_mean": 0.029960645362734795
+            },
+            {
+              "iteration": 17,
+              "best_cost": 0.016826651990413666,
+              "elite_cost": 0.017010284587740898,
+              "nominal_cost": 0.016867533326148987,
+              "sigma_mean": 0.030630012974143028
+            },
+            {
+              "iteration": 18,
+              "best_cost": 0.016866857185959816,
+              "elite_cost": 0.017036279663443565,
+              "nominal_cost": 0.01680673658847809,
+              "sigma_mean": 0.030345942825078964
+            },
+            {
+              "iteration": 19,
+              "best_cost": 0.01680637337267399,
+              "elite_cost": 0.016985682770609856,
+              "nominal_cost": 0.01679626666009426,
+              "sigma_mean": 0.03100794553756714
+            },
+            {
+              "iteration": 20,
+              "best_cost": 0.016795707866549492,
+              "elite_cost": 0.01694074086844921,
+              "nominal_cost": 0.016777392476797104,
+              "sigma_mean": 0.03263179957866669
+            },
+            {
+              "iteration": 21,
+              "best_cost": 0.01677686721086502,
+              "elite_cost": 0.016926532611250877,
+              "nominal_cost": 0.01676340028643608,
+              "sigma_mean": 0.03175295889377594
+            },
+            {
+              "iteration": 22,
+              "best_cost": 0.01676306687295437,
+              "elite_cost": 0.016876332461833954,
+              "nominal_cost": 0.01672758348286152,
+              "sigma_mean": 0.03428690508008003
+            },
+            {
+              "iteration": 23,
+              "best_cost": 0.016727255657315254,
+              "elite_cost": 0.01687188260257244,
+              "nominal_cost": 0.016682395711541176,
+              "sigma_mean": 0.03438698127865791
+            },
+            {
+              "iteration": 24,
+              "best_cost": 0.01668170467019081,
+              "elite_cost": 0.016853144392371178,
+              "nominal_cost": 0.01675347052514553,
+              "sigma_mean": 0.033303402364254
+            },
+            {
+              "iteration": 25,
+              "best_cost": 0.016748016700148582,
+              "elite_cost": 0.016823912039399147,
+              "nominal_cost": 0.01667589694261551,
+              "sigma_mean": 0.03279460221529007
+            },
+            {
+              "iteration": 26,
+              "best_cost": 0.016675548627972603,
+              "elite_cost": 0.016800785437226295,
+              "nominal_cost": 0.016673171892762184,
+              "sigma_mean": 0.03339916095137596
+            },
+            {
+              "iteration": 27,
+              "best_cost": 0.016672596335411072,
+              "elite_cost": 0.016770629212260246,
+              "nominal_cost": 0.01668412610888481,
+              "sigma_mean": 0.03389944136142731
+            },
+            {
+              "iteration": 28,
+              "best_cost": 0.016683761030435562,
+              "elite_cost": 0.0167824849486351,
+              "nominal_cost": 0.016716577112674713,
+              "sigma_mean": 0.03611750528216362
+            },
+            {
+              "iteration": 29,
+              "best_cost": 0.016714954748749733,
+              "elite_cost": 0.016764629632234573,
+              "nominal_cost": 0.016623083502054214,
+              "sigma_mean": 0.033782389014959335
+            }
+          ],
+          "proposals": 5,
+          "prediction_execution": {
+            "executed_actions": 2,
+            "before_goal_weighted_l1": 0.024237006902694702,
+            "after_goal_weighted_l1": 0.019644618034362793,
+            "prediction_vs_execution_l1": 0.00045176647836342454,
+            "prediction_vs_execution_goal_region_l1": 0.007311888039112091,
+            "predicted_after_actions_goal_weighted_l1": 0.019441090524196625,
+            "diagnostic_image": "flower_cycle_07.png"
+          }
+        },
+        {
+          "goal_stroke_count": 15,
+          "executed_before_replan": 12,
+          "planning_initial_weighted_l1": 0.01657123491168022,
+          "planning_final_weighted_l1": 0.016527868807315826,
+          "planning_trace": [
+            {
+              "iteration": 0,
+              "best_cost": 0.016571082174777985,
+              "elite_cost": 0.017398448660969734,
+              "nominal_cost": 0.01664764992892742,
+              "sigma_mean": 0.04520610347390175
+            },
+            {
+              "iteration": 1,
+              "best_cost": 0.016647478565573692,
+              "elite_cost": 0.017435582354664803,
+              "nominal_cost": 0.016648102551698685,
+              "sigma_mean": 0.03787846863269806
+            },
+            {
+              "iteration": 2,
+              "best_cost": 0.01664782129228115,
+              "elite_cost": 0.017191912978887558,
+              "nominal_cost": 0.016645262017846107,
+              "sigma_mean": 0.034632615745067596
+            },
+            {
+              "iteration": 3,
+              "best_cost": 0.016644872725009918,
+              "elite_cost": 0.01706499233841896,
+              "nominal_cost": 0.016642430797219276,
+              "sigma_mean": 0.03302193805575371
+            },
+            {
+              "iteration": 4,
+              "best_cost": 0.01664213463664055,
+              "elite_cost": 0.016907410696148872,
+              "nominal_cost": 0.016627538949251175,
+              "sigma_mean": 0.029565714299678802
+            },
+            {
+              "iteration": 5,
+              "best_cost": 0.01662733033299446,
+              "elite_cost": 0.016853807494044304,
+              "nominal_cost": 0.016617054119706154,
+              "sigma_mean": 0.03017365001142025
+            },
+            {
+              "iteration": 6,
+              "best_cost": 0.016616836190223694,
+              "elite_cost": 0.01678747870028019,
+              "nominal_cost": 0.016613049432635307,
+              "sigma_mean": 0.030209872871637344
+            },
+            {
+              "iteration": 7,
+              "best_cost": 0.016612844541668892,
+              "elite_cost": 0.016735343262553215,
+              "nominal_cost": 0.016609888523817062,
+              "sigma_mean": 0.02839360013604164
+            },
+            {
+              "iteration": 8,
+              "best_cost": 0.016609597951173782,
+              "elite_cost": 0.0167312603443861,
+              "nominal_cost": 0.016608186066150665,
+              "sigma_mean": 0.025702182203531265
+            },
+            {
+              "iteration": 9,
+              "best_cost": 0.016607871279120445,
+              "elite_cost": 0.01667903922498226,
+              "nominal_cost": 0.016600072383880615,
+              "sigma_mean": 0.024434156715869904
+            },
+            {
+              "iteration": 10,
+              "best_cost": 0.016599759459495544,
+              "elite_cost": 0.016655629500746727,
+              "nominal_cost": 0.016586260870099068,
+              "sigma_mean": 0.024250762537121773
+            },
+            {
+              "iteration": 11,
+              "best_cost": 0.01658598892390728,
+              "elite_cost": 0.016651008278131485,
+              "nominal_cost": 0.016583243384957314,
+              "sigma_mean": 0.022825714200735092
+            },
+            {
+              "iteration": 12,
+              "best_cost": 0.01658295840024948,
+              "elite_cost": 0.01662560924887657,
+              "nominal_cost": 0.016577528789639473,
+              "sigma_mean": 0.020996175706386566
+            },
+            {
+              "iteration": 13,
+              "best_cost": 0.016577163711190224,
+              "elite_cost": 0.016618924215435982,
+              "nominal_cost": 0.016585970297455788,
+              "sigma_mean": 0.019549855962395668
+            },
+            {
+              "iteration": 14,
+              "best_cost": 0.016563396900892258,
+              "elite_cost": 0.016600774601101875,
+              "nominal_cost": 0.01658855937421322,
+              "sigma_mean": 0.02004518359899521
+            },
+            {
+              "iteration": 15,
+              "best_cost": 0.01658119447529316,
+              "elite_cost": 0.016606425866484642,
+              "nominal_cost": 0.01658048667013645,
+              "sigma_mean": 0.017928050830960274
+            },
+            {
+              "iteration": 16,
+              "best_cost": 0.016580119729042053,
+              "elite_cost": 0.01659521460533142,
+              "nominal_cost": 0.016574980691075325,
+              "sigma_mean": 0.017948610708117485
+            },
+            {
+              "iteration": 17,
+              "best_cost": 0.016574600711464882,
+              "elite_cost": 0.016589028760790825,
+              "nominal_cost": 0.01658974029123783,
+              "sigma_mean": 0.019827669486403465
+            },
+            {
+              "iteration": 18,
+              "best_cost": 0.016560925170779228,
+              "elite_cost": 0.01658381149172783,
+              "nominal_cost": 0.016557294875383377,
+              "sigma_mean": 0.021097498014569283
+            },
+            {
+              "iteration": 19,
+              "best_cost": 0.01655696891248226,
+              "elite_cost": 0.016579804942011833,
+              "nominal_cost": 0.016546333208680153,
+              "sigma_mean": 0.021813668310642242
+            },
+            {
+              "iteration": 20,
+              "best_cost": 0.01654592901468277,
+              "elite_cost": 0.01657792739570141,
+              "nominal_cost": 0.016553359106183052,
+              "sigma_mean": 0.0204023327678442
+            },
+            {
+              "iteration": 21,
+              "best_cost": 0.016552990302443504,
+              "elite_cost": 0.016573356464505196,
+              "nominal_cost": 0.01654295064508915,
+              "sigma_mean": 0.01979231834411621
+            },
+            {
+              "iteration": 22,
+              "best_cost": 0.016542606055736542,
+              "elite_cost": 0.016574542969465256,
+              "nominal_cost": 0.01655350811779499,
+              "sigma_mean": 0.022255469113588333
+            },
+            {
+              "iteration": 23,
+              "best_cost": 0.016545014455914497,
+              "elite_cost": 0.016566595062613487,
+              "nominal_cost": 0.016552366316318512,
+              "sigma_mean": 0.02384573221206665
+            },
+            {
+              "iteration": 24,
+              "best_cost": 0.016538619995117188,
+              "elite_cost": 0.016573859378695488,
+              "nominal_cost": 0.01654253900051117,
+              "sigma_mean": 0.022156963124871254
+            },
+            {
+              "iteration": 25,
+              "best_cost": 0.01654009148478508,
+              "elite_cost": 0.016564451158046722,
+              "nominal_cost": 0.016549520194530487,
+              "sigma_mean": 0.02365531586110592
+            },
+            {
+              "iteration": 26,
+              "best_cost": 0.016547957435250282,
+              "elite_cost": 0.01657087914645672,
+              "nominal_cost": 0.016545796766877174,
+              "sigma_mean": 0.02235693670809269
+            },
+            {
+              "iteration": 27,
+              "best_cost": 0.016545526683330536,
+              "elite_cost": 0.016564538702368736,
+              "nominal_cost": 0.016547154635190964,
+              "sigma_mean": 0.021169712767004967
+            },
+            {
+              "iteration": 28,
+              "best_cost": 0.016527868807315826,
+              "elite_cost": 0.016554297879338264,
+              "nominal_cost": 0.0165401604026556,
+              "sigma_mean": 0.02255440503358841
+            },
+            {
+              "iteration": 29,
+              "best_cost": 0.016531996428966522,
+              "elite_cost": 0.016553184017539024,
+              "nominal_cost": 0.01653841882944107,
+              "sigma_mean": 0.024156834930181503
+            }
+          ],
+          "proposals": 0,
+          "prediction_execution": {
+            "executed_actions": 2,
+            "before_goal_weighted_l1": 0.01963714137673378,
+            "after_goal_weighted_l1": 0.01736290194094181,
+            "prediction_vs_execution_l1": 0.0006894244579598308,
+            "prediction_vs_execution_goal_region_l1": 0.011862333863973618,
+            "predicted_after_actions_goal_weighted_l1": 0.017282504588365555,
+            "diagnostic_image": "flower_cycle_08.png"
+          }
+        },
+        {
+          "goal_stroke_count": 15,
+          "executed_before_replan": 14,
+          "planning_initial_weighted_l1": 0.016437431797385216,
+          "planning_final_weighted_l1": 0.016417810693383217,
+          "planning_trace": [
+            {
+              "iteration": 0,
+              "best_cost": 0.016437359154224396,
+              "elite_cost": 0.01664278283715248,
+              "nominal_cost": 0.016450604423880577,
+              "sigma_mean": 0.04705105349421501
+            },
+            {
+              "iteration": 1,
+              "best_cost": 0.01645052246749401,
+              "elite_cost": 0.016614602878689766,
+              "nominal_cost": 0.01646820642054081,
+              "sigma_mean": 0.04420022293925285
+            },
+            {
+              "iteration": 2,
+              "best_cost": 0.016468122601509094,
+              "elite_cost": 0.016616756096482277,
+              "nominal_cost": 0.016466252505779266,
+              "sigma_mean": 0.04020165279507637
+            },
+            {
+              "iteration": 3,
+              "best_cost": 0.016455115750432014,
+              "elite_cost": 0.016532599925994873,
+              "nominal_cost": 0.016463516280055046,
+              "sigma_mean": 0.037117619067430496
+            },
+            {
+              "iteration": 4,
+              "best_cost": 0.016463425010442734,
+              "elite_cost": 0.016511930152773857,
+              "nominal_cost": 0.016454430297017097,
+              "sigma_mean": 0.03389863669872284
+            },
+            {
+              "iteration": 5,
+              "best_cost": 0.01645032875239849,
+              "elite_cost": 0.016480419784784317,
+              "nominal_cost": 0.016460027545690536,
+              "sigma_mean": 0.030173281207680702
+            },
+            {
+              "iteration": 6,
+              "best_cost": 0.016433032229542732,
+              "elite_cost": 0.01647401787340641,
+              "nominal_cost": 0.016466768458485603,
+              "sigma_mean": 0.029138103127479553
+            },
+            {
+              "iteration": 7,
+              "best_cost": 0.0164489783346653,
+              "elite_cost": 0.0164687130600214,
+              "nominal_cost": 0.01644136756658554,
+              "sigma_mean": 0.028284510597586632
+            },
+            {
+              "iteration": 8,
+              "best_cost": 0.01644130051136017,
+              "elite_cost": 0.016459999606013298,
+              "nominal_cost": 0.016443200409412384,
+              "sigma_mean": 0.02463521994650364
+            },
+            {
+              "iteration": 9,
+              "best_cost": 0.016436846926808357,
+              "elite_cost": 0.016452020034193993,
+              "nominal_cost": 0.016445938497781754,
+              "sigma_mean": 0.024167312309145927
+            },
+            {
+              "iteration": 10,
+              "best_cost": 0.016445862129330635,
+              "elite_cost": 0.016452481970191002,
+              "nominal_cost": 0.016449883580207825,
+              "sigma_mean": 0.024090683087706566
+            },
+            {
+              "iteration": 11,
+              "best_cost": 0.016435617581009865,
+              "elite_cost": 0.016446683555841446,
+              "nominal_cost": 0.016442665830254555,
+              "sigma_mean": 0.02289331890642643
+            },
+            {
+              "iteration": 12,
+              "best_cost": 0.01643875055015087,
+              "elite_cost": 0.01644357293844223,
+              "nominal_cost": 0.016443923115730286,
+              "sigma_mean": 0.0198493842035532
+            },
+            {
+              "iteration": 13,
+              "best_cost": 0.016433443874120712,
+              "elite_cost": 0.016441846266388893,
+              "nominal_cost": 0.016445137560367584,
+              "sigma_mean": 0.019736776128411293
+            },
+            {
+              "iteration": 14,
+              "best_cost": 0.016438938677310944,
+              "elite_cost": 0.016444174572825432,
+              "nominal_cost": 0.01643981784582138,
+              "sigma_mean": 0.020213305950164795
+            },
+            {
+              "iteration": 15,
+              "best_cost": 0.01642938330769539,
+              "elite_cost": 0.016443243250250816,
+              "nominal_cost": 0.01644117385149002,
+              "sigma_mean": 0.020268825814127922
+            },
+            {
+              "iteration": 16,
+              "best_cost": 0.01642775535583496,
+              "elite_cost": 0.016437102109193802,
+              "nominal_cost": 0.01643703505396843,
+              "sigma_mean": 0.02225911058485508
+            },
+            {
+              "iteration": 17,
+              "best_cost": 0.016429780051112175,
+              "elite_cost": 0.016442643478512764,
+              "nominal_cost": 0.016434960067272186,
+              "sigma_mean": 0.02439849078655243
+            },
+            {
+              "iteration": 18,
+              "best_cost": 0.01643160544335842,
+              "elite_cost": 0.016440853476524353,
+              "nominal_cost": 0.016432024538517,
+              "sigma_mean": 0.026535267010331154
+            },
+            {
+              "iteration": 19,
+              "best_cost": 0.016431940719485283,
+              "elite_cost": 0.016438035294413567,
+              "nominal_cost": 0.01643412560224533,
+              "sigma_mean": 0.02378764934837818
+            },
+            {
+              "iteration": 20,
+              "best_cost": 0.016434041783213615,
+              "elite_cost": 0.01643935777246952,
+              "nominal_cost": 0.0164386797696352,
+              "sigma_mean": 0.024495849385857582
+            },
+            {
+              "iteration": 21,
+              "best_cost": 0.016431448981165886,
+              "elite_cost": 0.016438446938991547,
+              "nominal_cost": 0.01642724685370922,
+              "sigma_mean": 0.025798780843615532
+            },
+            {
+              "iteration": 22,
+              "best_cost": 0.016427170485258102,
+              "elite_cost": 0.016437355428934097,
+              "nominal_cost": 0.016433054581284523,
+              "sigma_mean": 0.024489888921380043
+            },
+            {
+              "iteration": 23,
+              "best_cost": 0.016422556713223457,
+              "elite_cost": 0.016435541212558746,
+              "nominal_cost": 0.01643584482371807,
+              "sigma_mean": 0.02311568148434162
+            },
+            {
+              "iteration": 24,
+              "best_cost": 0.01642073690891266,
+              "elite_cost": 0.016437813639640808,
+              "nominal_cost": 0.016440831124782562,
+              "sigma_mean": 0.023178352043032646
+            },
+            {
+              "iteration": 25,
+              "best_cost": 0.01643211953341961,
+              "elite_cost": 0.016437344253063202,
+              "nominal_cost": 0.016432054340839386,
+              "sigma_mean": 0.02375960350036621
+            },
+            {
+              "iteration": 26,
+              "best_cost": 0.016431981697678566,
+              "elite_cost": 0.01643558032810688,
+              "nominal_cost": 0.016435211524367332,
+              "sigma_mean": 0.023525798693299294
+            },
+            {
+              "iteration": 27,
+              "best_cost": 0.01643243059515953,
+              "elite_cost": 0.016437403857707977,
+              "nominal_cost": 0.016432303935289383,
+              "sigma_mean": 0.022919664159417152
+            },
+            {
+              "iteration": 28,
+              "best_cost": 0.016432227566838264,
+              "elite_cost": 0.016436630859971046,
+              "nominal_cost": 0.01643296889960766,
+              "sigma_mean": 0.0208756010979414
+            },
+            {
+              "iteration": 29,
+              "best_cost": 0.016417810693383217,
+              "elite_cost": 0.016434242948889732,
+              "nominal_cost": 0.016435211524367332,
+              "sigma_mean": 0.022120708599686623
+            }
+          ],
+          "proposals": 0,
+          "prediction_execution": {
+            "executed_actions": 1,
+            "before_goal_weighted_l1": 0.01736290194094181,
+            "after_goal_weighted_l1": 0.016562556847929955,
+            "prediction_vs_execution_l1": 0.00041431200224906206,
+            "prediction_vs_execution_goal_region_l1": 0.006862383335828781,
+            "predicted_after_actions_goal_weighted_l1": 0.016417887061834335,
+            "diagnostic_image": "flower_cycle_09.png"
+          }
+        },
+        {
+          "goal_stroke_count": 17,
+          "executed_before_replan": 15,
+          "planning_initial_weighted_l1": 0.017358019948005676,
+          "planning_final_weighted_l1": 0.015478159300982952,
+          "planning_trace": [
+            {
+              "iteration": 0,
+              "best_cost": 0.01703198254108429,
+              "elite_cost": 0.01737135834991932,
+              "nominal_cost": 0.0170974750071764,
+              "sigma_mean": 0.0531327985227108
+            },
+            {
+              "iteration": 1,
+              "best_cost": 0.017034288495779037,
+              "elite_cost": 0.017273778095841408,
+              "nominal_cost": 0.016960911452770233,
+              "sigma_mean": 0.057710710912942886
+            },
+            {
+              "iteration": 2,
+              "best_cost": 0.016960928216576576,
+              "elite_cost": 0.017207426950335503,
+              "nominal_cost": 0.01680680923163891,
+              "sigma_mean": 0.05899897217750549
+            },
+            {
+              "iteration": 3,
+              "best_cost": 0.016802789643406868,
+              "elite_cost": 0.01708254963159561,
+              "nominal_cost": 0.01665155589580536,
+              "sigma_mean": 0.06180049106478691
+            },
+            {
+              "iteration": 4,
+              "best_cost": 0.016651576384902,
+              "elite_cost": 0.01697680912911892,
+              "nominal_cost": 0.016651660203933716,
+              "sigma_mean": 0.056144822388887405
+            },
+            {
+              "iteration": 5,
+              "best_cost": 0.01665167696774006,
+              "elite_cost": 0.016905872151255608,
+              "nominal_cost": 0.016642596572637558,
+              "sigma_mean": 0.04961790516972542
+            },
+            {
+              "iteration": 6,
+              "best_cost": 0.01653478480875492,
+              "elite_cost": 0.016727978363633156,
+              "nominal_cost": 0.016471106559038162,
+              "sigma_mean": 0.05428675189614296
+            },
+            {
+              "iteration": 7,
+              "best_cost": 0.016471121460199356,
+              "elite_cost": 0.01673857681453228,
+              "nominal_cost": 0.01641273684799671,
+              "sigma_mean": 0.060600604861974716
+            },
+            {
+              "iteration": 8,
+              "best_cost": 0.01621324010193348,
+              "elite_cost": 0.01655205525457859,
+              "nominal_cost": 0.01629813387989998,
+              "sigma_mean": 0.06554221361875534
+            },
+            {
+              "iteration": 9,
+              "best_cost": 0.016298148781061172,
+              "elite_cost": 0.016528451815247536,
+              "nominal_cost": 0.01618972420692444,
+              "sigma_mean": 0.0701717957854271
+            },
+            {
+              "iteration": 10,
+              "best_cost": 0.016189774498343468,
+              "elite_cost": 0.016612965613603592,
+              "nominal_cost": 0.01623438112437725,
+              "sigma_mean": 0.06423384696245193
+            },
+            {
+              "iteration": 11,
+              "best_cost": 0.01622002385556698,
+              "elite_cost": 0.016453787684440613,
+              "nominal_cost": 0.01618468016386032,
+              "sigma_mean": 0.06529533118009567
+            },
+            {
+              "iteration": 12,
+              "best_cost": 0.01618470996618271,
+              "elite_cost": 0.01636151596903801,
+              "nominal_cost": 0.01605784334242344,
+              "sigma_mean": 0.07393133640289307
+            },
+            {
+              "iteration": 13,
+              "best_cost": 0.01605788804590702,
+              "elite_cost": 0.016377795487642288,
+              "nominal_cost": 0.015911366790533066,
+              "sigma_mean": 0.07655972987413406
+            },
+            {
+              "iteration": 14,
+              "best_cost": 0.015800636261701584,
+              "elite_cost": 0.016110114753246307,
+              "nominal_cost": 0.0157636571675539,
+              "sigma_mean": 0.08108469843864441
+            },
+            {
+              "iteration": 15,
+              "best_cost": 0.015763696283102036,
+              "elite_cost": 0.016178110614418983,
+              "nominal_cost": 0.015645967796444893,
+              "sigma_mean": 0.08230025321245193
+            },
+            {
+              "iteration": 16,
+              "best_cost": 0.015645992010831833,
+              "elite_cost": 0.016121333464980125,
+              "nominal_cost": 0.015656065195798874,
+              "sigma_mean": 0.08177432417869568
+            },
+            {
+              "iteration": 17,
+              "best_cost": 0.015656117349863052,
+              "elite_cost": 0.016058137640357018,
+              "nominal_cost": 0.015623769722878933,
+              "sigma_mean": 0.07355206459760666
+            },
+            {
+              "iteration": 18,
+              "best_cost": 0.015623793937265873,
+              "elite_cost": 0.015900390222668648,
+              "nominal_cost": 0.015577610582113266,
+              "sigma_mean": 0.06329958885908127
+            },
+            {
+              "iteration": 19,
+              "best_cost": 0.015577648766338825,
+              "elite_cost": 0.01576266996562481,
+              "nominal_cost": 0.015608667396008968,
+              "sigma_mean": 0.06295379996299744
+            },
+            {
+              "iteration": 20,
+              "best_cost": 0.015578605234622955,
+              "elite_cost": 0.015674607828259468,
+              "nominal_cost": 0.01555077824741602,
+              "sigma_mean": 0.06797031313180923
+            },
+            {
+              "iteration": 21,
+              "best_cost": 0.015550807118415833,
+              "elite_cost": 0.01571390964090824,
+              "nominal_cost": 0.015519807115197182,
+              "sigma_mean": 0.07259517163038254
+            },
+            {
+              "iteration": 22,
+              "best_cost": 0.015519863925874233,
+              "elite_cost": 0.01570959761738777,
+              "nominal_cost": 0.015519319102168083,
+              "sigma_mean": 0.07220228761434555
+            },
+            {
+              "iteration": 23,
+              "best_cost": 0.015519373118877411,
+              "elite_cost": 0.01563538797199726,
+              "nominal_cost": 0.015490518882870674,
+              "sigma_mean": 0.07391148060560226
+            },
+            {
+              "iteration": 24,
+              "best_cost": 0.015490555204451084,
+              "elite_cost": 0.01562909409403801,
+              "nominal_cost": 0.015502232126891613,
+              "sigma_mean": 0.07802600413560867
+            },
+            {
+              "iteration": 25,
+              "best_cost": 0.015502264723181725,
+              "elite_cost": 0.015589701943099499,
+              "nominal_cost": 0.015486150979995728,
+              "sigma_mean": 0.07778451591730118
+            },
+            {
+              "iteration": 26,
+              "best_cost": 0.015486200340092182,
+              "elite_cost": 0.015594057738780975,
+              "nominal_cost": 0.01552490796893835,
+              "sigma_mean": 0.0728997066617012
+            },
+            {
+              "iteration": 27,
+              "best_cost": 0.015514835715293884,
+              "elite_cost": 0.01558284554630518,
+              "nominal_cost": 0.015522124245762825,
+              "sigma_mean": 0.06679738312959671
+            },
+            {
+              "iteration": 28,
+              "best_cost": 0.01551746018230915,
+              "elite_cost": 0.015560141764581203,
+              "nominal_cost": 0.01548473909497261,
+              "sigma_mean": 0.06138956546783447
+            },
+            {
+              "iteration": 29,
+              "best_cost": 0.015478159300982952,
+              "elite_cost": 0.015512249432504177,
+              "nominal_cost": 0.015489507466554642,
+              "sigma_mean": 0.05764036998152733
+            }
+          ],
+          "proposals": 2,
+          "prediction_execution": {
+            "executed_actions": 2,
+            "before_goal_weighted_l1": 0.01881379261612892,
+            "after_goal_weighted_l1": 0.016053032130002975,
+            "prediction_vs_execution_l1": 0.0004996113129891455,
+            "prediction_vs_execution_goal_region_l1": 0.00828661397099495,
+            "predicted_after_actions_goal_weighted_l1": 0.015478137880563736,
+            "diagnostic_image": "flower_cycle_10.png"
+          }
+        }
+      ],
+      "prediction_execution_l1_mean": 0.0004465043835807592,
+      "prediction_execution_goal_region_l1_mean": 0.008898187801241875,
+      "mean_planned_opacity": 1.0,
+      "cycle_diagnostics": [
+        "reports/stage3_refined/flower_cycle_01.png",
+        "reports/stage3_refined/flower_cycle_02.png",
+        "reports/stage3_refined/flower_cycle_03.png",
+        "reports/stage3_refined/flower_cycle_04.png",
+        "reports/stage3_refined/flower_cycle_05.png",
+        "reports/stage3_refined/flower_cycle_06.png",
+        "reports/stage3_refined/flower_cycle_07.png",
+        "reports/stage3_refined/flower_cycle_08.png",
+        "reports/stage3_refined/flower_cycle_09.png",
+        "reports/stage3_refined/flower_cycle_10.png"
+      ],
+      "stroke_records": [
+        {
+          "step": 1,
+          "stroke": {
+            "x": -0.021717071533203125,
+            "y": 0.011851540766656399,
+            "length": 0.07949459552764893,
+            "bend": -0.030882438644766808,
+            "angle": -3.1001670360565186,
+            "force": 1.4913321733474731,
+            "color": 14,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999999097,
+            "force_acquisition_duration_s": 1.304000000000043,
+            "first_contact_delay_s": 0.2639999999999709,
+            "contact_to_stroke_s": 1.040000000000072,
+            "peak_acquisition_force_N": 1.4826192088638988,
+            "target_force_N": 1.4913321733474731,
+            "contact_samples": 483,
+            "force_samples": 483,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.0031495690028161454,
+            "force_mean_N": 1.491319708688618,
+            "force_rmse_N": 0.0031495690028161454,
+            "force_max_N": 1.5146038604570544,
+            "force_std_N": 0.0031495443378018856,
+            "force_range_N": 0.02686963052082314,
+            "brush_tilt_mean_deg": 0.016130234708363486,
+            "brush_tilt_max_deg": 0.01672891661415829,
+            "trajectory_rmse_m": 0.0001298746918167171,
+            "wall_seconds": 1.3445302410000295
+          },
+          "goal_count": 5,
+          "planner_predicted_cost": 0.006365831010043621
+        },
+        {
+          "step": 2,
+          "stroke": {
+            "x": 0.05417674034833908,
+            "y": 0.046321045607328415,
+            "length": 0.06288058310747147,
+            "bend": -0.01164033729583025,
+            "angle": -3.0575671195983887,
+            "force": 1.3267019987106323,
+            "color": 14,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999995455,
+            "force_acquisition_duration_s": 1.2599999999993017,
+            "first_contact_delay_s": 0.2639999999998537,
+            "contact_to_stroke_s": 0.995999999999448,
+            "peak_acquisition_force_N": 1.3168353144909382,
+            "target_force_N": 1.3267019987106323,
+            "contact_samples": 358,
+            "force_samples": 358,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.003249024647845374,
+            "force_mean_N": 1.326969654618562,
+            "force_rmse_N": 0.003249024647845374,
+            "force_max_N": 1.348381381781807,
+            "force_std_N": 0.00323798108043532,
+            "force_range_N": 0.023585718342196138,
+            "brush_tilt_mean_deg": 0.015978364507632684,
+            "brush_tilt_max_deg": 0.016445410924007642,
+            "trajectory_rmse_m": 0.00011472935973664037,
+            "wall_seconds": 1.3962820430006104
+          },
+          "goal_count": 5,
+          "planner_predicted_cost": 0.006365831010043621
+        },
+        {
+          "step": 3,
+          "stroke": {
+            "x": -0.03563440963625908,
+            "y": 0.04700382798910141,
+            "length": 0.06630030274391174,
+            "bend": -0.02897879295051098,
+            "angle": 2.6320226192474365,
+            "force": 1.1819676160812378,
+            "color": 18,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000010021,
+            "force_acquisition_duration_s": 1.2000000000014666,
+            "first_contact_delay_s": 0.26400000000032264,
+            "contact_to_stroke_s": 0.9360000000011439,
+            "peak_acquisition_force_N": 1.1727054758431885,
+            "target_force_N": 1.1819676160812378,
+            "contact_samples": 411,
+            "force_samples": 411,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.006333902094420724,
+            "force_mean_N": 1.1839489104834946,
+            "force_rmse_N": 0.006333902094420724,
+            "force_max_N": 1.2101207345299803,
+            "force_std_N": 0.006016044234652233,
+            "force_range_N": 0.03431501654845959,
+            "brush_tilt_mean_deg": 0.011344511294177236,
+            "brush_tilt_max_deg": 0.012512388897614538,
+            "trajectory_rmse_m": 0.00011382559936848295,
+            "wall_seconds": 1.3966596080008458
+          },
+          "goal_count": 5,
+          "planner_predicted_cost": 0.0062787653878331184
+        },
+        {
+          "step": 4,
+          "stroke": {
+            "x": -0.04113270342350006,
+            "y": 0.0025740184355527163,
+            "length": 0.022130955010652542,
+            "bend": -0.0019586272537708282,
+            "angle": -1.935624122619629,
+            "force": 1.4866383075714111,
+            "color": 14,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000010021,
+            "force_acquisition_duration_s": 1.3000000000015888,
+            "first_contact_delay_s": 0.26400000000032264,
+            "contact_to_stroke_s": 1.0360000000012661,
+            "peak_acquisition_force_N": 1.47822011289834,
+            "target_force_N": 1.4866383075714111,
+            "contact_samples": 124,
+            "force_samples": 124,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.003476294193418906,
+            "force_mean_N": 1.4892781594491504,
+            "force_rmse_N": 0.003476294193418906,
+            "force_max_N": 1.4972633332381355,
+            "force_std_N": 0.002261814179545705,
+            "force_range_N": 0.011731081643349128,
+            "brush_tilt_mean_deg": 0.012348642288911965,
+            "brush_tilt_max_deg": 0.01324400825494585,
+            "trajectory_rmse_m": 0.00013892853436939283,
+            "wall_seconds": 1.3197598219994688
+          },
+          "goal_count": 5,
+          "planner_predicted_cost": 0.0062787653878331184
+        },
+        {
+          "step": 5,
+          "stroke": {
+            "x": 0.030207239091396332,
+            "y": 0.08846669644117355,
+            "length": 0.05316925048828125,
+            "bend": -0.014321629889309406,
+            "angle": -2.582909107208252,
+            "force": 0.9709547758102417,
+            "color": 18,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999980889,
+            "force_acquisition_duration_s": 1.1439999999973338,
+            "first_contact_delay_s": 0.2639999999993847,
+            "contact_to_stroke_s": 0.8799999999979491,
+            "peak_acquisition_force_N": 0.9597890453866993,
+            "target_force_N": 0.9709547758102417,
+            "contact_samples": 310,
+            "force_samples": 310,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.0073068671000364755,
+            "force_mean_N": 0.9744828449741803,
+            "force_rmse_N": 0.0073068671000364755,
+            "force_max_N": 1.0054394699905056,
+            "force_std_N": 0.0063986744558588325,
+            "force_range_N": 0.03799740170902255,
+            "brush_tilt_mean_deg": 0.010819829767343182,
+            "brush_tilt_max_deg": 0.0114170310812538,
+            "trajectory_rmse_m": 8.358333782060893e-05,
+            "wall_seconds": 1.3945198849996814
+          },
+          "goal_count": 5,
+          "planner_predicted_cost": 0.006121270824223757
+        },
+        {
+          "step": 6,
+          "stroke": {
+            "x": 0.033123232424259186,
+            "y": 0.012152189388871193,
+            "length": 0.10387369990348816,
+            "bend": -0.035342372953891754,
+            "angle": 3.1201579570770264,
+            "force": 1.317954182624817,
+            "color": 8,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999980889,
+            "force_acquisition_duration_s": 1.2519999999970821,
+            "first_contact_delay_s": 0.2639999999993847,
+            "contact_to_stroke_s": 0.9879999999976974,
+            "peak_acquisition_force_N": 1.308126725289309,
+            "target_force_N": 1.317954182624817,
+            "contact_samples": 619,
+            "force_samples": 619,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.0028573563528338807,
+            "force_mean_N": 1.3187546699400197,
+            "force_rmse_N": 0.0028573563528338807,
+            "force_max_N": 1.3409576964995304,
+            "force_std_N": 0.002742937364447032,
+            "force_range_N": 0.026154726846248533,
+            "brush_tilt_mean_deg": 0.014872360655934745,
+            "brush_tilt_max_deg": 0.015529801981046582,
+            "trajectory_rmse_m": 0.00011197968839420299,
+            "wall_seconds": 1.5524821870003507
+          },
+          "goal_count": 10,
+          "planner_predicted_cost": 0.012128910981118679
+        },
+        {
+          "step": 7,
+          "stroke": {
+            "x": -0.0389469638466835,
+            "y": 0.06381618231534958,
+            "length": 0.021995145827531815,
+            "bend": 0.0034983218647539616,
+            "angle": -1.076737642288208,
+            "force": 0.9820964932441711,
+            "color": 1,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999980889,
+            "force_acquisition_duration_s": 1.1359999999973525,
+            "first_contact_delay_s": 0.2639999999993847,
+            "contact_to_stroke_s": 0.8719999999979677,
+            "peak_acquisition_force_N": 0.9716521398171999,
+            "target_force_N": 0.9820964932441711,
+            "contact_samples": 125,
+            "force_samples": 125,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.013480328181177764,
+            "force_mean_N": 0.9944021113904756,
+            "force_rmse_N": 0.013480328181177764,
+            "force_max_N": 1.0151170030708916,
+            "force_std_N": 0.005503726910884311,
+            "force_range_N": 0.025426868310547523,
+            "brush_tilt_mean_deg": 0.00269403918584919,
+            "brush_tilt_max_deg": 0.00468620854475982,
+            "trajectory_rmse_m": 0.00010119920895610477,
+            "wall_seconds": 1.3590076489999774
+          },
+          "goal_count": 10,
+          "planner_predicted_cost": 0.012128910981118679
+        },
+        {
+          "step": 8,
+          "stroke": {
+            "x": -0.022756192833185196,
+            "y": 0.022159133106470108,
+            "length": 0.027071243152022362,
+            "bend": 0.004500603303313255,
+            "angle": -1.7896075248718262,
+            "force": 0.9739739894866943,
+            "color": 1,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999980889,
+            "force_acquisition_duration_s": 1.1359999999973525,
+            "first_contact_delay_s": 0.2639999999993847,
+            "contact_to_stroke_s": 0.8719999999979677,
+            "peak_acquisition_force_N": 0.9633516132233826,
+            "target_force_N": 0.9739739894866943,
+            "contact_samples": 154,
+            "force_samples": 154,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.010214767349234375,
+            "force_mean_N": 0.9815860198754833,
+            "force_rmse_N": 0.010214767349234375,
+            "force_max_N": 1.000297220307376,
+            "force_std_N": 0.006811641898920929,
+            "force_range_N": 0.029921405871286333,
+            "brush_tilt_mean_deg": 0.006844059756517062,
+            "brush_tilt_max_deg": 0.008716377711302518,
+            "trajectory_rmse_m": 0.00011621986569138568,
+            "wall_seconds": 1.3375472859988804
+          },
+          "goal_count": 10,
+          "planner_predicted_cost": 0.012444852851331234
+        },
+        {
+          "step": 9,
+          "stroke": {
+            "x": -0.0369713231921196,
+            "y": 0.06861936300992966,
+            "length": 0.04475054517388344,
+            "bend": -0.006681535392999649,
+            "angle": 2.896674394607544,
+            "force": 0.7141126990318298,
+            "color": 14,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.0960000000052332,
+            "first_contact_delay_s": 0.28400000000135606,
+            "contact_to_stroke_s": 0.8120000000038772,
+            "peak_acquisition_force_N": 0.7019515313610482,
+            "target_force_N": 0.7141126990318298,
+            "contact_samples": 253,
+            "force_samples": 253,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.013711197177624491,
+            "force_mean_N": 0.7241310014626419,
+            "force_rmse_N": 0.013711197177624491,
+            "force_max_N": 0.7639330332704694,
+            "force_std_N": 0.009361118760515905,
+            "force_range_N": 0.04448752250580179,
+            "brush_tilt_mean_deg": 0.006444795035972026,
+            "brush_tilt_max_deg": 0.006580054100136226,
+            "trajectory_rmse_m": 7.654147421906804e-05,
+            "wall_seconds": 1.35733852300109
+          },
+          "goal_count": 10,
+          "planner_predicted_cost": 0.012444852851331234
+        },
+        {
+          "step": 10,
+          "stroke": {
+            "x": -0.03226601704955101,
+            "y": -0.009388810023665428,
+            "length": 0.021003995090723038,
+            "bend": 0.0017907418077811599,
+            "angle": -1.9402551651000977,
+            "force": 0.46652883291244507,
+            "color": 21,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1480000000054815,
+            "first_contact_delay_s": 0.39600000000189084,
+            "contact_to_stroke_s": 0.7520000000035907,
+            "peak_acquisition_force_N": 0.4523974073057285,
+            "target_force_N": 0.46652883291244507,
+            "contact_samples": 118,
+            "force_samples": 118,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.03884267944068812,
+            "force_mean_N": 0.504545754006637,
+            "force_rmse_N": 0.03884267944068812,
+            "force_max_N": 0.5253260785911784,
+            "force_std_N": 0.007966646512180759,
+            "force_range_N": 0.05892535770472013,
+            "brush_tilt_mean_deg": 0.0021599692334322855,
+            "brush_tilt_max_deg": 0.0023678189568802493,
+            "trajectory_rmse_m": 9.51002793135106e-05,
+            "wall_seconds": 1.1862384339983691
+          },
+          "goal_count": 10,
+          "planner_predicted_cost": 0.01260023470968008
+        },
+        {
+          "step": 11,
+          "stroke": {
+            "x": -0.014617880806326866,
+            "y": -0.007260854821652174,
+            "length": 0.0515240803360939,
+            "bend": -0.01114227157086134,
+            "angle": -1.4943313598632812,
+            "force": 1.4554035663604736,
+            "color": 17,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.2960000000061882,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 1.0320000000049276,
+            "peak_acquisition_force_N": 1.4467073376652726,
+            "target_force_N": 1.4554035663604736,
+            "contact_samples": 295,
+            "force_samples": 295,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.005089454283642647,
+            "force_mean_N": 1.4602578719868533,
+            "force_rmse_N": 0.005089454283642647,
+            "force_max_N": 1.4695576439863087,
+            "force_std_N": 0.001529137597140213,
+            "force_range_N": 0.016671603795127332,
+            "brush_tilt_mean_deg": 0.008647968296653947,
+            "brush_tilt_max_deg": 0.012127955761717098,
+            "trajectory_rmse_m": 0.00011869756659035968,
+            "wall_seconds": 1.3327502669999376
+          },
+          "goal_count": 15,
+          "planner_predicted_cost": 0.016623083502054214
+        },
+        {
+          "step": 12,
+          "stroke": {
+            "x": -0.05718756094574928,
+            "y": 0.049030810594558716,
+            "length": 0.021275945007801056,
+            "bend": -0.0014837438939139247,
+            "angle": 3.1087849140167236,
+            "force": 1.0203831195831299,
+            "color": 1,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1480000000054815,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.884000000004221,
+            "peak_acquisition_force_N": 1.0106347063917758,
+            "target_force_N": 1.0203831195831299,
+            "contact_samples": 119,
+            "force_samples": 119,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.008583024151395587,
+            "force_mean_N": 1.0274610652794223,
+            "force_rmse_N": 0.008583024151395587,
+            "force_max_N": 1.0452044786730679,
+            "force_std_N": 0.004854996220778922,
+            "force_range_N": 0.021323823195972258,
+            "brush_tilt_mean_deg": 0.010108798186519276,
+            "brush_tilt_max_deg": 0.010312498031364414,
+            "trajectory_rmse_m": 0.00010956633144891968,
+            "wall_seconds": 1.3475367619994358
+          },
+          "goal_count": 15,
+          "planner_predicted_cost": 0.016623083502054214
+        },
+        {
+          "step": 13,
+          "stroke": {
+            "x": -0.038922131061553955,
+            "y": 0.04290730133652687,
+            "length": 0.010100716724991798,
+            "bend": 0.0004950667498633265,
+            "angle": 2.9910099506378174,
+            "force": 1.2463221549987793,
+            "color": 5,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.2200000000058253,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9560000000045648,
+            "peak_acquisition_force_N": 1.2374155242766265,
+            "target_force_N": 1.2463221549987793,
+            "contact_samples": 57,
+            "force_samples": 57,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.0070597479372094705,
+            "force_mean_N": 1.250948281574698,
+            "force_rmse_N": 0.0070597479372094705,
+            "force_max_N": 1.2655473578150702,
+            "force_std_N": 0.005332822314732844,
+            "force_range_N": 0.019012780653464123,
+            "brush_tilt_mean_deg": 0.012728595503488371,
+            "brush_tilt_max_deg": 0.013194717014779084,
+            "trajectory_rmse_m": 0.00015584568490004008,
+            "wall_seconds": 1.3098221349991945
+          },
+          "goal_count": 15,
+          "planner_predicted_cost": 0.016527868807315826
+        },
+        {
+          "step": 14,
+          "stroke": {
+            "x": -0.02127164788544178,
+            "y": 0.01627974398434162,
+            "length": 0.05325563997030258,
+            "bend": -0.019689084962010384,
+            "angle": -3.05703067779541,
+            "force": 0.9478264451026917,
+            "color": 1,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.128000000005386,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8640000000041255,
+            "peak_acquisition_force_N": 0.9369974198256448,
+            "target_force_N": 0.9478264451026917,
+            "contact_samples": 321,
+            "force_samples": 321,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.008958228531429616,
+            "force_mean_N": 0.952684896279658,
+            "force_rmse_N": 0.008958228531429616,
+            "force_max_N": 0.9908232190837373,
+            "force_std_N": 0.007526307898455554,
+            "force_range_N": 0.043408940780743754,
+            "brush_tilt_mean_deg": 0.009501433365120462,
+            "brush_tilt_max_deg": 0.009824212426958023,
+            "trajectory_rmse_m": 8.86830528426901e-05,
+            "wall_seconds": 1.4010021800004324
+          },
+          "goal_count": 15,
+          "planner_predicted_cost": 0.016527868807315826
+        },
+        {
+          "step": 15,
+          "stroke": {
+            "x": 0.03914862498641014,
+            "y": 0.0019532477017492056,
+            "length": 0.05827648937702179,
+            "bend": -0.0040384335443377495,
+            "angle": 2.7643582820892334,
+            "force": 0.8764090538024902,
+            "color": 14,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1160000000053287,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8520000000040682,
+            "peak_acquisition_force_N": 0.8646618289136401,
+            "target_force_N": 0.8764090538024902,
+            "contact_samples": 325,
+            "force_samples": 325,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.006502543546944194,
+            "force_mean_N": 0.8808133302333458,
+            "force_rmse_N": 0.006502543546944194,
+            "force_max_N": 0.9073754050336265,
+            "force_std_N": 0.004783870995388063,
+            "force_range_N": 0.02918940835817574,
+            "brush_tilt_mean_deg": 0.009607245162145516,
+            "brush_tilt_max_deg": 0.009933199953909597,
+            "trajectory_rmse_m": 8.220054941851606e-05,
+            "wall_seconds": 1.3408291839987214
+          },
+          "goal_count": 15,
+          "planner_predicted_cost": 0.016417810693383217
+        },
+        {
+          "step": 16,
+          "stroke": {
+            "x": -0.017855670303106308,
+            "y": 0.042404502630233765,
+            "length": 0.014328649267554283,
+            "bend": -0.0012326647993177176,
+            "angle": -2.936836004257202,
+            "force": 1.1540659666061401,
+            "color": 16,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1920000000056916,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9280000000044311,
+            "peak_acquisition_force_N": 1.1443388473991976,
+            "target_force_N": 1.1540659666061401,
+            "contact_samples": 80,
+            "force_samples": 80,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.006858487913262226,
+            "force_mean_N": 1.1584022635672873,
+            "force_rmse_N": 0.006858487913262226,
+            "force_max_N": 1.1742569720166736,
+            "force_std_N": 0.005313697876348474,
+            "force_range_N": 0.02043604343074934,
+            "brush_tilt_mean_deg": 0.012450659701019086,
+            "brush_tilt_max_deg": 0.012746142001004398,
+            "trajectory_rmse_m": 0.00013099715227173864,
+            "wall_seconds": 1.2616045310005575
+          },
+          "goal_count": 17,
+          "planner_predicted_cost": 0.015478159300982952
+        },
+        {
+          "step": 17,
+          "stroke": {
+            "x": 0.04741887375712395,
+            "y": -0.03659777715802193,
+            "length": 0.06324861198663712,
+            "bend": -0.00815504975616932,
+            "angle": -2.6743252277374268,
+            "force": 0.694892942905426,
+            "color": 5,
+            "opacity": 1.0
+          },
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1080000000052905,
+            "first_contact_delay_s": 0.28800000000137516,
+            "contact_to_stroke_s": 0.8200000000039154,
+            "peak_acquisition_force_N": 0.6818279461793426,
+            "target_force_N": 0.694892942905426,
+            "contact_samples": 356,
+            "force_samples": 356,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.011971312115420678,
+            "force_mean_N": 0.7054402273594865,
+            "force_rmse_N": 0.011971312115420678,
+            "force_max_N": 0.7361651544272735,
+            "force_std_N": 0.005662782391188234,
+            "force_range_N": 0.03664499892657114,
+            "brush_tilt_mean_deg": 0.007026156420270274,
+            "brush_tilt_max_deg": 0.007744477311124899,
+            "trajectory_rmse_m": 5.747886269934914e-05,
+            "wall_seconds": 1.3445472650000738
+          },
+          "goal_count": 17,
+          "planner_predicted_cost": 0.015478159300982952
+        }
+      ],
+      "planning_weighted_gray_l1": 0.01209867880679667,
+      "execution_force_rmse_mean_N": 0.00927322258937651,
+      "execution_trajectory_rmse_mean_m": 0.00010737948469751338,
+      "metrics": {
+        "unweighted_gray_l1": 0.004416790325194597,
+        "weighted_gray_l1": 0.016072480008006096,
+        "changed_region_gray_l1": 0.06626717746257782,
+        "background_gray_l1": 0.0003588679828681052,
+        "changed_pixel_fraction": 0.0615692138671875,
+        "lpips_alex": null
+      },
+      "wall_seconds": 313.06126213899915,
+      "target_image": "reports/stage3_refined/flower_target.png",
+      "result_image": "reports/stage3_refined/flower_result.png",
+      "video": "reports/stage3_refined/flower_painting.mp4"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 4090 D",
+  "torch_version": "2.14.1+cu130",
+  "model_parameters": 999361,
+  "train_samples": 900,
+  "validation_samples": 100,
+  "epochs": 1000,
+  "batch_size": 120,
+  "best_epoch": 236,
+  "best_validation_unweighted_l1": 0.008486959934234619,
+  "paper_validation_unweighted_l1": 0.0285,
+  "best_checkpoint": "outputs/stage2_refined/impasto_unet_best.pt",
+  "best_checkpoint_sha256": "831ea440fd73c275e350e65cca236598b5aff4b5a1b4ba74a646a58744799d35",
+  "last_checkpoint": "outputs/stage2_refined/impasto_unet_last.pt",
+  "training_wall_seconds": 608.4473283349998,
+  "history": "reports/stage2_refined/training_history.csv"
+}

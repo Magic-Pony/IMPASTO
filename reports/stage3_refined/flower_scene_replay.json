@@ -1,0 +1,8 @@
+{
+  "task": "flower",
+  "frames": 753,
+  "fps": 3.0,
+  "video": "reports/stage3_refined/flower_scene_replay.mp4",
+  "final_canvas_max_abs_rgb_difference": 0,
+  "final_canvas_mean_abs_rgb_difference": 0.0
+}

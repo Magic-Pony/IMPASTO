@@ -25,6 +25,8 @@ class PlanResult:
     final_cost: float
     iterations: list[dict]
     proposals: list[StrokeProposal]
+    initial_actions: np.ndarray | None = None
+    initial_colors: list[int] | None = None
 
 
 def _crop_box(crop: CropTransform, width, height, canvas_width, canvas_height):
@@ -174,7 +176,12 @@ class LearnedCanvasDynamics:
         resized = cv2.resize(prediction, (x1 - x0, y1 - y0), interpolation=cv2.INTER_LINEAR)
         current = np.asarray(canvas_gray, dtype=np.float32)[y0:y1, x0:x1]
         alpha = self.effective_opacity(opacity)
-        mixed = current + alpha * (resized - current)
+        if self.cfg.get("residual_patch_paste", False):
+            local_current = crop_canvas_gray(canvas_gray, crop, self.canvas_width, self.canvas_height)
+            delta = cv2.resize(prediction-local_current, (x1-x0, y1-y0), interpolation=cv2.INTER_LINEAR)
+            mixed = current + alpha * delta
+        else:
+            mixed = current + alpha * (resized - current)
         result[y0:y1, x0:x1] = np.clip(mixed, 0.0, 1.0)
         return result
 
@@ -224,6 +231,8 @@ class AdaptiveMPCPlanner:
         self.bounds = stage3_config["action_bounds"]
         self.pc = stage3_config["planner"]
         self.rng = np.random.default_rng(int(stage3_config["seed"]))
+        self.color_target = None
+        self.color_current = None
 
     def objective_weights(self, current, goal):
         diff = np.abs(np.asarray(goal) - np.asarray(current))
@@ -262,17 +271,22 @@ class AdaptiveMPCPlanner:
         proposals = split_difference(
             proposal_base, goal,
             components=min(int(self.pc["splitter_components"]), int(horizon)),
-            threshold=float(self.pc["objective_threshold"]),
+            threshold=float(self.pc.get("splitter_threshold", self.pc["objective_threshold"])),
             min_pixels=int(self.pc["splitter_min_pixels"]),
             kmeans_iterations=int(self.pc["splitter_kmeans_iterations"]),
             ransac_iterations=int(self.pc["splitter_ransac_iterations"]),
             ransac_threshold_px=float(self.pc["splitter_ransac_threshold_px"]),
             color_guided=bool(self.pc.get("splitter_color_guided", False)),
+            opaque_colors=bool(self.cfg.get("opaque_colors", False)),
+            robust_candidates=bool(self.pc.get("robust_candidates", False)),
+            radius_config=self.cfg.get("force_radius_m"),
+            curvature_penalty=float(self.pc.get("splitter_curvature_penalty", .01)),
+            overlap_penalty=float(self.pc.get("splitter_overlap_penalty", .15)),
             canvas_width=self.dynamics.canvas_width,
             canvas_height=self.dynamics.canvas_height,
             action_bounds=self.bounds,
             seed=int(self.cfg["seed"]),
-            color_subset=self.cfg.get("color_subset"),
+            color_subset=self.cfg.get("active_color_subset", self.cfg.get("color_subset")),
             base_rgb=proposal_base_rgb,
             target_rgb=None if color_images is None else color_images[1],
             palette=self.cfg.get("palette_rgb"),
@@ -329,20 +343,79 @@ class AdaptiveMPCPlanner:
                 candidates[i, t] = nominal[t] if projected is None else projected
         return candidates
 
+    def _candidate_colors(self, candidates, default):
+        if self.color_target is None:
+            return np.tile(np.asarray(default, dtype=np.int64), (len(candidates), 1))
+        rgb = self.color_target
+        h, w = rgb.shape[:2]
+        palette = np.asarray(self.cfg["palette_rgb"], dtype=np.float32)/255
+        ids = self.cfg.get("active_color_subset", self.cfg["color_subset"])
+        result = np.empty(candidates.shape[:2], dtype=np.int64)
+        background=np.median(rgb.reshape(-1,3)[::50],axis=0)
+        # Appendix B uses predicted footprint intersected with a central disk.
+        # This sparse central-band quadrature approximates that image region.
+        for i, sequence in enumerate(candidates):
+            for j, action in enumerate(sequence):
+                stroke = Stroke(*map(float, action))
+                pts = stroke.points(np.linspace(.25,.75,11))
+                normal = np.array([-np.sin(stroke.angle),np.cos(stroke.angle)])
+                rc=self.cfg["force_radius_m"]
+                radius=rc["minimum"]+rc["scale"]*stroke.force**rc["exponent"]
+                pts=(pts[:,None,:]+normal[None,None,:]*np.array([-.4,0,.4])[None,:,None]*radius).reshape(-1,2)
+                x=np.clip(np.rint((pts[:,0]/self.dynamics.canvas_width+.5)*(w-1)).astype(int),0,w-1)
+                y=np.clip(np.rint((.5-pts[:,1]/self.dynamics.canvas_height)*(h-1)).astype(int),0,h-1)
+                samples=rgb[y,x]
+                # Robust representative in linear RGB. Reject paper background.
+                keep=np.max(abs(samples-background),axis=-1)>.05
+                if keep.any(): samples=samples[keep]
+                linear=lambda x: np.where(x<=.04045,x/12.92,((x+.055)/1.055)**2.4)
+                mu=linear(samples).mean(axis=0)
+                database=self.cfg.get("color_database")
+                if database:
+                    delta=mu-np.asarray(database["means_linear_rgb"])[ids]
+                    inv=np.linalg.inv(np.asarray(database["covariances"])[ids])
+                    cost=np.einsum("ni,nij,nj->n",delta,inv,delta)
+                else:
+                    delta=abs(linear(palette[ids,None])-linear(samples[None]))
+                    cost=np.mean(delta,axis=(1,2))
+                result[i,j]=ids[int(np.argmin(cost))]
+        return result
+
     def _evaluate(self, current, goal, candidates, colors, opacities, weights):
-        color_batch = np.tile(np.asarray(colors, dtype=np.int64), (len(candidates), 1))
+        color_batch = self._candidate_colors(candidates, colors)
         opacity_batch = np.tile(np.asarray(opacities, dtype=np.float32), (len(candidates), 1))
         initial_batch = np.tile(np.asarray(current, dtype=np.float32)[None],
                                 (len(candidates), 1, 1))
-        final_predictions, _ = self.dynamics.rollout_batch(
+        final_predictions, rollout_frames = self.dynamics.rollout_batch(
             initial_batch, candidates, color_batch, opacity_batch)
         costs = np.asarray([self.cost(prediction, goal, weights)
                             for prediction in final_predictions], dtype=np.float32)
+        rgb_weight = float(self.pc.get("rgb_objective_weight", 0))
+        if rgb_weight and self.color_current is not None:
+            # Recover a physically feasible RGB change from the learned gray
+            # next-state difference and the separate, known pigment color.
+            rgb = np.broadcast_to(self.color_current, (len(candidates),*self.color_current.shape)).copy()
+            gray = np.broadcast_to(current, (len(candidates),*current.shape)).copy()
+            palette = np.asarray(self.cfg["palette_rgb"],np.float32)/255
+            for t, next_gray in enumerate(rollout_frames):
+                pigment=palette[color_batch[:,t]]
+                pg=pigment @ np.array([.299,.587,.114],np.float32)
+                denominator=pg[:,None,None]-gray
+                alpha=np.divide(next_gray-gray,denominator,
+                    out=np.zeros_like(gray),where=abs(denominator)>.025)
+                alpha=np.clip(alpha,0,1)
+                alpha[abs(next_gray-gray)<.003]=0
+                rgb+=alpha[...,None]*(pigment[:,None,None,:]-rgb)
+                gray=next_gray
+            rgb_error=np.mean(abs(rgb-self.color_target),axis=-1)
+            costs += rgb_weight*np.sum(rgb_error*weights,axis=(1,2))/weights.sum()
         return costs, final_predictions
 
     def plan(self, current, goal, colors=None, initial=None, color_images=None,
              proposal_images=None, opacities=None):
         horizon = int(self.pc["horizon"])
+        self.color_target = (np.asarray(color_images[1],np.float32)/255 if color_images is not None and self.pc.get("update_colors_with_geometry",False) else None)
+        self.color_current = (np.asarray(color_images[0],np.float32)/255 if color_images is not None else None)
         if initial is None:
             nominal, inferred_colors, inferred_opacities, proposals = self._initial_sequence(
                 current, goal, horizon, color_images, proposal_images)
@@ -356,7 +429,9 @@ class AdaptiveMPCPlanner:
                 nominal = np.concatenate([nominal, pad], axis=0)
             nominal = nominal[:horizon]
             inferred_colors = inferred_colors[:horizon]
+        inferred_colors = self._candidate_colors(nominal[None], inferred_colors)[0].tolist()
         seed_actions = nominal.copy()
+        seed_colors = list(inferred_colors)
         if colors is not None:
             inferred_colors = list(colors)
         if opacities is not None:
@@ -374,9 +449,10 @@ class AdaptiveMPCPlanner:
         weights = self.objective_weights(current, goal)
         initial_prediction, _ = self.dynamics.rollout(
             current, nominal, inferred_colors, inferred_opacities)
-        initial_cost = self.cost(initial_prediction, goal, weights)
+        initial_cost = float(self._evaluate(current, goal, nominal[None], inferred_colors, inferred_opacities, weights)[0][0])
         trace = []
         best_actions = nominal.copy()
+        best_colors = list(inferred_colors)
         best_prediction = initial_prediction
         best_cost = initial_cost
         for iteration in range(int(self.pc["iterations"])):
@@ -454,18 +530,20 @@ class AdaptiveMPCPlanner:
             if float(costs[best_index]) < best_cost:
                 best_cost = float(costs[best_index])
                 best_actions = candidates[best_index].copy()
+                best_colors = self._candidate_colors(best_actions[None],inferred_colors)[0].tolist()
                 best_prediction = predictions[best_index]
             trace.append({"iteration": iteration, "best_cost": float(costs[best_index]),
                           "elite_cost": float(elite_costs.mean()),
-                          "nominal_cost": self.cost(self.dynamics.rollout(
-                              current, nominal, inferred_colors, inferred_opacities)[0], goal, weights),
+                          "nominal_cost": float(self._evaluate(current,goal,nominal[None],inferred_colors,inferred_opacities,weights)[0][0]),
                           "sigma_mean": float(sigma.mean())})
+        inferred_colors = self._candidate_colors(nominal[None],inferred_colors)[0].tolist()
         final_prediction, _ = self.dynamics.rollout(
             current, nominal, inferred_colors, inferred_opacities)
-        final_cost = self.cost(final_prediction, goal, weights)
+        final_cost = float(self._evaluate(current,goal,nominal[None],inferred_colors,inferred_opacities,weights)[0][0])
         if final_cost < best_cost:
             best_actions = nominal.copy()
+            best_colors = list(inferred_colors)
             best_prediction, best_cost = final_prediction, final_cost
-        return PlanResult(best_actions, inferred_colors, inferred_opacities,
+        return PlanResult(best_actions, best_colors, inferred_opacities,
                           best_prediction, initial_cost,
-                          float(best_cost), trace, proposals)
+                          float(best_cost), trace, proposals, seed_actions, seed_colors)

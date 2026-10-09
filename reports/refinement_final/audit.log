@@ -1,0 +1,20 @@
+{
+  "flower": {
+    "foreground_iou": 0.78625184786991,
+    "target_foreground_recall": 0.8021526016315897,
+    "paint_precision": 0.97540846948983,
+    "target_foreground_rgb_l1": 0.06832155590235911,
+    "union_foreground_rgb_l1": 0.0705004861775378,
+    "target_foreground_gray_l1": 0.06234545260667801,
+    "foreground_threshold_rgb_255": 15
+  },
+  "fish": {
+    "foreground_iou": 0.6959490213928083,
+    "target_foreground_recall": 0.7271949015504613,
+    "paint_precision": 0.9418504373537021,
+    "target_foreground_rgb_l1": 0.08047241852446613,
+    "union_foreground_rgb_l1": 0.08285047048708725,
+    "target_foreground_gray_l1": 0.076446034014225,
+    "foreground_threshold_rgb_255": 15
+  }
+}

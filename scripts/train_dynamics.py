@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import os
 from pathlib import Path
 import random
 import time
@@ -60,10 +61,10 @@ def evaluate(model, loader, device, cfg):
 
 
 def main():
-    cfg = json.loads((ROOT / "configs/stage2.json").read_text())
+    cfg = json.loads((ROOT / os.environ.get("IMPASTO_STAGE2_CONFIG", "configs/stage2.json")).read_text())
     data_path = ROOT / cfg["dataset_dir"] / "stage2_selfplay.npz"
-    report_dir = ROOT / "reports/stage2"
-    output_dir = ROOT / "outputs/stage2"
+    report_dir = ROOT / cfg.get("report_dir", "reports/stage2")
+    output_dir = ROOT / cfg.get("output_dir", "outputs/stage2")
     report_dir.mkdir(parents=True, exist_ok=True)
     output_dir.mkdir(parents=True, exist_ok=True)
     if not data_path.exists():

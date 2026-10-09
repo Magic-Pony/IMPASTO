@@ -28,7 +28,7 @@ QUALITY_FIELDS = (
 
 
 def load_config():
-    stage2 = json.loads((ROOT / "configs/stage2.json").read_text())
+    stage2 = json.loads((ROOT / os.environ.get("IMPASTO_STAGE2_CONFIG", "configs/stage2.json")).read_text())
     stage1 = json.loads((ROOT / stage2["stage1_config"]).read_text())
     return stage2, stage1
 
@@ -193,7 +193,9 @@ def validate_collection(results, episode_paths, combined_path, cfg):
 
 
 def main():
+    global REPORT
     stage2_cfg, stage1_cfg = load_config()
+    REPORT = ROOT / stage2_cfg.get("report_dir", "reports/stage2")
     data_dir = ROOT / stage2_cfg["dataset_dir"]
     data_dir.mkdir(parents=True, exist_ok=True)
     REPORT.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,34 @@
+[
+  {
+    "ratio": 0.25,
+    "effective_opacity": 0.05,
+    "changed_region_l1": 0.1013752892613411,
+    "actual_contrast": 0.11404187232255936,
+    "predicted_contrast": 0.012666584923863411,
+    "force_rmse": 0.009905967371299092
+  },
+  {
+    "ratio": 0.5,
+    "effective_opacity": 0.1,
+    "changed_region_l1": 0.14680831134319305,
+    "actual_contrast": 0.17161104083061218,
+    "predicted_contrast": 0.024802716448903084,
+    "force_rmse": 0.009905586178905404
+  },
+  {
+    "ratio": 1.0,
+    "effective_opacity": 0.2,
+    "changed_region_l1": 0.17710278928279877,
+    "actual_contrast": 0.2260715663433075,
+    "predicted_contrast": 0.04905012995004654,
+    "force_rmse": 0.009905586215233981
+  },
+  {
+    "ratio": 5.0,
+    "effective_opacity": 1.0,
+    "changed_region_l1": 0.03495047613978386,
+    "actual_contrast": 0.272487074136734,
+    "predicted_contrast": 0.24168796837329865,
+    "force_rmse": 0.00990558621524464
+  }
+]

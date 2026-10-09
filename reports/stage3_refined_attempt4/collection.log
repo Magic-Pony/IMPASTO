@@ -1,0 +1,5 @@
+{
+  "samples": 1000,
+  "wall_seconds": 446.55052490399976,
+  "dataset": "/home/lcy-pony/Draw_WS/IMPASTO/data/stage2_refined/stage2_selfplay.npz"
+}

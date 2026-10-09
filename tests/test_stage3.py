@@ -1,5 +1,7 @@
 import numpy as np
+import pytest
 
+from scripts.run_stage3 import validate_palette_contract
 from impasto.stage3.planner import AdaptiveMPCPlanner, _project_action
 from impasto.stage3.splitter import split_difference
 
@@ -97,3 +99,45 @@ def test_planner_returns_actions_matching_best_prediction():
     replay, _ = dynamics.rollout(current, result.actions, result.colors)
     np.testing.assert_allclose(result.predicted, replay)
     assert result.final_cost <= result.initial_cost + 1e-7
+
+
+def test_palette_contract_rejects_checkpoint_with_swapped_slots():
+    palette = [[i, i, i] for i in range(24)]
+    checkpoint_palette = [row.copy() for row in palette]
+    checkpoint_palette[22], checkpoint_palette[23] = checkpoint_palette[23], checkpoint_palette[22]
+    with pytest.raises(ValueError, match="checkpoint"):
+        validate_palette_contract(
+            {"paint": {"palette_rgb": palette}},
+            {"palette_rgb": palette},
+            {"deployment_palette_rgb": palette,
+             "color_database": {"palette_rgb": palette}},
+            {"config": {"palette_rgb": checkpoint_palette}},
+        )
+
+
+def test_robust_splitter_keeps_connected_different_colors_separate():
+    import cv2
+    from impasto.actions import Stroke
+
+    height = width = 128
+    base_rgb = np.full((height, width, 3), 245, dtype=np.uint8)
+    target_rgb = base_rgb.copy()
+    cv2.line(target_rgb, (20, 36), (62, 64), (64, 113, 175), 11)
+    cv2.line(target_rgb, (62, 64), (62, 113), (80, 160, 80), 11)
+    base = np.full((height, width), 1.0, dtype=np.float32)
+    target = cv2.cvtColor(target_rgb, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255
+    proposals = split_difference(
+        base, target, components=3, threshold=.02, min_pixels=10,
+        kmeans_iterations=8, ransac_iterations=16,
+        canvas_width=.4572, canvas_height=.5334,
+        color_subset=[0, 1], base_rgb=base_rgb, target_rgb=target_rgb,
+        palette=[[64, 113, 175], [80, 160, 80]], robust_candidates=True, seed=7,
+    )
+    assert proposals
+    for proposal in proposals:
+        points = Stroke(*map(float, proposal.action)).points(np.linspace(0, 1, 70))
+        x = np.clip(np.rint((points[:, 0] / .4572 + .5) * 127).astype(int), 0, 127)
+        y = np.clip(np.rint((.5 - points[:, 1] / .5334) * 127).astype(int), 0, 127)
+        on_blue = np.linalg.norm(target_rgb[y, x].astype(float) - [64, 113, 175], axis=1) < 10
+        on_green = np.linalg.norm(target_rgb[y, x].astype(float) - [80, 160, 80], axis=1) < 10
+        assert min(on_blue.sum(), on_green.sum()) <= 5

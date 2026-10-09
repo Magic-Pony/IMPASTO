@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IMPASTO 最终优化报告</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, -apple-system, "Noto Sans CJK SC", sans-serif; }
+    body { margin: 0; background: #f4f1e9; color: #20252a; line-height: 1.6; }
+    main { max-width: 1180px; margin: 0 auto; padding: 32px 24px 64px; }
+    h1, h2 { line-height: 1.2; }
+    h1 { margin-bottom: 8px; }
+    .lead { color: #4b545c; max-width: 900px; }
+    section { margin-top: 32px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+    figure { margin: 0; background: #fffdf8; border: 1px solid #d8d0c2; padding: 10px; }
+    figure img { width: 100%; height: auto; display: block; }
+    figcaption { font-size: 0.9rem; color: #56616a; margin-top: 8px; }
+    video { width: 100%; background: #111; border: 1px solid #d8d0c2; }
+    a { color: #125b7a; }
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+    .metric { background: #fffdf8; border-left: 4px solid #2f7d74; padding: 10px 12px; }
+    .metric strong { display: block; font-size: 1.25rem; }
+    .metric span { color: #56616a; font-size: 0.9rem; }
+    code { background: #e9e4da; padding: 1px 4px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>IMPASTO 本地仿真复现：最终优化报告</h1>
+  <p class="lead">本页展示阶段一到阶段三的最终复查结果。重点是 Flower/Fish 每轮的目标分解、learned dynamics 预测、真实 MuJoCo 执行和视觉误差归因。</p>
+
+  <section>
+    <h2>最终指标</h2>
+    <div class="metrics">
+      <div class="metric"><strong>0.7579</strong><span>Flower foreground IoU</span></div>
+      <div class="metric"><strong>0.7153</strong><span>Fish foreground IoU</span></div>
+      <div class="metric"><strong>0.00705</strong><span>Flower prediction/execution L1</span></div>
+      <div class="metric"><strong>0.00968</strong><span>Fish prediction/execution L1</span></div>
+      <div class="metric"><strong>0.114 mm</strong><span>Flower trajectory RMSE</span></div>
+      <div class="metric"><strong>0.120 mm</strong><span>Fish trajectory RMSE</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>最终结果</h2>
+    <div class="grid">
+      <figure><img src="../stage3_refined/flower_target.png" alt="Flower target"><figcaption>Flower 目标</figcaption></figure>
+      <figure><img src="../stage3_refined/flower_result.png" alt="Flower result"><figcaption>Flower 执行结果</figcaption></figure>
+      <figure><img src="../stage3_refined/fish_target.png" alt="Fish target"><figcaption>Fish 目标</figcaption></figure>
+      <figure><img src="../stage3_refined/fish_result.png" alt="Fish result"><figcaption>Fish 执行结果</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>逐轮审计</h2>
+    <div class="grid">
+      <figure><img src="flower_rounds_montage.png" alt="Flower rounds montage"><figcaption>Flower：每轮目标、观测、预测和执行</figcaption></figure>
+      <figure><img src="fish_rounds_montage.png" alt="Fish rounds montage"><figcaption>Fish：每轮目标、观测、预测和执行</figcaption></figure>
+      <figure><img src="flower_comparison.png" alt="Flower comparison"><figcaption>Flower：目标、前一版和 refined 结果</figcaption></figure>
+      <figure><img src="fish_comparison.png" alt="Fish comparison"><figcaption>Fish：目标、前一版和 refined 结果</figcaption></figure>
+    </div>
+    <p><a href="report.md">打开完整中文报告</a>，其中包含 Flower 1--10 轮的逐轮诊断、Fish 分段诊断、阶段一力控、阶段二训练和问题归因。</p>
+  </section>
+
+  <section>
+    <h2>连续场景视频</h2>
+    <div class="grid">
+      <figure><video controls preload="metadata" src="../stage3_refined/flower_scene_replay.mp4"></video><figcaption>Flower：机器人、实时画布、目标图和法向力</figcaption></figure>
+      <figure><video controls preload="metadata" src="../stage3_refined/fish_scene_replay.mp4"></video><figcaption>Fish：机器人、实时画布、目标图和法向力</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>阶段一和阶段二</h2>
+    <div class="grid">
+      <figure><img src="../stage1/figures/scene_layout.png" alt="Stage 1 scene"><figcaption>阶段一场景布局</figcaption></figure>
+      <figure><img src="../stage1/figures/force_tracking.png" alt="Stage 1 force tracking"><figcaption>阶段一法向力跟踪</figcaption></figure>
+      <figure><img src="../stage2_refined/training_curves.png" alt="Stage 2 training curves"><figcaption>阶段二训练曲线</figcaption></figure>
+      <figure><img src="../stage2_refined/predictions.png" alt="Stage 2 predictions"><figcaption>阶段二验证预测</figcaption></figure>
+    </div>
+  </section>
+</main>
+</body>
+</html>

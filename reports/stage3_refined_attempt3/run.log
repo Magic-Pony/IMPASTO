@@ -1,0 +1,24 @@
+flower: 0->5, horizon 5, cost 0.00869->0.00611
+flower: 2->5, horizon 3, cost 0.00683->0.00583
+flower: 4->5, horizon 1, cost 0.00611->0.00601
+flower: 5->10, horizon 5, cost 0.01358->0.00952
+flower: 7->10, horizon 3, cost 0.01130->0.00948
+flower: 9->10, horizon 1, cost 0.01039->0.00964
+flower: 10->15, horizon 5, cost 0.01907->0.01442
+flower: 12->15, horizon 3, cost 0.01673->0.01297
+flower: 14->15, horizon 1, cost 0.01401->0.01318
+flower: 15->17, horizon 2, cost 0.01480->0.01434
+{"flower": {"unweighted_gray_l1": 0.004010793752968311, "weighted_gray_l1": 0.014593880623579025, "changed_region_gray_l1": 0.06022721156477928, "background_gray_l1": 0.00032250824733637273, "changed_pixel_fraction": 0.0615692138671875, "lpips_alex": null}, "replanning_cycles": 10}
+{
+  "report": "reports/stage3_refined/report.md",
+  "experiments": {
+    "flower": {
+      "unweighted_gray_l1": 0.004010793752968311,
+      "weighted_gray_l1": 0.014593880623579025,
+      "changed_region_gray_l1": 0.06022721156477928,
+      "background_gray_l1": 0.00032250824733637273,
+      "changed_pixel_fraction": 0.0615692138671875,
+      "lpips_alex": null
+    }
+  }
+}

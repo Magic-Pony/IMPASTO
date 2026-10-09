@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 from pathlib import Path
 
 import matplotlib
@@ -21,14 +22,14 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
-    cfg = json.loads((ROOT / "configs/stage2.json").read_text())
-    train_metrics = json.loads((ROOT / "reports/stage2/training_metrics.json").read_text())
+    cfg = json.loads((ROOT / os.environ.get("IMPASTO_STAGE2_CONFIG", "configs/stage2.json")).read_text())
+    train_metrics = json.loads((ROOT / cfg.get("report_dir", "reports/stage2") / "training_metrics.json").read_text())
     checkpoint_path = ROOT / train_metrics["best_checkpoint"]
     dataset_path = ROOT / cfg["dataset_dir"] / "stage2_selfplay.npz"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
     train_metrics["best_epoch"] = int(checkpoint["epoch"])
-    (ROOT / "reports/stage2/training_metrics.json").write_text(
+    (ROOT / cfg.get("report_dir", "reports/stage2") / "training_metrics.json").write_text(
         json.dumps(train_metrics, indent=2))
     model = ImpastoUNet(channels=tuple(cfg["unet_channels"]),
                         action_embedding_channels=int(cfg["action_embedding_channels"]),
@@ -71,14 +72,14 @@ def main():
         "changed_pixel_fraction": float(changed.mean()),
         "paper_unweighted_l1_reference": .0285,
         "difference_from_paper_reference": float(absolute.mean() - .0285),
-        "matches_or_exceeds_paper_reference": bool(absolute.mean() <= .0285),
+        "numerically_below_noncomparable_paper_reference": bool(absolute.mean() <= .0285),
         "checkpoint_sha256": train_metrics["best_checkpoint_sha256"],
         "best_epoch": int(checkpoint["epoch"]),
         "validation_episode_ids": cfg["split"]["validation_episode_ids"],
         "device": str(device),
         "collection_quality": quality_summary,
     }
-    report_dir = ROOT / "reports/stage2"
+    report_dir = ROOT / cfg.get("report_dir", "reports/stage2")
     (report_dir / "evaluation_metrics.json").write_text(json.dumps(metrics, indent=2))
     chosen = np.linspace(0, len(dataset) - 1, min(6, len(dataset)), dtype=int)
     fig, axes = plt.subplots(len(chosen), 5, figsize=(13, 2.4 * len(chosen)), squeeze=False)
@@ -173,9 +174,9 @@ The 1,000 successful transitions came from ten independent 100-stroke episodes. 
 Best checkpoint: `{train_metrics['best_checkpoint']}`  
 SHA-256: `{train_metrics['best_checkpoint_sha256']}`  
 Training history: `{train_metrics['history']}`  
-Dataset manifest: `data/stage2/manifest.json`
+Dataset manifest: `{cfg['dataset_dir']}/manifest.json`
 
-The paper-specified model dimensions, optimizer, learning rate, batch size, epoch count, decay schedule, and 900 training samples are used. The signed bend normalization, numeric action limits, crop margin, four-color subset, brush-width law, dropout rate, and changed-pixel loss multiplier are local choices because the paper does not specify them. Inputs use a two-channel 100 x 100 patch and the complete next grayscale patch is predicted. The simulator is the Stage-1 contact-driven paint model, not the real robot; therefore the comparison with the paper is an implementation-level reference, not a controlled reproduction on identical hardware data. No baseline is implemented or evaluated in this stage.
+The paper-specified model dimensions, optimizer, learning rate, batch size, epoch count, decay schedule, and 900 training samples are used. The signed bend normalization, numeric action limits, crop margin, configured task-specific color subset, brush-width law, dropout rate, and changed-pixel loss multiplier are local choices because the paper does not specify them. Inputs use a two-channel 100 x 100 patch and the complete next grayscale patch is predicted. The simulator is the Stage-1 contact-driven paint model, not the real robot; therefore the comparison with the paper is an implementation-level reference, not a controlled reproduction on identical hardware data. No baseline is implemented or evaluated in this stage.
 """
     (report_dir / "report.md").write_text(report)
     print(json.dumps(metrics, indent=2))

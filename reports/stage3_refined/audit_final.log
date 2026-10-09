@@ -1,0 +1,11 @@
+{
+  "flower": {
+    "foreground_iou": 0.7890068539174843,
+    "target_foreground_recall": 0.8049633235072324,
+    "paint_precision": 0.9754922322837917,
+    "target_foreground_rgb_l1": 0.0684365297957578,
+    "union_foreground_rgb_l1": 0.0703999128657421,
+    "target_foreground_gray_l1": 0.06313254684209824,
+    "foreground_threshold_rgb_255": 15
+  }
+}
