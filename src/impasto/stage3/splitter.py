@@ -457,11 +457,13 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
     groups = [changed]
     for labels in (hue_family, family):
         for label in np.unique(labels[changed]):
-            # Preserve a complete color region instead of breaking it at
-            # pixels already painted. The residual still controls its score.
+            # Keep the connected target colour region for PCA/RANSAC so a
+            # prefix does not break one physical stroke into short fragments.
+            # The current residual is still used below for force estimation
+            # and candidate ranking.
             mask = foreground & (labels == label)
             mask = cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_CLOSE,
-                                    np.ones((3,3),np.uint8)).astype(bool)
+                                    np.ones((3,3), np.uint8)).astype(bool)
             ids, nc = ndimage.label(mask)
             for i in range(1,nc+1):
                 group = ids==i
@@ -469,32 +471,51 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
                     groups.append(group)
     candidates = []
     for gi, group in enumerate(groups):
-        # Isolate each region in the difference image without changing target RGB.
+        # Isolate each residual region in the difference image without
+        # changing target RGB. The recursive splitter now estimates geometry
+        # from the residual itself instead of from the full target blob.
         fake_base = target.copy()
         fake_base[group] = target[group]+.2
         ks = (sorted(set([components, components+2, components*2])) if gi == 0
               else list(range(1, components + 1)))
         for k in ks:
             if group.sum() < k*min_pixels: continue
-            candidates.extend(split_difference(fake_base,target,k,threshold=.03,
-                min_pixels=min_pixels,kmeans_iterations=kmeans_iterations,
-                ransac_iterations=ransac_iterations,ransac_threshold_px=ransac_threshold_px,
-                canvas_width=canvas_width,canvas_height=canvas_height,
-                action_bounds=bounds,seed=seed+gi+k, color_subset=color_subset,
-                base_rgb=base_rgb,target_rgb=target_rgb,palette=palette,
-                opaque_colors=opaque_colors,radius_config=radius_config))
+            candidates.extend((proposal, group) for proposal in split_difference(
+                fake_base, target, k, threshold=.03, min_pixels=min_pixels,
+                kmeans_iterations=kmeans_iterations,
+                ransac_iterations=ransac_iterations,
+                ransac_threshold_px=ransac_threshold_px,
+                canvas_width=canvas_width, canvas_height=canvas_height,
+                action_bounds=bounds, seed=seed+gi+k, color_subset=color_subset,
+                base_rgb=base_rgb, target_rgb=target_rgb, palette=palette,
+                opaque_colors=opaque_colors, radius_config=radius_config))
     # Rank by actual explained residual under a pigment footprint, rather than
     # by component size; subtract curved detours and already-covered area.
     pool=[]
-    for proposal in candidates:
+    for proposal, source_group in candidates:
         action=proposal.action.copy()
         if bounds:
             for j,key in ((0,"x_m"),(1,"y_m"),(2,"length_m"),(3,"bend_m"),(5,"force_N")):
                 action[j]=np.clip(action[j],*bounds[key])
+        # The full target blob is useful for a continuous centerline, but its
+        # area includes paint already present in the published prefix. Estimate
+        # width from the unexplained portion whenever it is large enough.
+        residual_group = source_group & changed
+        width_group = (residual_group if int(residual_group.sum()) >= min_pixels
+                       else source_group)
+        length = max(float(action[2]), 1e-6)
+        area_m2 = width_group.sum()*canvas_width*canvas_height / max(
+            (base.shape[1]-1)*(base.shape[0]-1), 1)
+        radius = (np.sqrt(length**2 + np.pi*area_m2)-length)/np.pi
+        rc = radius_config or {"minimum": .0004, "scale": .0058, "exponent": 1.65}
+        action[5] = max((max(radius, .0005)-rc["minimum"])/rc["scale"], 0.0)**(
+            1.0/rc["exponent"])
+        if bounds:
+            action[5]=np.clip(action[5],*bounds["force_N"])
         mask=_footprint(action,base.shape,canvas_width,canvas_height,radius_config)
-        core=mask & proposal.mask
+        core=mask & residual_group
         if core.sum()<min_pixels: continue
-        weights=cv2.distanceTransform(proposal.mask.astype(np.uint8),cv2.DIST_L2,5)[core]
+        weights=cv2.distanceTransform(source_group.astype(np.uint8),cv2.DIST_L2,5)[core]
         pixels=rgb1[core]
         ids=list(color_subset or range(len(pal)))
         # L1 prototype classification is robust to mixed antialiased boundaries.
