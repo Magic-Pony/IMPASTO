@@ -14,15 +14,20 @@ IMPASTO_STAGE3_CONFIG=configs/stage3_refined.json bash scripts/run.sh scripts/ru
 bash scripts/run.sh scripts/audit_refinement.py --report-dir reports/stage3_overpaint_2p0 --out-dir reports/refinement_overpaint_2p0
 ```
 
-| Task | Prior best weighted gray L1 | Trial weighted gray L1 | Prior best foreground IoU | Trial foreground IoU | Trial recall | Trial precision |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Flower | 0.01486 | 0.01539 | 0.758 | 0.776 | 0.797 | 0.967 |
-| Fish | 0.01375 | 0.01543 | 0.715 | 0.666 | 0.694 | 0.942 |
+The valid ablation is against `reports/stage3_prefix_fixed` and
+`reports/refinement_prefix_fixed`: the checkpoint, target-prefix handling,
+opacity branch, and all planner settings are the same; only the trial uses
+`overpaint_weight=2.0` instead of the default `1.0`.
 
-The comparison is descriptive, not a one-variable ablation against the prior
-best: attempt 6 used the earlier refined checkpoint and different target
-prefix/opacity settings. The new trial's resolved settings and model checksum
-are in `../stage3_overpaint_2p0/resolved_config.json` and `metrics.json`.
+| Task | Default gray L1 | Trial gray L1 | Default foreground IoU | Trial foreground IoU | Default recall | Trial recall | Default precision | Trial precision |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Flower | 0.01559 | 0.01539 | 0.783 | 0.776 | 0.818 | 0.797 | 0.949 | 0.967 |
+| Fish | 0.01594 | 0.01543 | 0.713 | 0.6656 | 0.771 | 0.694 | 0.904 | 0.942 |
+
+The trial's full resolved settings and model checksum are in
+`../stage3_overpaint_2p0/resolved_config.json` and `metrics.json`. The older
+`attempt6` values are excluded from this ablation because that run used a
+different checkpoint and target-prefix/opacity settings.
 
 Visual inspection of [Flower round 7](flower_audit_07.png) shows a more
 restrained vertical stem. In the [full Flower progression](flower_rounds_montage.png),
@@ -31,9 +36,11 @@ swaths where the source has soft mixed edges. The [Fish comparison](fish_compari
 shows a narrower central body but worse correspondence of the separated head,
 body and fins. The Fish recall and IoU decline confirms the visual result.
 
-This objective change is **not recommended** as the default. It cannot by
-itself correct candidate geometry or reproduce low-resolution target
-appearance. The experiment remains available as a switchable local extension
-for later work. See the [generated stage-3 report](../stage3_overpaint_2p0/report.md),
+The asymmetric objective improves scalar grayscale L1 slightly and raises
+precision by rejecting some extra paint. It also reduces recall and foreground
+IoU for both tasks, especially Fish, so it is **not recommended** as the
+default. It cannot by itself correct candidate geometry or reproduce
+low-resolution target appearance. The experiment remains available as a
+switchable local extension for later work. See the [generated stage-3 report](../stage3_overpaint_2p0/report.md),
 [Flower video](../stage3_overpaint_2p0/flower_painting.mp4), and
 [Fish video](../stage3_overpaint_2p0/fish_painting.mp4) for complete execution.
