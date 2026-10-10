@@ -364,6 +364,8 @@ def split_difference(base, target, components=5, threshold=.015, min_pixels=18,
         if action_bounds:
             for idx,key in ((0,'x_m'),(1,'y_m'),(2,'length_m'),(3,'bend_m'),(5,'force_N')):
                 action[idx]=np.clip(action[idx],*action_bounds[key])
+        else:
+            action[5] = np.clip(action[5], 0.0, 4.0)
         # The full connected mask can contain overlapping strokes.  Color and
         # alpha are attributes of the stroke centerline, so classify a narrow
         # centerline band first and fall back to the full group when it is too
@@ -497,6 +499,8 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
         if bounds:
             for j,key in ((0,"x_m"),(1,"y_m"),(2,"length_m"),(3,"bend_m"),(5,"force_N")):
                 action[j]=np.clip(action[j],*bounds[key])
+        else:
+            action[5] = np.clip(action[5], 0.0, 4.0)
         # The full target blob is useful for a continuous centerline, but its
         # area includes paint already present in the published prefix. Estimate
         # width from the unexplained portion whenever it is large enough.
@@ -504,7 +508,33 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
         width_group = (residual_group if int(residual_group.sum()) >= min_pixels
                        else source_group)
         length = max(float(action[2]), 1e-6)
-        area_m2 = width_group.sum()*canvas_width*canvas_height / max(
+        # Published panels contain antialiased paint edges. Count their
+        # projected pigment coverage when converting area to brush width so a
+        # pale halo does not force an opaque simulation stroke to its maximum
+        # force. Geometry remains based on the complete connected region.
+        ids = list(color_subset or range(len(pal)))
+        seed_region = proposal.mask & width_group
+        if int(seed_region.sum()) < min_pixels:
+            continue
+        seed_pixels = rgb1[seed_region]
+        seed_weights = cv2.distanceTransform(
+            source_group.astype(np.uint8), cv2.DIST_L2, 5)[seed_region]
+        seed_errors = np.mean(abs(pal[ids, None] - seed_pixels[None]), axis=-1)
+        color_seed = ids[int(np.argmin(np.average(
+            seed_errors, axis=1, weights=np.maximum(seed_weights, .1))))]
+        linear = lambda x: np.where(
+            x <= .04045, x / 12.92, ((x + .055) / 1.055) ** 2.4)
+        base_linear = linear(rgb0[seed_region])
+        target_linear = linear(rgb1[seed_region])
+        pigment_linear = linear(pal[int(color_seed)])[None]
+        contrast = pigment_linear - base_linear
+        delta = target_linear - base_linear
+        denom = np.maximum(np.sum(contrast * contrast, axis=1), 1e-10)
+        coverage = np.clip(np.sum(contrast * delta, axis=1) / denom, 0.0, 1.0)
+        coverage_power = float((radius_config or {}).get("coverage_power", 1.5))
+        effective_pixels = float(np.sum(coverage ** coverage_power))
+        effective_pixels = max(effective_pixels, min_pixels * .5)
+        area_m2 = effective_pixels*canvas_width*canvas_height / max(
             (base.shape[1]-1)*(base.shape[0]-1), 1)
         radius = (np.sqrt(length**2 + np.pi*area_m2)-length)/np.pi
         rc = radius_config or {"minimum": .0004, "scale": .0058, "exponent": 1.65}
@@ -512,6 +542,8 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
             1.0/rc["exponent"])
         if bounds:
             action[5]=np.clip(action[5],*bounds["force_N"])
+        else:
+            action[5] = np.clip(action[5], 0.0, 4.0)
         mask=_footprint(action,base.shape,canvas_width,canvas_height,radius_config)
         core=mask & residual_group
         if core.sum()<min_pixels: continue
