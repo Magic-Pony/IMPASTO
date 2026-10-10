@@ -252,7 +252,7 @@
       80
     ]
   ],
-  "opaque_colors": true,
+  "opaque_colors": false,
   "residual_patch_paste": true,
   "deployment_palette_rgb": [
     [

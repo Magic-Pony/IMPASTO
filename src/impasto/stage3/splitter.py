@@ -225,7 +225,8 @@ def split_difference(base, target, components=5, threshold=.015, min_pixels=18,
         return _multiway_candidates(base, target, components, threshold, min_pixels,
             kmeans_iterations, ransac_iterations, ransac_threshold_px, canvas_width,
             canvas_height, action_bounds, seed, color_subset, base_rgb, target_rgb,
-            palette, radius_config, curvature_penalty, overlap_penalty)
+            palette, radius_config, curvature_penalty, overlap_penalty,
+            opaque_colors=opaque_colors)
     changed = np.abs(target - base) > threshold
     # Paint cannot correct an excess dark mark by drawing another dark mark
     # over empty canvas. Use only goal foreground to seed new pigment strokes;
@@ -426,7 +427,7 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
                          kmeans_iterations, ransac_iterations, ransac_threshold_px,
                          canvas_width, canvas_height, bounds, seed, color_subset,
                          base_rgb, target_rgb, palette, radius_config,
-                         curvature_penalty, overlap_penalty):
+                         curvature_penalty, overlap_penalty, opaque_colors=False):
     """Multi-start spatial PCA/RANSAC with explicit coverage and overlap scoring.
 
     Spatial k-means still provides geometry. Coarse color-connected regions add
@@ -437,7 +438,7 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
         return split_difference(base, target, components, threshold, min_pixels,
             kmeans_iterations, ransac_iterations, ransac_threshold_px,
             canvas_width, canvas_height, bounds, seed, color_subset=color_subset,
-            radius_config=radius_config, opaque_colors=True)
+            radius_config=radius_config, opaque_colors=opaque_colors)
     pal = np.asarray(palette, np.float32)
     if pal.max() > 1: pal /= 255
     rgb0 = np.asarray(base_rgb, np.float32)/255
@@ -481,7 +482,7 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
                 canvas_width=canvas_width,canvas_height=canvas_height,
                 action_bounds=bounds,seed=seed+gi+k, color_subset=color_subset,
                 base_rgb=base_rgb,target_rgb=target_rgb,palette=palette,
-                opaque_colors=True,radius_config=radius_config))
+                opaque_colors=opaque_colors,radius_config=radius_config))
     # Rank by actual explained residual under a pigment footprint, rather than
     # by component size; subtract curved detours and already-covered area.
     pool=[]
@@ -534,6 +535,7 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
                       -curvature_penalty*abs(action[3])/canvas_width)
                 for action,color,mask,gain,proposal in pool]
         j=int(np.argmax(scores));action,color,mask,gain,proposal=pool.pop(j)
-        selected.append(StrokeProposal(action,color,1.,proposal.mask,scores[j],proposal.model))
+        selected.append(StrokeProposal(action, color, proposal.opacity,
+                                        proposal.mask, scores[j], proposal.model))
         covered |= mask
     return selected

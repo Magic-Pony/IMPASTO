@@ -1,0 +1,27 @@
+{
+  "validation_samples": 100,
+  "unweighted_l1": 0.008486517705023289,
+  "stroke_region_l1": 0.039296705275774,
+  "background_l1": 0.003736860351637006,
+  "changed_pixel_fraction": 0.133568,
+  "paper_unweighted_l1_reference": 0.0285,
+  "difference_from_paper_reference": -0.020013481378555298,
+  "numerically_below_noncomparable_paper_reference": true,
+  "checkpoint_sha256": "39b262e9c481e3d1a7840d4fafa10726bab72c810960df0e218c0faaa3ab42ff",
+  "best_epoch": 980,
+  "validation_episode_ids": [
+    9
+  ],
+  "device": "cuda",
+  "collection_quality": {
+    "mean_target_force_N": 1.0018842220306396,
+    "mean_force_N": 1.0097219944000244,
+    "mean_force_rmse_N": 0.025055725127458572,
+    "max_force_rmse_N": 0.2376074343919754,
+    "mean_contact_fraction": 0.9995691180229187,
+    "min_contact_fraction": 0.9900497794151306,
+    "mean_trajectory_rmse_m": 0.000105669503682293,
+    "mean_force_acquisition_s": 1.1705000400543213,
+    "mean_failed_attempts": 0.08799999952316284
+  }
+}
