@@ -267,7 +267,12 @@ class AdaptiveMPCPlanner:
         # must be estimated from the actually observed canvas.  The prefix is
         # only a target-frame alignment aid; feeding it as the RGB base makes
         # all antialiasing and registration differences look like pigment.
-        proposal_base_rgb = (color_images[0] if color_images is not None else None)
+        # Keep the grayscale and RGB geometry references paired.  A published
+        # prefix is used only as an initialization image; rollout and colour
+        # objectives still start from the live observation below.
+        proposal_base_rgb = (
+            proposal_images[1] if proposal_images is not None
+            else color_images[0] if color_images is not None else None)
         proposals = split_difference(
             proposal_base, goal,
             components=min(int(self.pc["splitter_components"]), int(horizon)),

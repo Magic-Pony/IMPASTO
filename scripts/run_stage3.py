@@ -324,9 +324,12 @@ def run_artwork(name, config, stage2, stage1, model, device, report_dir, lpips_m
                     # decompose the same incremental target window; falling
                     # back to the live, already-mismatched canvas would turn
                     # execution error into a new geometric proposal.
-                    available = [count for count in published_counts
-                                 if count <= executed]
-                    prefix_count = max(available) if available else None
+                    # A published checkpoint is a valid geometric base only
+                    # when it represents the exact observed stroke count.
+                    # Reusing an older frame after additional live execution
+                    # would turn execution/model mismatch into a fake target
+                    # residual and seed an incorrect long stroke.
+                    prefix_count = executed if executed in published_counts else None
                     proposal_frame = (target_frames.get(prefix_count)
                                       if prefix_count is not None else None)
                     if proposal_frame is not None:
