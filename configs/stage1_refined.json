@@ -164,7 +164,10 @@
       "minimum": 0.0004,
       "scale": 0.0058,
       "exponent": 1.65
-    }
+    },
+    "footprint_profile": "gaussian",
+    "footprint_sigma_fraction": 0.72,
+    "footprint_taper_start_fraction": 0.75
   },
   "reload_brush_each_stroke": true
 }

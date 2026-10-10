@@ -1,0 +1,8 @@
+{
+  "status": "intermediate; training paused before commit",
+  "config": "configs/stage2_refined.json",
+  "checkpoint": "outputs/stage2_soft_edge/impasto_unet_best.pt",
+  "history": "reports/stage2_soft_edge/training_history.csv",
+  "history_epochs_written": 190,
+  "note": "The checkpoint is a local ignored artifact. Resume or replace it only after an explicitly completed training run; no Stage-3 result is associated with this snapshot."
+}

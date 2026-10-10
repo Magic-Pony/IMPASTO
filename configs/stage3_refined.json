@@ -3,8 +3,8 @@
   "opacity_scale": 1.0,
   "stage1_config": "configs/stage1_refined.json",
   "stage2_config": "configs/stage2_refined.json",
-  "checkpoint": "outputs/stage2_refined/impasto_unet_best.pt",
-  "report_dir": "reports/stage3_refined",
+  "checkpoint": "outputs/stage2_soft_edge/impasto_unet_best.pt",
+  "report_dir": "reports/stage3_soft_edge",
   "canvas_width_m": 0.4572,
   "canvas_height_m": 0.5334,
   "canvas_resolution": 512,
@@ -414,5 +414,5 @@
       21
     ]
   },
-  "color_database_file": "reports/stage3_refined/color_database.json"
+  "color_database_file": "reports/stage3_soft_edge/color_database.json"
 }

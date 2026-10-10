@@ -16,6 +16,27 @@ PALETTE = np.array([
 ], dtype=float) / 255
 
 
+def footprint_weight(normalized_distance_sq, config):
+    """Evaluate the configured radial pigment-deposition profile."""
+    d2 = np.asarray(normalized_distance_sq, dtype=np.float32)
+    profile = config.get("footprint_profile", "linear")
+    if profile == "linear":
+        return np.clip((1.0 - d2) * 3.0, 0.0, 1.0)
+    if profile != "gaussian":
+        raise ValueError(f"Unknown paint footprint profile: {profile}")
+
+    radius = np.sqrt(np.maximum(d2, 0.0))
+    sigma = float(config.get("footprint_sigma_fraction", 0.72))
+    taper_start = float(config.get("footprint_taper_start_fraction", 0.75))
+    if sigma <= 0.0 or not 0.0 <= taper_start < 1.0:
+        raise ValueError("Invalid Gaussian footprint sigma or taper start")
+    gaussian = np.exp(-0.5 * d2 / (sigma * sigma))
+    t = np.clip((radius - taper_start) / (1.0 - taper_start), 0.0, 1.0)
+    smoothstep = t * t * t * (t * (t * 6.0 - 15.0) + 10.0)
+    taper = np.where(radius <= taper_start, 1.0, 1.0 - smoothstep)
+    return np.clip(np.where(d2 < 1.0, gaussian * taper, 0.0), 0.0, 1.0)
+
+
 @dataclass
 class BrushState:
     color: int = -1
@@ -87,7 +108,7 @@ class Canvas:
             return
         yy, xx = np.mgrid[y0:y1, x0:x1]
         d = ((xx-px)/rx)**2 + ((yy-py)/ry)**2
-        footprint = np.clip((1-d)*3, 0, 1)
+        footprint = footprint_weight(d, self.paint_config)
         coverage = 1-np.exp(-ds/.0008 * footprint * self.tooth[y0:y1,x0:x1]
                            * brush.load * brush.opacity)
         region = self.rgb[y0:y1,x0:x1]
