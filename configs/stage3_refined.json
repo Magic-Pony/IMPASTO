@@ -4,7 +4,7 @@
   "stage1_config": "configs/stage1_refined.json",
   "stage2_config": "configs/stage2_refined.json",
   "checkpoint": "outputs/stage2_soft_edge/impasto_unet_best.pt",
-  "report_dir": "reports/stage3_soft_edge",
+  "report_dir": "reports/stage3_prefix_targets",
   "canvas_width_m": 0.4572,
   "canvas_height_m": 0.5334,
   "canvas_resolution": 512,
@@ -126,7 +126,7 @@
     "run_single_stroke": true,
     "run_flower": true,
     "run_fish": true,
-    "use_published_prefix_targets": false,
+    "use_published_prefix_targets": true,
     "execution_render": false
   },
   "notes": "Actual-observation PCA/RANSAC; opaque task premixes; no target trajectories. RGB auxiliary objective is a local extension. Palette slots 22/23 are deployment premixes, classified via new simulation patch calibration. Transparent branch not reproduced.",

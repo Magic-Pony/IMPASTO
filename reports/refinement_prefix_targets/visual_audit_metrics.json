@@ -1,0 +1,1027 @@
+{
+  "source_report": "reports/stage3_prefix_targets",
+  "experiments": {
+    "flower": {
+      "final": {
+        "foreground_iou": 0.7677149681528662,
+        "target_foreground_recall": 0.7932405566600398,
+        "paint_precision": 0.9597710683477106,
+        "target_foreground_rgb_l1": 0.0725660909458731,
+        "union_foreground_rgb_l1": 0.07549852212647268,
+        "target_foreground_gray_l1": 0.06603553146123886,
+        "foreground_threshold_rgb_255": 15
+      },
+      "cycles": [
+        {
+          "round": 1,
+          "before": 0,
+          "after": 2,
+          "goal": 5,
+          "horizon": 5,
+          "prediction_execution_union_gray_l1": 0.01806146465241909,
+          "before_metrics": {
+            "foreground_iou": 0.0,
+            "target_foreground_recall": 0.0,
+            "paint_precision": 0.0,
+            "target_foreground_rgb_l1": 0.1467985614605649,
+            "union_foreground_rgb_l1": 0.1467985614605649,
+            "target_foreground_gray_l1": 0.15839560329914093,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.42999566536627654,
+            "target_foreground_recall": 0.43527863097849934,
+            "paint_precision": 0.9725490196078431,
+            "target_foreground_rgb_l1": 0.08216810491931159,
+            "union_foreground_rgb_l1": 0.08294009989489222,
+            "target_foreground_gray_l1": 0.085874542593956,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "187af533bd3efffb9ced921dc4280b11424d1821c95db0a9309266ecb1005bcb",
+          "actions": [
+            [
+              -0.021619239822030067,
+              0.013747326098382473,
+              0.08024165034294128,
+              -0.029575372114777565,
+              -3.0753304958343506,
+              1.4964805841445923
+            ],
+            [
+              0.055271465331315994,
+              0.04612516984343529,
+              0.06469974666833878,
+              -0.01228618435561657,
+              -3.06022047996521,
+              1.3957263231277466
+            ]
+          ],
+          "colors": [
+            13,
+            14
+          ]
+        },
+        {
+          "round": 2,
+          "before": 2,
+          "after": 4,
+          "goal": 5,
+          "horizon": 3,
+          "prediction_execution_union_gray_l1": 0.015596414916217327,
+          "before_metrics": {
+            "foreground_iou": 0.42999566536627654,
+            "target_foreground_recall": 0.43527863097849934,
+            "paint_precision": 0.9725490196078431,
+            "target_foreground_rgb_l1": 0.08216810491931159,
+            "union_foreground_rgb_l1": 0.08294009989489222,
+            "target_foreground_gray_l1": 0.085874542593956,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.6856647524108788,
+            "target_foreground_recall": 0.6941641070645019,
+            "paint_precision": 0.9824561403508771,
+            "target_foreground_rgb_l1": 0.04747223154290237,
+            "union_foreground_rgb_l1": 0.04866444717808387,
+            "target_foreground_gray_l1": 0.04674731567502022,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "eed06bd4859bc40b101976091e6b8a8ce64ded6654283d4196a476b0176693bf",
+          "actions": [
+            [
+              -0.035064924508333206,
+              0.046276964247226715,
+              0.06821046024560928,
+              -0.03134797886013985,
+              2.641737222671509,
+              1.1978192329406738
+            ],
+            [
+              -0.03651650249958038,
+              0.008490591309964657,
+              0.03102291189134121,
+              -0.005073449574410915,
+              -2.004636764526367,
+              1.497646450996399
+            ]
+          ],
+          "colors": [
+            14,
+            13
+          ]
+        },
+        {
+          "round": 3,
+          "before": 4,
+          "after": 5,
+          "goal": 5,
+          "horizon": 1,
+          "prediction_execution_union_gray_l1": 0.005125569645315409,
+          "before_metrics": {
+            "foreground_iou": 0.6856647524108788,
+            "target_foreground_recall": 0.6941641070645019,
+            "paint_precision": 0.9824561403508771,
+            "target_foreground_rgb_l1": 0.04747223154290237,
+            "union_foreground_rgb_l1": 0.04866444717808387,
+            "target_foreground_gray_l1": 0.04674731567502022,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7781743456629894,
+            "target_foreground_recall": 0.789271610355419,
+            "paint_precision": 0.9822525597269625,
+            "target_foreground_rgb_l1": 0.03827845603650265,
+            "union_foreground_rgb_l1": 0.03967955052812097,
+            "target_foreground_gray_l1": 0.036546945571899414,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "b11b88c2c67b8323416c600fbf44643d8293b8f5d37fc820c3667d444de72a26",
+          "actions": [
+            [
+              0.03077056258916855,
+              0.08941349387168884,
+              0.055406324565410614,
+              -0.015077739953994751,
+              -2.567471504211426,
+              1.0570027828216553
+            ]
+          ],
+          "colors": [
+            18
+          ]
+        },
+        {
+          "round": 4,
+          "before": 5,
+          "after": 7,
+          "goal": 10,
+          "horizon": 5,
+          "prediction_execution_union_gray_l1": 0.009655602276325226,
+          "before_metrics": {
+            "foreground_iou": 0.6459073112992807,
+            "target_foreground_recall": 0.6597842261904762,
+            "paint_precision": 0.9684641638225256,
+            "target_foreground_rgb_l1": 0.11462576349984437,
+            "union_foreground_rgb_l1": 0.11461028005848611,
+            "target_foreground_gray_l1": 0.1165902242064476,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7493401292436516,
+            "target_foreground_recall": 0.7657180059523809,
+            "paint_precision": 0.9722484648086915,
+            "target_foreground_rgb_l1": 0.08996921685340803,
+            "union_foreground_rgb_l1": 0.09046413140663565,
+            "target_foreground_gray_l1": 0.0899476408958435,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "1d4ff917d989ab0116e0b327102b52ad60723fe8decff83c21e0b6c1d9b9d8d2",
+          "actions": [
+            [
+              0.015183725394308567,
+              0.027942823246121407,
+              0.026034558191895485,
+              -0.0032523535192012787,
+              3.097517728805542,
+              1.1203988790512085
+            ],
+            [
+              0.04104669764637947,
+              0.0027924540918320417,
+              0.04117802903056145,
+              -0.005467001814395189,
+              2.7153780460357666,
+              1.1054290533065796
+            ]
+          ],
+          "colors": [
+            1,
+            13
+          ]
+        },
+        {
+          "round": 5,
+          "before": 7,
+          "after": 9,
+          "goal": 10,
+          "horizon": 3,
+          "prediction_execution_union_gray_l1": 0.010786657221615314,
+          "before_metrics": {
+            "foreground_iou": 0.7493401292436516,
+            "target_foreground_recall": 0.7657180059523809,
+            "paint_precision": 0.9722484648086915,
+            "target_foreground_rgb_l1": 0.08996921685340803,
+            "union_foreground_rgb_l1": 0.09046413140663565,
+            "target_foreground_gray_l1": 0.0899476408958435,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7750295535145949,
+            "target_foreground_recall": 0.7926897321428571,
+            "paint_precision": 0.9720574817518248,
+            "target_foreground_rgb_l1": 0.06618169837379397,
+            "union_foreground_rgb_l1": 0.06725672658199712,
+            "target_foreground_gray_l1": 0.0660138800740242,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "ae3442e9a24df484b29fa689576df47d4b9ecd0f60ee54d6c7eef184f348ef61",
+          "actions": [
+            [
+              -0.03738205507397652,
+              0.022996272891759872,
+              0.035652365535497665,
+              -0.008731570094823837,
+              -2.8332998752593994,
+              1.1419075727462769
+            ],
+            [
+              -0.03868525102734566,
+              0.06353269517421722,
+              0.023947739973664284,
+              0.004987233318388462,
+              -1.1215624809265137,
+              1.0041917562484741
+            ]
+          ],
+          "colors": [
+            1,
+            1
+          ]
+        },
+        {
+          "round": 6,
+          "before": 9,
+          "after": 10,
+          "goal": 10,
+          "horizon": 1,
+          "prediction_execution_union_gray_l1": 0.007938910275697708,
+          "before_metrics": {
+            "foreground_iou": 0.7750295535145949,
+            "target_foreground_recall": 0.7926897321428571,
+            "paint_precision": 0.9720574817518248,
+            "target_foreground_rgb_l1": 0.06618169837379397,
+            "union_foreground_rgb_l1": 0.06725672658199712,
+            "target_foreground_gray_l1": 0.0660138800740242,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7923069928162226,
+            "target_foreground_recall": 0.8103608630952381,
+            "paint_precision": 0.9726501451216789,
+            "target_foreground_rgb_l1": 0.05552127100840335,
+            "union_foreground_rgb_l1": 0.056833800781080517,
+            "target_foreground_gray_l1": 0.05513497814536095,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "b0c17dcd8b845714bada8df32ab4d9614c45445ea0f208d661870b352f0dfcec",
+          "actions": [
+            [
+              -0.023917406797409058,
+              0.02669474110007286,
+              0.03188853710889816,
+              0.007339137140661478,
+              -1.7457716464996338,
+              1.0289708375930786
+            ]
+          ],
+          "colors": [
+            1
+          ]
+        },
+        {
+          "round": 7,
+          "before": 10,
+          "after": 12,
+          "goal": 15,
+          "horizon": 5,
+          "prediction_execution_union_gray_l1": 0.012290195561945438,
+          "before_metrics": {
+            "foreground_iou": 0.6091478955707103,
+            "target_foreground_recall": 0.6140119427857242,
+            "paint_precision": 0.9871623130162983,
+            "target_foreground_rgb_l1": 0.11238943755996124,
+            "union_foreground_rgb_l1": 0.1129215645754065,
+            "target_foreground_gray_l1": 0.10616803169250488,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7481618910190339,
+            "target_foreground_recall": 0.7560061102624636,
+            "paint_precision": 0.9863212247486185,
+            "target_foreground_rgb_l1": 0.08512643033420378,
+            "union_foreground_rgb_l1": 0.0860464500053669,
+            "target_foreground_gray_l1": 0.08224569261074066,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "c6e9eaf5750ebb9156e51a519e024dba610244252e04b13a319ac90d7ee28655",
+          "actions": [
+            [
+              -0.016679981723427773,
+              -0.01084374263882637,
+              0.051249440759420395,
+              -0.00320468470454216,
+              -1.5517467260360718,
+              1.4898384809494019
+            ],
+            [
+              -0.051343414932489395,
+              0.0461888462305069,
+              0.02855420857667923,
+              -0.004657732788473368,
+              3.038785696029663,
+              1.0550475120544434
+            ]
+          ],
+          "colors": [
+            16,
+            1
+          ]
+        },
+        {
+          "round": 8,
+          "before": 12,
+          "after": 14,
+          "goal": 15,
+          "horizon": 3,
+          "prediction_execution_union_gray_l1": 0.004964550957083702,
+          "before_metrics": {
+            "foreground_iou": 0.7481618910190339,
+            "target_foreground_recall": 0.7560061102624636,
+            "paint_precision": 0.9863212247486185,
+            "target_foreground_rgb_l1": 0.08512643033420378,
+            "union_foreground_rgb_l1": 0.0860464500053669,
+            "target_foreground_gray_l1": 0.08224569261074066,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7826176571624871,
+            "target_foreground_recall": 0.7909318150256909,
+            "paint_precision": 0.9867463617463618,
+            "target_foreground_rgb_l1": 0.07483946038721927,
+            "union_foreground_rgb_l1": 0.0758998884106488,
+            "target_foreground_gray_l1": 0.07218702882528305,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "e46f1f137c82117f840c2c26c994fd018175c4c687c84ebd6fa9ce98e639da76",
+          "actions": [
+            [
+              0.018262844532728195,
+              -0.04583210498094559,
+              0.035345178097486496,
+              -0.0020123429130762815,
+              -2.5874757766723633,
+              0.8433510065078735
+            ],
+            [
+              0.04601345956325531,
+              -0.03725314512848854,
+              0.031100112944841385,
+              -0.0018185167573392391,
+              -2.839158773422241,
+              0.7086615562438965
+            ]
+          ],
+          "colors": [
+            22,
+            22
+          ]
+        },
+        {
+          "round": 9,
+          "before": 14,
+          "after": 15,
+          "goal": 15,
+          "horizon": 1,
+          "prediction_execution_union_gray_l1": 0.00359107693657279,
+          "before_metrics": {
+            "foreground_iou": 0.7826176571624871,
+            "target_foreground_recall": 0.7909318150256909,
+            "paint_precision": 0.9867463617463618,
+            "target_foreground_rgb_l1": 0.07483946038721927,
+            "union_foreground_rgb_l1": 0.0758998884106488,
+            "target_foreground_gray_l1": 0.07218702882528305,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7887323943661971,
+            "target_foreground_recall": 0.7971115122899597,
+            "paint_precision": 0.9868477606808218,
+            "target_foreground_rgb_l1": 0.0702397905882716,
+            "union_foreground_rgb_l1": 0.07134856965802466,
+            "target_foreground_gray_l1": 0.06701896339654922,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "bb6ac26e24c9d36b925842e37893073662061e283e9c9a84791e9d136d2c95c5",
+          "actions": [
+            [
+              -0.014626950956881046,
+              -0.003412865102291107,
+              0.01521708071231842,
+              0.004941838327795267,
+              2.4476301670074463,
+              1.3337119817733765
+            ]
+          ],
+          "colors": [
+            5
+          ]
+        },
+        {
+          "round": 10,
+          "before": 15,
+          "after": 17,
+          "goal": 17,
+          "horizon": 2,
+          "prediction_execution_union_gray_l1": 0.008152253925800323,
+          "before_metrics": {
+            "foreground_iou": 0.7397651118041272,
+            "target_foreground_recall": 0.7643106875985467,
+            "paint_precision": 0.9583942233301814,
+            "target_foreground_rgb_l1": 0.0817503811926727,
+            "union_foreground_rgb_l1": 0.08440631555300554,
+            "target_foreground_gray_l1": 0.07634394615888596,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7677149681528662,
+            "target_foreground_recall": 0.7932405566600398,
+            "paint_precision": 0.9597710683477106,
+            "target_foreground_rgb_l1": 0.0725660909458731,
+            "union_foreground_rgb_l1": 0.07549852212647268,
+            "target_foreground_gray_l1": 0.06603553146123886,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "8f3533255650d3fb5c5852da82c25b4160ce73224d0c6dbb541f8150d1b1e5c2",
+          "actions": [
+            [
+              -0.020550673827528954,
+              0.03142710402607918,
+              0.02092731185257435,
+              -0.012341181747615337,
+              2.788316011428833,
+              1.3491904735565186
+            ],
+            [
+              0.02742411382496357,
+              0.02413739077746868,
+              0.018432077020406723,
+              -0.00048274247092194855,
+              2.8997175693511963,
+              1.0228251218795776
+            ]
+          ],
+          "colors": [
+            23,
+            1
+          ]
+        }
+      ],
+      "crop": [
+        116,
+        351,
+        146,
+        375
+      ],
+      "previous_on_current_target": {
+        "foreground_iou": 0.7563743158456815,
+        "target_foreground_recall": 0.7768561047508055,
+        "paint_precision": 0.9663170461328559,
+        "target_foreground_rgb_l1": 0.06928014961840406,
+        "union_foreground_rgb_l1": 0.07211390051504069,
+        "target_foreground_gray_l1": 0.064186692237854,
+        "foreground_threshold_rgb_255": 15
+      }
+    },
+    "fish": {
+      "final": {
+        "foreground_iou": 0.7261674008810572,
+        "target_foreground_recall": 0.7839817368971749,
+        "paint_precision": 0.9078092300914198,
+        "target_foreground_rgb_l1": 0.08900452536510974,
+        "union_foreground_rgb_l1": 0.09057383893351761,
+        "target_foreground_gray_l1": 0.08509364724159241,
+        "foreground_threshold_rgb_255": 15
+      },
+      "cycles": [
+        {
+          "round": 1,
+          "before": 0,
+          "after": 2,
+          "goal": 5,
+          "horizon": 5,
+          "prediction_execution_union_gray_l1": 0.046078525483608246,
+          "before_metrics": {
+            "foreground_iou": 0.0,
+            "target_foreground_recall": 0.0,
+            "paint_precision": 0.0,
+            "target_foreground_rgb_l1": 0.3669540837917901,
+            "union_foreground_rgb_l1": 0.3669540837917901,
+            "target_foreground_gray_l1": 0.3721291422843933,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.6143167028199567,
+            "target_foreground_recall": 0.6366906474820144,
+            "paint_precision": 0.9458917835671342,
+            "target_foreground_rgb_l1": 0.16150932195420137,
+            "union_foreground_rgb_l1": 0.16815051110827556,
+            "target_foreground_gray_l1": 0.16085994243621826,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "184348a715484c5b40bb0b86dc366fa940aa801f971c39d4bbb0ad68e2de408d",
+          "actions": [
+            [
+              0.00621038069948554,
+              0.029993465170264244,
+              0.10402830690145493,
+              0.030260596424341202,
+              -2.2653675079345703,
+              1.4064042568206787
+            ],
+            [
+              -0.03081229142844677,
+              -0.03840600699186325,
+              0.02997036837041378,
+              6.283666152739897e-05,
+              -2.491598129272461,
+              1.5
+            ]
+          ],
+          "colors": [
+            6,
+            2
+          ]
+        },
+        {
+          "round": 2,
+          "before": 2,
+          "after": 4,
+          "goal": 5,
+          "horizon": 3,
+          "prediction_execution_union_gray_l1": 0.03277646750211716,
+          "before_metrics": {
+            "foreground_iou": 0.6143167028199567,
+            "target_foreground_recall": 0.6366906474820144,
+            "paint_precision": 0.9458917835671342,
+            "target_foreground_rgb_l1": 0.16150932195420137,
+            "union_foreground_rgb_l1": 0.16815051110827556,
+            "target_foreground_gray_l1": 0.16085994243621826,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7661605206073753,
+            "target_foreground_recall": 0.7940647482014388,
+            "paint_precision": 0.9561451001624256,
+            "target_foreground_rgb_l1": 0.11050953354963088,
+            "union_foreground_rgb_l1": 0.1189769327832362,
+            "target_foreground_gray_l1": 0.1061611920595169,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "c614b6461840e29bbe0278f50a81f77773c1971b2692ed3fea2a17180fbd566f",
+          "actions": [
+            [
+              -0.03486694395542145,
+              -0.023641854524612427,
+              0.013168084435164928,
+              -0.05000000074505806,
+              -1.0595557689666748,
+              1.5
+            ],
+            [
+              0.0017434939509257674,
+              0.08722557127475739,
+              0.02517889253795147,
+              0.00419570179656148,
+              -1.118985891342163,
+              0.7365511059761047
+            ]
+          ],
+          "colors": [
+            2,
+            7
+          ]
+        },
+        {
+          "round": 3,
+          "before": 4,
+          "after": 5,
+          "goal": 5,
+          "horizon": 1,
+          "prediction_execution_union_gray_l1": 0.004668083973228931,
+          "before_metrics": {
+            "foreground_iou": 0.7661605206073753,
+            "target_foreground_recall": 0.7940647482014388,
+            "paint_precision": 0.9561451001624256,
+            "target_foreground_rgb_l1": 0.11050953354963088,
+            "union_foreground_rgb_l1": 0.1189769327832362,
+            "target_foreground_gray_l1": 0.1061611920595169,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7880694143167029,
+            "target_foreground_recall": 0.8167715827338129,
+            "paint_precision": 0.9573122529644269,
+            "target_foreground_rgb_l1": 0.10482173085061362,
+            "union_foreground_rgb_l1": 0.11348900514652717,
+            "target_foreground_gray_l1": 0.10018317401409149,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "1de2b7ef4ee43af0dbcc3ab274681e27782263b6849c6ca36cc48ede008f4045",
+          "actions": [
+            [
+              0.012036744505167007,
+              0.04445521533489227,
+              0.006686171516776085,
+              -0.004499349743127823,
+              -1.6860063076019287,
+              0.8050486445426941
+            ]
+          ],
+          "colors": [
+            3
+          ]
+        },
+        {
+          "round": 4,
+          "before": 5,
+          "after": 7,
+          "goal": 10,
+          "horizon": 5,
+          "prediction_execution_union_gray_l1": 0.008230932056903839,
+          "before_metrics": {
+            "foreground_iou": 0.45481967213114755,
+            "target_foreground_recall": 0.47519868457111536,
+            "paint_precision": 0.9138339920948617,
+            "target_foreground_rgb_l1": 0.14092194656249274,
+            "union_foreground_rgb_l1": 0.14990472516875603,
+            "target_foreground_gray_l1": 0.14210104942321777,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.6124934520691462,
+            "target_foreground_recall": 0.6408605097286928,
+            "paint_precision": 0.9326021934197408,
+            "target_foreground_rgb_l1": 0.10808315287382882,
+            "union_foreground_rgb_l1": 0.11852508071501693,
+            "target_foreground_gray_l1": 0.10566890984773636,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "674130d9c51fac976163b9b50b3e65d7b024830594371ea3f8e27479eb76217e",
+          "actions": [
+            [
+              -0.01927497610449791,
+              0.13151460886001587,
+              0.042166050523519516,
+              -0.004852853249758482,
+              -0.9377362728118896,
+              1.1354727745056152
+            ],
+            [
+              -0.014475706964731216,
+              0.09993119537830353,
+              0.026592504233121872,
+              0.006539031397551298,
+              2.6245005130767822,
+              0.9662633538246155
+            ]
+          ],
+          "colors": [
+            11,
+            8
+          ]
+        },
+        {
+          "round": 5,
+          "before": 7,
+          "after": 9,
+          "goal": 10,
+          "horizon": 3,
+          "prediction_execution_union_gray_l1": 0.010038569569587708,
+          "before_metrics": {
+            "foreground_iou": 0.6124934520691462,
+            "target_foreground_recall": 0.6408605097286928,
+            "paint_precision": 0.9326021934197408,
+            "target_foreground_rgb_l1": 0.10808315287382882,
+            "union_foreground_rgb_l1": 0.11852508071501693,
+            "target_foreground_gray_l1": 0.10566890984773636,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.6579153605015674,
+            "target_foreground_recall": 0.690189092902165,
+            "paint_precision": 0.9336422613531047,
+            "target_foreground_rgb_l1": 0.09390646913739462,
+            "union_foreground_rgb_l1": 0.1049323525996954,
+            "target_foreground_gray_l1": 0.09049350768327713,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "f42a905a4f79c1d6af0f9c49486a45a6dc69caf08b8671d793483e092448d686",
+          "actions": [
+            [
+              -0.057897504419088364,
+              -0.06857863068580627,
+              0.006034077610820532,
+              0.014202981255948544,
+              -2.036552667617798,
+              0.434225857257843
+            ],
+            [
+              -0.0352812223136425,
+              -0.051460519433021545,
+              0.032513655722141266,
+              0.007420884445309639,
+              -2.7365825176239014,
+              1.2300784587860107
+            ]
+          ],
+          "colors": [
+            20,
+            10
+          ]
+        },
+        {
+          "round": 6,
+          "before": 9,
+          "after": 10,
+          "goal": 10,
+          "horizon": 1,
+          "prediction_execution_union_gray_l1": 0.006615272723138332,
+          "before_metrics": {
+            "foreground_iou": 0.6579153605015674,
+            "target_foreground_recall": 0.690189092902165,
+            "paint_precision": 0.9336422613531047,
+            "target_foreground_rgb_l1": 0.09390646913739462,
+            "union_foreground_rgb_l1": 0.1049323525996954,
+            "target_foreground_gray_l1": 0.09049350768327713,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7175907974667184,
+            "target_foreground_recall": 0.7607563716086599,
+            "paint_precision": 0.9267234184610249,
+            "target_foreground_rgb_l1": 0.09160339389249808,
+            "union_foreground_rgb_l1": 0.10219867017075238,
+            "target_foreground_gray_l1": 0.0874854251742363,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "43281bb2af3d845a7da230b2d9d1c7a389efe9342addfcaa7c28b77ef1d32dd6",
+          "actions": [
+            [
+              0.017205197364091873,
+              -0.017936518415808678,
+              0.05472927540540695,
+              0.008947317488491535,
+              -2.228039503097534,
+              0.8941705226898193
+            ]
+          ],
+          "colors": [
+            21
+          ]
+        },
+        {
+          "round": 7,
+          "before": 10,
+          "after": 12,
+          "goal": 15,
+          "horizon": 5,
+          "prediction_execution_union_gray_l1": 0.0138265835121274,
+          "before_metrics": {
+            "foreground_iou": 0.537441122753052,
+            "target_foreground_recall": 0.5589323203039088,
+            "paint_precision": 0.9332331831079953,
+            "target_foreground_rgb_l1": 0.11068444172630562,
+            "union_foreground_rgb_l1": 0.11540022077593255,
+            "target_foreground_gray_l1": 0.11165724694728851,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.6788251103858706,
+            "target_foreground_recall": 0.7069879036289113,
+            "paint_precision": 0.9445705890209697,
+            "target_foreground_rgb_l1": 0.09332481301361226,
+            "union_foreground_rgb_l1": 0.09872028929316654,
+            "target_foreground_gray_l1": 0.09176575392484665,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "5a2a38f5a653093fdb7aa5a0c325bbf2c3966183c8f30a8a35461bee9ab17e5e",
+          "actions": [
+            [
+              -0.014898592606186867,
+              -0.05467834696173668,
+              0.03106449916958809,
+              0.005439865868538618,
+              -2.4277374744415283,
+              1.0309749841690063
+            ],
+            [
+              0.033031318336725235,
+              -0.0715036690235138,
+              0.029782889410853386,
+              -0.018409917131066322,
+              2.3757364749908447,
+              1.4367929697036743
+            ]
+          ],
+          "colors": [
+            8,
+            14
+          ]
+        },
+        {
+          "round": 8,
+          "before": 12,
+          "after": 14,
+          "goal": 15,
+          "horizon": 3,
+          "prediction_execution_union_gray_l1": 0.008503743447363377,
+          "before_metrics": {
+            "foreground_iou": 0.6788251103858706,
+            "target_foreground_recall": 0.7069879036289113,
+            "paint_precision": 0.9445705890209697,
+            "target_foreground_rgb_l1": 0.09332481301361226,
+            "union_foreground_rgb_l1": 0.09872028929316654,
+            "target_foreground_gray_l1": 0.09176575392484665,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7357054514318333,
+            "target_foreground_recall": 0.7730680795761271,
+            "paint_precision": 0.9383569955102536,
+            "target_foreground_rgb_l1": 0.08757385856138585,
+            "union_foreground_rgb_l1": 0.09313168961492567,
+            "target_foreground_gray_l1": 0.08510451763868332,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "d7c83ebcdbec7d40b6246ecbb579e9b4267687052169e1185856a725bf0408fa",
+          "actions": [
+            [
+              -0.012425965629518032,
+              0.09748221933841705,
+              0.03337206318974495,
+              -0.004832636099308729,
+              2.457501173019409,
+              1.08224356174469
+            ],
+            [
+              -0.028808239847421646,
+              0.004143848549574614,
+              0.031188011169433594,
+              -0.0013858425663784146,
+              -2.283642053604126,
+              1.0799905061721802
+            ]
+          ],
+          "colors": [
+            21,
+            18
+          ]
+        },
+        {
+          "round": 9,
+          "before": 14,
+          "after": 15,
+          "goal": 15,
+          "horizon": 1,
+          "prediction_execution_union_gray_l1": 0.0031204288825392723,
+          "before_metrics": {
+            "foreground_iou": 0.7357054514318333,
+            "target_foreground_recall": 0.7730680795761271,
+            "paint_precision": 0.9383569955102536,
+            "target_foreground_rgb_l1": 0.08757385856138585,
+            "union_foreground_rgb_l1": 0.09313168961492567,
+            "target_foreground_gray_l1": 0.08510451763868332,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7435068023974883,
+            "target_foreground_recall": 0.7812656203139058,
+            "paint_precision": 0.9389643157515319,
+            "target_foreground_rgb_l1": 0.08563182679183173,
+            "union_foreground_rgb_l1": 0.09128351686344154,
+            "target_foreground_gray_l1": 0.08307257294654846,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "46d8db8e28b456bbdf81bdb381f882542fa71e6c81af9f0343098b9abc62b3cb",
+          "actions": [
+            [
+              -0.014053167775273323,
+              0.09895887970924377,
+              0.03214482590556145,
+              0.010870099999010563,
+              2.685882806777954,
+              0.7431825995445251
+            ]
+          ],
+          "colors": [
+            8
+          ]
+        },
+        {
+          "round": 10,
+          "before": 15,
+          "after": 17,
+          "goal": 18,
+          "horizon": 3,
+          "prediction_execution_union_gray_l1": 0.010796358808875084,
+          "before_metrics": {
+            "foreground_iou": 0.6978546962321975,
+            "target_foreground_recall": 0.7364215732902121,
+            "paint_precision": 0.9301934398654331,
+            "target_foreground_rgb_l1": 0.10221120567190697,
+            "union_foreground_rgb_l1": 0.10993541819107307,
+            "target_foreground_gray_l1": 0.09966732561588287,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7274988893824966,
+            "target_foreground_recall": 0.7788452392276229,
+            "paint_precision": 0.916909294512878,
+            "target_foreground_rgb_l1": 0.09217047800762082,
+            "union_foreground_rgb_l1": 0.09813816952814,
+            "target_foreground_gray_l1": 0.08817634731531143,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "dacf17ebe2a7aa2f512c6ea0131cdb65d92b5cc03e2c8997fc90db75e960e1c2",
+          "actions": [
+            [
+              -0.02150397188961506,
+              -0.05794725567102432,
+              0.02147645689547062,
+              0.004349431488662958,
+              -2.564157485961914,
+              1.014155626296997
+            ],
+            [
+              0.0042862119153141975,
+              0.05887922644615173,
+              0.032753895968198776,
+              0.007351885084062815,
+              -1.8756133317947388,
+              1.2282605171203613
+            ]
+          ],
+          "colors": [
+            1,
+            21
+          ]
+        },
+        {
+          "round": 11,
+          "before": 17,
+          "after": 18,
+          "goal": 18,
+          "horizon": 1,
+          "prediction_execution_union_gray_l1": 0.005278483498841524,
+          "before_metrics": {
+            "foreground_iou": 0.7274988893824966,
+            "target_foreground_recall": 0.7788452392276229,
+            "paint_precision": 0.916909294512878,
+            "target_foreground_rgb_l1": 0.09217047800762082,
+            "union_foreground_rgb_l1": 0.09813816952814,
+            "target_foreground_gray_l1": 0.08817634731531143,
+            "foreground_threshold_rgb_255": 15
+          },
+          "after_metrics": {
+            "foreground_iou": 0.7261674008810572,
+            "target_foreground_recall": 0.7839817368971749,
+            "paint_precision": 0.9078092300914198,
+            "target_foreground_rgb_l1": 0.08900452536510974,
+            "union_foreground_rgb_l1": 0.09057383893351761,
+            "target_foreground_gray_l1": 0.08509364724159241,
+            "foreground_threshold_rgb_255": 15
+          },
+          "source_npz_sha256": "f544d150b05f4a230c678535c3ffd38c7f3707f48d9c4cca29e69dd1322a31d8",
+          "actions": [
+            [
+              -0.024792471900582314,
+              -0.011993419378995895,
+              0.004000000189989805,
+              0.02919793128967285,
+              -1.0924370288848877,
+              1.2209826707839966
+            ]
+          ],
+          "colors": [
+            20
+          ]
+        }
+      ],
+      "crop": [
+        153,
+        330,
+        101,
+        360
+      ],
+      "previous_on_current_target": {
+        "foreground_iou": 0.6807402585325025,
+        "target_foreground_recall": 0.6962807952059356,
+        "paint_precision": 0.9682539682539683,
+        "target_foreground_rgb_l1": 0.0842084714287757,
+        "union_foreground_rgb_l1": 0.08587954478731882,
+        "target_foreground_gray_l1": 0.08029365539550781,
+        "foreground_threshold_rgb_255": 15
+      }
+    }
+  }
+}
