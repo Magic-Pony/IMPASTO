@@ -225,8 +225,7 @@ def split_difference(base, target, components=5, threshold=.015, min_pixels=18,
         return _multiway_candidates(base, target, components, threshold, min_pixels,
             kmeans_iterations, ransac_iterations, ransac_threshold_px, canvas_width,
             canvas_height, action_bounds, seed, color_subset, base_rgb, target_rgb,
-            palette, radius_config, curvature_penalty, overlap_penalty,
-            opaque_colors=opaque_colors)
+            palette, radius_config, curvature_penalty, overlap_penalty)
     changed = np.abs(target - base) > threshold
     # Paint cannot correct an excess dark mark by drawing another dark mark
     # over empty canvas. Use only goal foreground to seed new pigment strokes;
@@ -364,8 +363,6 @@ def split_difference(base, target, components=5, threshold=.015, min_pixels=18,
         if action_bounds:
             for idx,key in ((0,'x_m'),(1,'y_m'),(2,'length_m'),(3,'bend_m'),(5,'force_N')):
                 action[idx]=np.clip(action[idx],*action_bounds[key])
-        else:
-            action[5] = np.clip(action[5], 0.0, 4.0)
         # The full connected mask can contain overlapping strokes.  Color and
         # alpha are attributes of the stroke centerline, so classify a narrow
         # centerline band first and fall back to the full group when it is too
@@ -429,7 +426,7 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
                          kmeans_iterations, ransac_iterations, ransac_threshold_px,
                          canvas_width, canvas_height, bounds, seed, color_subset,
                          base_rgb, target_rgb, palette, radius_config,
-                         curvature_penalty, overlap_penalty, opaque_colors=False):
+                         curvature_penalty, overlap_penalty):
     """Multi-start spatial PCA/RANSAC with explicit coverage and overlap scoring.
 
     Spatial k-means still provides geometry. Coarse color-connected regions add
@@ -440,7 +437,7 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
         return split_difference(base, target, components, threshold, min_pixels,
             kmeans_iterations, ransac_iterations, ransac_threshold_px,
             canvas_width, canvas_height, bounds, seed, color_subset=color_subset,
-            radius_config=radius_config, opaque_colors=opaque_colors)
+            radius_config=radius_config, opaque_colors=True)
     pal = np.asarray(palette, np.float32)
     if pal.max() > 1: pal /= 255
     rgb0 = np.asarray(base_rgb, np.float32)/255
@@ -459,13 +456,11 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
     groups = [changed]
     for labels in (hue_family, family):
         for label in np.unique(labels[changed]):
-            # Keep the connected target colour region for PCA/RANSAC so a
-            # prefix does not break one physical stroke into short fragments.
-            # The current residual is still used below for force estimation
-            # and candidate ranking.
+            # Preserve a complete color region instead of breaking it at
+            # pixels already painted. The residual still controls its score.
             mask = foreground & (labels == label)
             mask = cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_CLOSE,
-                                    np.ones((3,3), np.uint8)).astype(bool)
+                                    np.ones((3,3),np.uint8)).astype(bool)
             ids, nc = ndimage.label(mask)
             for i in range(1,nc+1):
                 group = ids==i
@@ -473,81 +468,32 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
                     groups.append(group)
     candidates = []
     for gi, group in enumerate(groups):
-        # Isolate each residual region in the difference image without
-        # changing target RGB. The recursive splitter now estimates geometry
-        # from the residual itself instead of from the full target blob.
+        # Isolate each region in the difference image without changing target RGB.
         fake_base = target.copy()
         fake_base[group] = target[group]+.2
         ks = (sorted(set([components, components+2, components*2])) if gi == 0
               else list(range(1, components + 1)))
         for k in ks:
             if group.sum() < k*min_pixels: continue
-            candidates.extend((proposal, group) for proposal in split_difference(
-                fake_base, target, k, threshold=.03, min_pixels=min_pixels,
-                kmeans_iterations=kmeans_iterations,
-                ransac_iterations=ransac_iterations,
-                ransac_threshold_px=ransac_threshold_px,
-                canvas_width=canvas_width, canvas_height=canvas_height,
-                action_bounds=bounds, seed=seed+gi+k, color_subset=color_subset,
-                base_rgb=base_rgb, target_rgb=target_rgb, palette=palette,
-                opaque_colors=opaque_colors, radius_config=radius_config))
+            candidates.extend(split_difference(fake_base,target,k,threshold=.03,
+                min_pixels=min_pixels,kmeans_iterations=kmeans_iterations,
+                ransac_iterations=ransac_iterations,ransac_threshold_px=ransac_threshold_px,
+                canvas_width=canvas_width,canvas_height=canvas_height,
+                action_bounds=bounds,seed=seed+gi+k, color_subset=color_subset,
+                base_rgb=base_rgb,target_rgb=target_rgb,palette=palette,
+                opaque_colors=True,radius_config=radius_config))
     # Rank by actual explained residual under a pigment footprint, rather than
     # by component size; subtract curved detours and already-covered area.
     pool=[]
-    for proposal, source_group in candidates:
+    for proposal in candidates:
         action=proposal.action.copy()
         if bounds:
             for j,key in ((0,"x_m"),(1,"y_m"),(2,"length_m"),(3,"bend_m"),(5,"force_N")):
                 action[j]=np.clip(action[j],*bounds[key])
-        else:
-            action[5] = np.clip(action[5], 0.0, 4.0)
-        # The full target blob is useful for a continuous centerline, but its
-        # area includes paint already present in the published prefix. Estimate
-        # width from the unexplained portion whenever it is large enough.
-        residual_group = source_group & changed
-        width_group = (residual_group if int(residual_group.sum()) >= min_pixels
-                       else source_group)
-        length = max(float(action[2]), 1e-6)
-        # Published panels contain antialiased paint edges. Count their
-        # projected pigment coverage when converting area to brush width so a
-        # pale halo does not force an opaque simulation stroke to its maximum
-        # force. Geometry remains based on the complete connected region.
-        ids = list(color_subset or range(len(pal)))
-        seed_region = proposal.mask & width_group
-        if int(seed_region.sum()) < min_pixels:
-            continue
-        seed_pixels = rgb1[seed_region]
-        seed_weights = cv2.distanceTransform(
-            source_group.astype(np.uint8), cv2.DIST_L2, 5)[seed_region]
-        seed_errors = np.mean(abs(pal[ids, None] - seed_pixels[None]), axis=-1)
-        color_seed = ids[int(np.argmin(np.average(
-            seed_errors, axis=1, weights=np.maximum(seed_weights, .1))))]
-        linear = lambda x: np.where(
-            x <= .04045, x / 12.92, ((x + .055) / 1.055) ** 2.4)
-        base_linear = linear(rgb0[seed_region])
-        target_linear = linear(rgb1[seed_region])
-        pigment_linear = linear(pal[int(color_seed)])[None]
-        contrast = pigment_linear - base_linear
-        delta = target_linear - base_linear
-        denom = np.maximum(np.sum(contrast * contrast, axis=1), 1e-10)
-        coverage = np.clip(np.sum(contrast * delta, axis=1) / denom, 0.0, 1.0)
-        coverage_power = float((radius_config or {}).get("coverage_power", 1.5))
-        effective_pixels = float(np.sum(coverage ** coverage_power))
-        effective_pixels = max(effective_pixels, min_pixels * .5)
-        area_m2 = effective_pixels*canvas_width*canvas_height / max(
-            (base.shape[1]-1)*(base.shape[0]-1), 1)
-        radius = (np.sqrt(length**2 + np.pi*area_m2)-length)/np.pi
-        rc = radius_config or {"minimum": .0004, "scale": .0058, "exponent": 1.65}
-        action[5] = max((max(radius, .0005)-rc["minimum"])/rc["scale"], 0.0)**(
-            1.0/rc["exponent"])
-        if bounds:
-            action[5]=np.clip(action[5],*bounds["force_N"])
-        else:
-            action[5] = np.clip(action[5], 0.0, 4.0)
         mask=_footprint(action,base.shape,canvas_width,canvas_height,radius_config)
-        core=mask & residual_group
+        core=mask & proposal.mask
         if core.sum()<min_pixels: continue
-        weights=cv2.distanceTransform(source_group.astype(np.uint8),cv2.DIST_L2,5)[core]
+        weights=cv2.distanceTransform(proposal.mask.astype(np.uint8),cv2.DIST_L2,5)[core]
         pixels=rgb1[core]
         ids=list(color_subset or range(len(pal)))
         # L1 prototype classification is robust to mixed antialiased boundaries.
@@ -588,7 +534,6 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
                       -curvature_penalty*abs(action[3])/canvas_width)
                 for action,color,mask,gain,proposal in pool]
         j=int(np.argmax(scores));action,color,mask,gain,proposal=pool.pop(j)
-        selected.append(StrokeProposal(action, color, proposal.opacity,
-                                        proposal.mask, scores[j], proposal.model))
+        selected.append(StrokeProposal(action,color,1.,proposal.mask,scores[j],proposal.model))
         covered |= mask
     return selected

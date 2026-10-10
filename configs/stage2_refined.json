@@ -1,7 +1,7 @@
 {
   "seed": 2027,
   "stage1_config": "configs/stage1_refined.json",
-  "dataset_dir": "data/stage2_soft_edge",
+  "dataset_dir": "data/stage2_refined",
   "train_samples": 900,
   "validation_samples": 100,
   "episodes": 10,
@@ -247,6 +247,6 @@
       ]
   ],
   "reset_canvas_every": 20,
-  "report_dir": "reports/stage2_soft_edge",
-  "output_dir": "outputs/stage2_soft_edge"
+  "report_dir": "reports/stage2_refined",
+  "output_dir": "outputs/stage2_refined"
 }
