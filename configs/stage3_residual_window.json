@@ -4,7 +4,7 @@
   "stage1_config": "configs/stage1_refined.json",
   "stage2_config": "configs/stage2_refined.json",
   "checkpoint": "outputs/stage2_soft_edge/impasto_unet_best.pt",
-  "report_dir": "reports/stage3_alpha_width",
+  "report_dir": "reports/stage3_force_cap_1p0",
   "canvas_width_m": 0.4572,
   "canvas_height_m": 0.5334,
   "canvas_resolution": 512,
@@ -32,7 +32,7 @@
     ],
     "force_N": [
       0.4,
-      1.5
+      1.0
     ]
   },
   "force_radius_m": {
