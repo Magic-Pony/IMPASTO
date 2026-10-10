@@ -449,8 +449,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--resume", action="store_true",
                         help="Reuse completed experiments only when resolved settings match")
+    parser.add_argument("--report-dir", help="Write this experiment into a separate report directory")
+    parser.add_argument("--overpaint-weight", type=float,
+                        help="Penalize predicted paint darker than the goal in the planning objective")
     args = parser.parse_args()
     config, stage2, stage1, model, device, checkpoint = load_system()
+    if args.report_dir is not None:
+        config["report_dir"] = args.report_dir
+    if args.overpaint_weight is not None:
+        config["planner"]["overpaint_weight"] = args.overpaint_weight
+    if float(config["planner"].get("overpaint_weight", 1.0)) < 1.0:
+        parser.error("--overpaint-weight must be at least 1")
     report_dir = ROOT / config["report_dir"]
     report_dir.mkdir(parents=True, exist_ok=True)
     lpips_model = None
@@ -493,7 +502,8 @@ def main():
             "checkpoint_matches_stage2_report": checkpoint_sha256 == stage2_metrics.get("best_checkpoint_sha256"),
             "target_scope": "public Fig. 8 panel crops; original high-resolution artist files and action annotations unavailable",
             "unpublished_planner_parameters": f"local choices in {config['config_file']}",
-            "planning_objective": "weighted gray L1 + RGB auxiliary weight * weighted RGB L1",
+            "planning_objective": "asymmetric weighted gray L1 + RGB auxiliary weight * weighted RGB L1",
+            "overpaint_weight": config["planner"].get("overpaint_weight", 1.0),
             "rgb_objective_weight": config["planner"].get("rgb_objective_weight", 0),
         },
         "device": str(device),
@@ -554,7 +564,7 @@ def build_report(config, results, report_dir):
 
 ## 结果
 
-规划器使用阶段二训练的 IMPASTO-UNet、PCA–RANSAC 初始化、MPPI elite softmax 序列更新及 CMA 风格自适应。多笔绘画采用 H={config['planner']['horizon']}，每轮最多执行 {config['planner']['execute_steps']} 笔后读取仿真画布并重新规划。本配置的规划目标为加权灰度 L1 + {config['planner'].get('rgb_objective_weight', 0)} × RGB 辅助损失，后者为本地扩展；不将综合规划代价标作论文的灰度 L1。
+规划器使用阶段二训练的 IMPASTO-UNet、PCA–RANSAC 初始化、MPPI elite softmax 序列更新及 CMA 风格自适应。多笔绘画采用 H={config['planner']['horizon']}，每轮最多执行 {config['planner']['execute_steps']} 笔后读取仿真画布并重新规划。本配置的规划目标为加权灰度 L1（过度上色系数 {config['planner'].get('overpaint_weight', 1.0)}）+ {config['planner'].get('rgb_objective_weight', 0)} × RGB 辅助损失。这两项加权修改属于本地实验；不将综合规划代价标作论文的灰度 L1。
 
 |任务|目标笔数|执行笔数|综合规划代价均值|执行加权灰度 L1|LPIPS AlexNet|
 |---|---:|---:|---:|---:|---|
@@ -596,7 +606,7 @@ def build_report(config, results, report_dir):
 - 规划器配置：`{config.get("config_file", "configs/stage3.json")}`
 - 聚合数值和逐笔动作/力控日志：`{config["report_dir"]}/metrics.json`
 - Stage-2 checkpoint SHA-256：`{results['paper_protocol']['checkpoint_sha256']}`
-- 运行命令：`IMPASTO_STAGE3_CONFIG={config.get("config_file", "configs/stage3.json")} bash scripts/run.sh scripts/run_stage3.py`
+- 运行命令：`IMPASTO_STAGE3_CONFIG={config.get("config_file", "configs/stage3.json")} bash scripts/run.sh scripts/run_stage3.py --report-dir {config['report_dir']} --overpaint-weight {config['planner'].get('overpaint_weight', 1.0)}`
 
 ## 逐轮诊断图
 

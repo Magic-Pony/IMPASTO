@@ -45,6 +45,17 @@ def test_project_action_keeps_full_bezier_inside_workspace_and_canvas():
     assert np.max(np.abs(points[:, 1])) <= .5334 / 2 + 1e-7
 
 
+def test_overpaint_objective_penalizes_extra_pigment_without_changing_default():
+    planner = AdaptiveMPCPlanner(_ToyDynamics(), {
+        "seed": 1, "action_bounds": {}, "planner": {},
+    })
+    goal = np.array([[.5, .5]], dtype=np.float32)
+    weights = np.ones_like(goal)
+    assert planner.cost(np.array([[.3, .7]]), goal, weights) == pytest.approx(.2)
+    planner.pc["overpaint_weight"] = 3.0
+    assert planner.cost(np.array([[.3, .7]]), goal, weights) == pytest.approx(.4)
+
+
 class _ToyDynamics:
     canvas_width = .4572
     canvas_height = .5334

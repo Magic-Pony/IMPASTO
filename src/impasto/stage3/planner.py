@@ -242,7 +242,12 @@ class AdaptiveMPCPlanner:
         return 1.0 + float(self.pc["objective_changed_weight"]) * dilated.astype(np.float32)
 
     def cost(self, prediction, goal, weights):
-        return float(np.sum(weights * np.abs(prediction - goal)) / max(float(weights.sum()), 1e-8))
+        error = np.asarray(prediction) - np.asarray(goal)
+        overpaint_weight = float(self.pc.get("overpaint_weight", 1.0))
+        if overpaint_weight < 1.0:
+            raise ValueError("overpaint_weight must be at least 1")
+        weighted_error = np.abs(error) * np.where(error < 0, overpaint_weight, 1.0)
+        return float(np.sum(weights * weighted_error) / max(float(weights.sum()), 1e-8))
 
     def _random_action(self):
         b = self.bounds
