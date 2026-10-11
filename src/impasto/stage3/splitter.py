@@ -209,7 +209,9 @@ def split_difference(base, target, components=5, threshold=.015, min_pixels=18,
                      color_hints=None, color_subset=None, base_rgb=None, target_rgb=None,
                      palette=None, color_guided=False, opaque_colors=False,
                      radius_config=None, curvature_penalty=.01, overlap_penalty=.15,
-                     robust_candidates=False):
+                     robust_candidates=False, preserve_thin_regions=False,
+                     foreground_threshold=.06, region_mask=None,
+                     return_pool=False, force_hypotheses=None):
     """Return disjoint PCA-RANSAC stroke proposals in world action units."""
     base = np.asarray(base, dtype=np.float32)
     target = np.asarray(target, dtype=np.float32)
@@ -225,15 +227,24 @@ def split_difference(base, target, components=5, threshold=.015, min_pixels=18,
         return _multiway_candidates(base, target, components, threshold, min_pixels,
             kmeans_iterations, ransac_iterations, ransac_threshold_px, canvas_width,
             canvas_height, action_bounds, seed, color_subset, base_rgb, target_rgb,
-            palette, radius_config, curvature_penalty, overlap_penalty)
+            palette, radius_config, curvature_penalty, overlap_penalty,
+            preserve_thin_regions, foreground_threshold, return_pool,
+            force_hypotheses)
     changed = np.abs(target - base) > threshold
     # Paint cannot correct an excess dark mark by drawing another dark mark
     # over empty canvas. Use only goal foreground to seed new pigment strokes;
     # the full-canvas objective still penalizes all overpainting.
-    background = float(np.quantile(target, .95))
-    changed &= target < background - threshold
-    changed = cv2.morphologyEx(changed.astype(np.uint8), cv2.MORPH_OPEN,
-                              np.ones((3, 3), np.uint8)).astype(bool)
+    if region_mask is None:
+        background = float(np.quantile(target, .95))
+        changed &= target < background - threshold
+    else:
+        region_mask = np.asarray(region_mask, dtype=bool)
+        if region_mask.shape != base.shape:
+            raise ValueError("region_mask must match the canvas shape")
+        changed &= region_mask
+    if not preserve_thin_regions:
+        changed = cv2.morphologyEx(changed.astype(np.uint8), cv2.MORPH_OPEN,
+                                  np.ones((3, 3), np.uint8)).astype(bool)
     labels_cc, ncc = ndimage.label(changed)
     sizes = np.bincount(labels_cc.ravel())
     changed &= sizes[labels_cc] >= min_pixels
@@ -426,7 +437,9 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
                          kmeans_iterations, ransac_iterations, ransac_threshold_px,
                          canvas_width, canvas_height, bounds, seed, color_subset,
                          base_rgb, target_rgb, palette, radius_config,
-                         curvature_penalty, overlap_penalty):
+                         curvature_penalty, overlap_penalty,
+                         preserve_thin_regions, foreground_threshold,
+                         return_pool, force_hypotheses):
     """Multi-start spatial PCA/RANSAC with explicit coverage and overlap scoring.
 
     Spatial k-means still provides geometry. Coarse color-connected regions add
@@ -437,14 +450,15 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
         return split_difference(base, target, components, threshold, min_pixels,
             kmeans_iterations, ransac_iterations, ransac_threshold_px,
             canvas_width, canvas_height, bounds, seed, color_subset=color_subset,
-            radius_config=radius_config, opaque_colors=True)
+            radius_config=radius_config, opaque_colors=True,
+            preserve_thin_regions=preserve_thin_regions)
     pal = np.asarray(palette, np.float32)
     if pal.max() > 1: pal /= 255
     rgb0 = np.asarray(base_rgb, np.float32)/255
     rgb1 = np.asarray(target_rgb, np.float32)/255
     error = np.mean(np.abs(rgb1-rgb0), axis=-1)
     bg = np.median(rgb1.reshape(-1,3), axis=0)
-    foreground = np.max(np.abs(rgb1-bg), axis=-1) > .06
+    foreground = np.max(np.abs(rgb1-bg), axis=-1) > foreground_threshold
     changed = (error > threshold) & foreground
     # We will not use color labels as action labels. They only stop unrelated
     # hues from being averaged into an invented pigment in an initial seed.
@@ -459,8 +473,9 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
             # Preserve a complete color region instead of breaking it at
             # pixels already painted. The residual still controls its score.
             mask = foreground & (labels == label)
-            mask = cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_CLOSE,
-                                    np.ones((3,3),np.uint8)).astype(bool)
+            if not preserve_thin_regions:
+                mask = cv2.morphologyEx(mask.astype(np.uint8), cv2.MORPH_CLOSE,
+                                        np.ones((3,3),np.uint8)).astype(bool)
             ids, nc = ndimage.label(mask)
             for i in range(1,nc+1):
                 group = ids==i
@@ -481,7 +496,10 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
                 canvas_width=canvas_width,canvas_height=canvas_height,
                 action_bounds=bounds,seed=seed+gi+k, color_subset=color_subset,
                 base_rgb=base_rgb,target_rgb=target_rgb,palette=palette,
-                opaque_colors=True,radius_config=radius_config))
+                opaque_colors=True,radius_config=radius_config,
+                preserve_thin_regions=preserve_thin_regions,
+                foreground_threshold=foreground_threshold,
+                region_mask=group if preserve_thin_regions else None))
     # Rank by actual explained residual under a pigment footprint, rather than
     # by component size; subtract curved detours and already-covered area.
     pool=[]
@@ -526,6 +544,35 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
         missing = np.max(np.abs(rgb0-bg),axis=-1)<.04
         gain=(error-new_error)*mask*(1+3*missing)
         pool.append((action,color,mask,gain,proposal))
+    if return_pool:
+        # Keep geometrically different initializations for the learned model.
+        # The disk score above is useful for the paper-style greedy seed, but
+        # it systematically prefers a wide stroke when two thin strokes are
+        # close together. Force variants expose width uncertainty to MPC.
+        pool.sort(key=lambda item: float(item[3].sum()), reverse=True)
+        result = []
+        paths = []
+        hypotheses = [float(value) for value in (force_hypotheses or [])]
+        for action, color, mask, gain, proposal in pool:
+            path = Stroke(*map(float, action)).points(np.linspace(0, 1, 32))
+            duplicate = any(
+                color == other_color and min(
+                    np.mean(np.linalg.norm(path - other_path, axis=1)),
+                    np.mean(np.linalg.norm(path - other_path[::-1], axis=1))) < .002
+                for other_color, other_path in paths)
+            if duplicate:
+                continue
+            paths.append((color, path))
+            forces = [float(action[5]), *hypotheses]
+            for force in dict.fromkeys(forces):
+                variant = action.copy()
+                variant[5] = (np.clip(force, *bounds["force_N"])
+                              if bounds else force)
+                result.append(StrokeProposal(variant, color, 1.0, proposal.mask,
+                                             float(gain.sum()), proposal.model))
+            if len(paths) >= 48:
+                break
+        return result
     selected=[];covered=np.zeros(base.shape,bool)
     for _ in range(components):
         if not pool: break

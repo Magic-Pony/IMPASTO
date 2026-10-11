@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IMPASTO 三版本阶段三复现对比</title>
+  <style>
+    :root { color-scheme: light; }
+    body { max-width: 1180px; margin: 32px auto; padding: 0 22px; font: 16px/1.65 system-ui, sans-serif; color: #26312e; background: #f4f5f1; }
+    h1, h2, h3 { line-height: 1.25; color: #1f2a27; }
+    h2 { margin-top: 42px; border-bottom: 1px solid #cbd3cd; padding-bottom: 8px; }
+    h3 { margin-top: 28px; }
+    .lead { font-size: 19px; }
+    .note { padding: 14px 16px; background: #e7eee8; border-left: 4px solid #527c69; }
+    table { width: 100%; border-collapse: collapse; margin: 14px 0 22px; background: #fff; font-size: 14px; }
+    th, td { padding: 9px 10px; border-bottom: 1px solid #d8ded9; text-align: left; vertical-align: top; }
+    th { background: #dfe8e1; }
+    .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-items: start; }
+    .gallery figure { margin: 0; padding: 10px; background: #fff; }
+    .gallery img { width: 100%; height: auto; display: block; }
+    figure { margin: 18px 0; }
+    figcaption { margin-top: 7px; font-size: 14px; color: #4d5954; }
+    img, video { max-width: 100%; background: #fff; }
+    video { width: 100%; }
+    .two { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    code { overflow-wrap: anywhere; }
+    a { color: #236453; }
+    .small { font-size: 14px; color: #56635d; }
+    @media (max-width: 760px) { .gallery, .two { grid-template-columns: 1fr; } body { margin-top: 18px; padding: 0 12px; } }
+  </style>
+</head>
+<body>
+  <h1>IMPASTO：三个阶段三版本的本地复现对比</h1>
+  <p class="lead">本报告比较同一阶段一场景、同一阶段二 checkpoint 和同一批 Flower/Fish 目标下的三个阶段三版本：1107014 原始基线、只修复确定诊断错误的基线、以及通用候选分解与 seed 选择优化版。</p>
+  <p class="note"><strong>结论：</strong>修正基线与原始基线的实际画面逐像素一致。通用优化版在 Flower/Fish 的加权灰度 L1 上分别改善 3.23% 和 2.15%，视觉上减少了跨空白长笔并保留了部分浅蓝/深蓝细节；它仍有粗细、位置和漏笔问题，不能宣称已经完全复现论文效果。单笔实验反而退化，因此优化版是可审查的候选改进，不是无条件替代基线。</p>
+
+  <h2>1. 三版数值</h2>
+  <p>数值来自各版本的 <a href="../baseline_1107014_original_final/metrics.json">原始基线</a>、<a href="../baseline_1107014_corrected_final/metrics.json">修正基线</a> 和 <a href="../optimized_general_final/metrics.json">优化版</a>。执行误差是最终真实仿真画布与目标的灰度 L1；越低越好。LPIPS 没有运行。</p>
+  <table>
+    <thead><tr><th>任务</th><th>版本</th><th>全画布灰度 L1</th><th>加权灰度 L1</th><th>改变区域 L1</th><th>背景 L1</th><th>力 RMSE / N</th><th>轨迹 RMSE / mm</th></tr></thead>
+    <tbody>
+      <tr><td rowspan="3">single_stroke</td><td>1107014 原始</td><td>0.0001904</td><td>0.0009305</td><td>0.06076</td><td>0.0000426</td><td>0.01035</td><td>0.0654</td></tr>
+      <tr><td>修正基线</td><td>0.0001904</td><td>0.0009305</td><td>0.06076</td><td>0.0000426</td><td>0.01035</td><td>0.0654</td></tr>
+      <tr><td>通用优化</td><td>0.0002424</td><td>0.0011849</td><td>0.06877</td><td>0.0000753</td><td>0.01013</td><td>0.0661</td></tr>
+      <tr><td rowspan="3">flower</td><td>1107014 原始</td><td>0.0041073</td><td>0.0149452</td><td>0.06203</td><td>0.0003072</td><td>0.00843</td><td>0.1137</td></tr>
+      <tr><td>修正基线</td><td>0.0041073</td><td>0.0149452</td><td>0.06203</td><td>0.0003072</td><td>0.00843</td><td>0.1137</td></tr>
+      <tr><td>通用优化</td><td>0.0039749</td><td><strong>0.0144630</strong></td><td><strong>0.06060</strong></td><td><strong>0.0002599</strong></td><td>0.00821</td><td>0.1214</td></tr>
+      <tr><td rowspan="3">fish</td><td>1107014 原始</td><td>0.0037938</td><td>0.0147551</td><td>0.07955</td><td>0.0003256</td><td>0.02453</td><td>0.1197</td></tr>
+      <tr><td>修正基线</td><td>0.0037938</td><td>0.0147551</td><td>0.07955</td><td>0.0003256</td><td>0.02453</td><td>0.1197</td></tr>
+      <tr><td>通用优化</td><td>0.0037123</td><td><strong>0.0144379</strong></td><td>0.08024</td><td><strong>0.0002086</strong></td><td><strong>0.02060</strong></td><td><strong>0.1052</strong></td></tr>
+    </tbody>
+  </table>
+  <p class="small">Flower 加权 L1 相对降低 3.23%；Fish 相对降低 2.15%。优化版的单笔加权 L1 上升 27.34%，所以整体结果不能只看两幅多笔画。三版使用同一个 checkpoint SHA-256：<code>831ea440fd73c275e350e65cca236598b5aff4b5a1b4ba74a646a58744799d35</code>。</p>
+
+  <h2>2. 最终画面</h2>
+  <h3>Flower</h3>
+  <div class="gallery">
+    <figure><img src="../baseline_1107014_original_final/flower_result.png" alt="Flower 原始 1107014 结果"><figcaption>1107014 原始基线</figcaption></figure>
+    <figure><img src="../baseline_1107014_corrected_final/flower_result.png" alt="Flower 修正基线结果"><figcaption>只修复诊断错误的基线，画面与原始版逐像素一致</figcaption></figure>
+    <figure><img src="../optimized_general_final/flower_result.png" alt="Flower 通用优化结果"><figcaption>通用优化版</figcaption></figure>
+  </div>
+  <h3>Fish</h3>
+  <div class="gallery">
+    <figure><img src="../baseline_1107014_original_final/fish_result.png" alt="Fish 原始 1107014 结果"><figcaption>1107014 原始基线</figcaption></figure>
+    <figure><img src="../baseline_1107014_corrected_final/fish_result.png" alt="Fish 修正基线结果"><figcaption>只修复诊断错误的基线，画面与原始版逐像素一致</figcaption></figure>
+    <figure><img src="../optimized_general_final/fish_result.png" alt="Fish 通用优化结果"><figcaption>通用优化版</figcaption></figure>
+  </div>
+  <p>目标图、每轮目标、每轮预测和执行结果均保存在各版本目录；优化版的完整逐轮审计图见 <a href="../optimized_general_final/audit/flower_rounds_montage.png">Flower montage</a> 和 <a href="../optimized_general_final/audit/fish_rounds_montage.png">Fish montage</a>。</p>
+
+  <h2>3. 视频</h2>
+  <p>以下视频是保存动作的连续仿真重放。优化版视频包含完整 Flower/Fish 执行；修正基线视频用于直接比较。求解器计算等待不在视频时间轴内。</p>
+  <div class="two">
+    <figure><video controls preload="metadata" src="../baseline_1107014_corrected_final/flower_painting.mp4"></video><figcaption>Flower 修正基线 <a href="../baseline_1107014_corrected_final/flower_painting.mp4">下载</a></figcaption></figure>
+    <figure><video controls preload="metadata" src="../optimized_general_final/flower_painting.mp4"></video><figcaption>Flower 通用优化 <a href="../optimized_general_final/flower_painting.mp4">下载</a></figcaption></figure>
+    <figure><video controls preload="metadata" src="../baseline_1107014_corrected_final/fish_painting.mp4"></video><figcaption>Fish 修正基线 <a href="../baseline_1107014_corrected_final/fish_painting.mp4">下载</a></figcaption></figure>
+    <figure><video controls preload="metadata" src="../optimized_general_final/fish_painting.mp4"></video><figcaption>Fish 通用优化 <a href="../optimized_general_final/fish_painting.mp4">下载</a></figcaption></figure>
+  </div>
+
+  <h2>4. 逐轮视觉判断</h2>
+  <table>
+    <thead><tr><th>任务/轮次</th><th>看到的现象</th><th>归因判断</th></tr></thead>
+    <tbody>
+      <tr><td>Flower R1</td><td>浅蓝外瓣先形成，左侧和下侧仍未执行；执行与同轮模型预测接近。</td><td>主要是目标笔画分解和恒宽圆头表达限制，不是力控把正确预测画坏。</td></tr>
+      <tr><td>Flower R4-R6</td><td>深色花瓣位置基本对，但笔端偏圆、颜色偏均匀。</td><td>动作几何和颜料离散化限制，预测与执行误差较小。</td></tr>
+      <tr><td>Flower R7-R10</td><td>浅黄绿花柄和深绿断笔出现，右伸细绿在后续出现；底部极淡细茎仍缺失，局部短绿仍偏粗。</td><td>细区域候选和有限笔数排序仍不足；这是分解/规划问题，不能归咎于执行。</td></tr>
+      <tr><td>Fish R1-R3</td><td>优化版没有再用一条长红笔跨过中下部空白，但中部红区仍偏圆且重复用笔。</td><td>连续支持检查改善跨空白错误；同一区域内的笔数分配仍不佳。</td></tr>
+      <tr><td>Fish R4-R9</td><td>顶部蓝笔和底部蓝笔逐步出现，浅蓝细节仍有遗漏或过直。</td><td>候选颜色/形状评分对低对比细笔仍不稳定，执行轨迹没有明显偏移。</td></tr>
+      <tr><td>Fish R10-R11</td><td>深蓝细节被补出，最后浅蓝弧的位置接近但过长、过直。</td><td>规划动作本身已经偏离目标，模型和执行都一致，因此不是力控故障。</td></tr>
+    </tbody>
+  </table>
+  <p><a href="../optimized_general_final/audit/flower_audit_01.png">Flower R1</a> · <a href="../optimized_general_final/audit/flower_audit_07.png">Flower R7</a> · <a href="../optimized_general_final/audit/flower_audit_10.png">Flower R10</a> · <a href="../optimized_general_final/audit/fish_audit_01.png">Fish R1</a> · <a href="../optimized_general_final/audit/fish_audit_07.png">Fish R7</a> · <a href="../optimized_general_final/audit/fish_audit_11.png">Fish R11</a></p>
+
+  <h2>5. 本轮改动</h2>
+  <table>
+    <thead><tr><th>改动</th><th>作用</th><th>与论文的关系</th></tr></thead>
+    <tbody>
+      <tr><td>保留细笔区域，关闭细区域的形态学开/闭运算</td><td>避免相邻浅色细笔在候选提取前消失。</td><td>通用预处理修正；论文没有给出实现细节。</td></tr>
+      <tr><td>候选池返回几何和力值变体</td><td>让 MPC 看到不同长度、宽度和法向力假设，而不是只保留面积最大的单笔。</td><td>论文的 PCA/RANSAC 初始化和 MPC 结构保留；候选池扩展是本地实现。</td></tr>
+      <tr><td>用 learned dynamics 贪心选择 seed</td><td>用部署模型的预测终态和 RGB 辅助目标评价候选，减少宽笔吞掉相邻细笔。</td><td>属于规划增强；论文没有明确公开这一 seed 选择机制。</td></tr>
+      <tr><td>增加通用合成回归测试</td><td>用两条相邻、不同长度细笔确认候选池包含多种长度和力值。</td><td>工程验证，不改变 Flower/Fish 的专用数据或动作。</td></tr>
+      <tr><td>Stage 1/2</td><td>本轮没有重建场景或重新训练动力学模型；沿用相同场景和 checkpoint。</td><td>因此本轮差异可以归因于 Stage 3，而不是混入新的训练结果。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>6. 论文对齐和限制</h2>
+  <p>保留的论文式流程包括：阶段二学习画布动力学、PCA/RANSAC 图像差分初始化、H=5 的 receding-horizon MPC、每轮最多执行两笔后重新观察、CMA 风格协方差更新，以及 17/18 笔 Flower/Fish 测试规模。三版没有复现论文 baselines。</p>
+  <p>论文没有公开 Flower/Fish 的原始高清画面、每一笔的颜色和动作标注。这里使用作者 Fig. 8 的公开图版裁剪和目标检查点，因此不能回答“论文中的每一笔到底由画家给出还是由 PAC/RANSAC 拆出”的问题，更不能把本地误差直接等同于论文硬件指标。当前画笔为恒色、恒力、恒宽二次曲线，难以表达真实油画的笔锋、变宽、浓淡和流动。</p>
+  <p>最终证据：<a href="../optimized_general_final/report.md">优化版文字报告</a> · <a href="../optimized_general_final/metrics.json">优化版 metrics</a> · <a href="../optimized_general_final/audit/visual_audit_metrics.json">优化版视觉审计指标</a> · <a href="../../papers/IMPASTO_arxiv_2603.29315v1.html">论文原文副本</a>。</p>
+
+  <h2>7. 复现命令</h2>
+  <p><code>IMPASTO_STAGE3_CONFIG=configs/stage3_optimized_general.json bash scripts/run.sh scripts/run_stage3.py</code></p>
+  <p><code>bash scripts/run.sh scripts/audit_refinement.py --report-dir reports/optimized_general_final --out-dir reports/optimized_general_final/audit</code></p>
+  <p><code>bash scripts/run.sh -m pytest -q</code>，结果：<strong>26 passed</strong>。</p>
+</body>
+</html>

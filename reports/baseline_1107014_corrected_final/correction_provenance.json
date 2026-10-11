@@ -1,0 +1,18 @@
+{
+  "kind": "diagnostic_only_replay",
+  "source_report": "reports/baseline_1107014_original_final",
+  "source_commit": "1107014",
+  "painting_actions_reused": true,
+  "painting_behavior_changed": false,
+  "corrected_code": [
+    "src/impasto/stage3/planner.py",
+    "scripts/run_stage3.py",
+    "scripts/audit_refinement.py"
+  ],
+  "correction": "Keep proposal masks synchronized with executable seed actions through filtering and padding; audit legacy archives with explicit provenance.",
+  "verification": {
+    "tests": "25 passed",
+    "flower_result_sha256": "39eaea974389a26ee7bd22cb7ade938d247d97df0630650f5ad1d6392ca17b65",
+    "fish_result_sha256": "e524d3d1c61a154684a28eb0fea1bdab4d72a084dcad3470807d0c4d8373b4db"
+  }
+}

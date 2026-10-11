@@ -1,0 +1,53 @@
+{"single_stroke": {"unweighted_gray_l1": 0.00019038909522350878, "weighted_gray_l1": 0.0009305058629252017, "changed_region_gray_l1": 0.060762807726860046, "background_gray_l1": 4.260967398295179e-05, "changed_pixel_fraction": 0.00243377685546875, "lpips_alex": null}}
+flower: 0->5, horizon 5, cost 0.01514->0.01186
+flower: 2->5, horizon 3, cost 0.01532->0.01237
+flower: 4->5, horizon 1, cost 0.01323->0.01304
+flower: 5->10, horizon 5, cost 0.02664->0.02196
+flower: 7->10, horizon 3, cost 0.02315->0.02031
+flower: 9->10, horizon 1, cost 0.02174->0.02058
+flower: 10->15, horizon 5, cost 0.03696->0.02915
+flower: 12->15, horizon 3, cost 0.03440->0.02759
+flower: 14->15, horizon 1, cost 0.03162->0.03047
+flower: 15->17, horizon 2, cost 0.03192->0.03110
+{"flower": {"unweighted_gray_l1": 0.004107259213924408, "weighted_gray_l1": 0.014945199713110924, "changed_region_gray_l1": 0.062027134001255035, "background_gray_l1": 0.00030721272923983634, "changed_pixel_fraction": 0.0615692138671875, "lpips_alex": null}, "replanning_cycles": 10}
+fish: 0->5, horizon 5, cost 0.02623->0.01856
+fish: 2->5, horizon 3, cost 0.02070->0.01760
+fish: 4->5, horizon 1, cost 0.01796->0.01555
+fish: 5->10, horizon 5, cost 0.02656->0.02316
+fish: 7->10, horizon 3, cost 0.02545->0.02324
+fish: 9->10, horizon 1, cost 0.02368->0.02334
+fish: 10->15, horizon 5, cost 0.02941->0.02755
+fish: 12->15, horizon 3, cost 0.02755->0.02638
+fish: 14->15, horizon 1, cost 0.02715->0.02672
+fish: 15->18, horizon 3, cost 0.03283->0.03072
+fish: 17->18, horizon 1, cost 0.03103->0.03024
+{"fish": {"unweighted_gray_l1": 0.0037937709130346775, "weighted_gray_l1": 0.014755094423890114, "changed_region_gray_l1": 0.0795477032661438, "background_gray_l1": 0.0003256294294260442, "changed_pixel_fraction": 0.0437774658203125, "lpips_alex": null}, "replanning_cycles": 11}
+{
+  "report": "reports/baseline_1107014_original_final/report.md",
+  "experiments": {
+    "single_stroke": {
+      "unweighted_gray_l1": 0.00019038909522350878,
+      "weighted_gray_l1": 0.0009305058629252017,
+      "changed_region_gray_l1": 0.060762807726860046,
+      "background_gray_l1": 4.260967398295179e-05,
+      "changed_pixel_fraction": 0.00243377685546875,
+      "lpips_alex": null
+    },
+    "flower": {
+      "unweighted_gray_l1": 0.004107259213924408,
+      "weighted_gray_l1": 0.014945199713110924,
+      "changed_region_gray_l1": 0.062027134001255035,
+      "background_gray_l1": 0.00030721272923983634,
+      "changed_pixel_fraction": 0.0615692138671875,
+      "lpips_alex": null
+    },
+    "fish": {
+      "unweighted_gray_l1": 0.0037937709130346775,
+      "weighted_gray_l1": 0.014755094423890114,
+      "changed_region_gray_l1": 0.0795477032661438,
+      "background_gray_l1": 0.0003256294294260442,
+      "changed_pixel_fraction": 0.0437774658203125,
+      "lpips_alex": null
+    }
+  }
+}
