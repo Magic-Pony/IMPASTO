@@ -1,0 +1,13 @@
+{
+  "local_assets": 83,
+  "images": 73,
+  "videos": 2,
+  "visual_rounds": 21,
+  "missing_assets": [],
+  "checkpoint_sha256": "8368f23e35705531a8f3701bbefa5fd59c98fb755f941577a562a3fd8dc2eb87",
+  "unchanged_target_sha256": {
+    "flower": "50b49d9f5a3626c07880fcdaffec1e9b2f5e0bc1518c06629c6ccb5c840d6b6d",
+    "fish": "bb40a283818cecf5937532cfcc62c15b04c2d98fa27d0c505348b9675fdd3a10"
+  },
+  "browser_render_verification": "Unavailable: browser URL policy blocks file URLs; local assets and image/video frame audits performed."
+}

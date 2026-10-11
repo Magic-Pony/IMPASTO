@@ -36,10 +36,14 @@ def load_config():
 def draw_stroke(rng, cfg, color):
     b = cfg["action_bounds"]
     for _ in range(1000):
+        force_bounds = b["force_N"]
+        sampling = cfg.get("force_sampling", {})
+        if sampling and rng.random() < float(sampling["low_force_probability"]):
+            force_bounds = sampling["low_force_bounds_N"]
         stroke = Stroke(
             float(rng.uniform(*b["x_m"])), float(rng.uniform(*b["y_m"])),
             float(rng.uniform(*b["length_m"])), float(rng.uniform(*b["bend_m"])),
-            float(rng.uniform(*b["angle_rad"])), float(rng.uniform(*b["force_N"])),
+            float(rng.uniform(*b["angle_rad"])), float(rng.uniform(*force_bounds)),
             int(color),
         )
         points = stroke.points(np.linspace(0, 1, 64))
@@ -80,7 +84,9 @@ def collect_episode(task):
                 result = env.execute_stroke(stroke)
                 valid = (result.get("success", False)
                          and result.get("contact_fraction", 0.0) >= .99
-                         and result.get("force_acquired", False))
+                         and result.get("force_acquired", False)
+                         and result.get("force_all_samples_rmse_N", float("inf"))
+                         <= float(stage2_cfg.get("maximum_force_rmse_N", float("inf"))))
                 if valid:
                     break
                 failed_attempts.append({"attempt": attempt, "reason": result.get("reason"),
@@ -215,8 +221,10 @@ def main():
     total = sum(item["samples"] for item in results)
     manifest = {
         "dataset": "IMPASTO Stage-2 self-play transitions",
-        "paper_training_samples": int(stage2_cfg["train_samples"]),
-        "paper_validation_samples": int(stage2_cfg["validation_samples"]),
+        "paper_training_samples": 900,
+        "paper_validation_samples": 100,
+        "configured_training_samples": int(stage2_cfg["train_samples"]),
+        "configured_validation_samples": int(stage2_cfg["validation_samples"]),
         "samples": total, "episodes": results,
         "quality_fields": list(QUALITY_FIELDS),
         "train_samples_verified": train_count,

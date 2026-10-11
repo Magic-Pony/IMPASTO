@@ -1,0 +1,30 @@
+{
+  "flower": {
+    "frames": 761,
+    "sampled_frames": [
+      91,
+      212,
+      334,
+      456,
+      623,
+      760
+    ],
+    "fps": 3.0,
+    "encoded_duration_seconds": 253.66666666666666,
+    "final_canvas_max_abs_rgb_difference": 0
+  },
+  "fish": {
+    "frames": 804,
+    "sampled_frames": [
+      96,
+      224,
+      353,
+      481,
+      658,
+      803
+    ],
+    "fps": 3.0,
+    "encoded_duration_seconds": 268.0,
+    "final_canvas_max_abs_rgb_difference": 0
+  }
+}

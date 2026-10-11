@@ -1,0 +1,9 @@
+{
+  "random_cases": 200,
+  "identical_pixels": true,
+  "maximum_absolute_difference": 0.0,
+  "previous_seconds": 0.7067817279894371,
+  "indexed_seconds": 0.22772519898717292,
+  "speedup": 3.103660601167146,
+  "seed": 2026101133
+}

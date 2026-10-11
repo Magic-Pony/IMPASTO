@@ -44,8 +44,8 @@ def validate_palette_contract(stage1, stage2, stage3, checkpoint):
             raise ValueError(f"Palette mismatch in {name}; recollect/retrain or use its matching palette")
 
 
-def load_system():
-    config_name = os.environ.get("IMPASTO_STAGE3_CONFIG", "configs/stage3.json")
+def load_system(config_name=None):
+    config_name = config_name or os.environ.get("IMPASTO_STAGE3_CONFIG", "configs/stage3.json")
     config_path = Path(config_name)
     if not config_path.is_absolute():
         config_path = ROOT / config_path
@@ -53,8 +53,8 @@ def load_system():
     stage3["config_file"] = str(config_path.relative_to(ROOT))
     if stage3.get("color_database_file"):
         stage3["color_database"] = json.loads((ROOT / stage3["color_database_file"]).read_text())
-    stage2 = json.loads((ROOT / stage3["stage2_config"]).read_text())
-    stage1 = json.loads((ROOT / stage3["stage1_config"]).read_text())
+    stage2 = copy.deepcopy(stage3.get("resolved_stage2")) or json.loads((ROOT / stage3["stage2_config"]).read_text())
+    stage1 = copy.deepcopy(stage3.get("resolved_stage1")) or json.loads((ROOT / stage3["stage1_config"]).read_text())
     if stage3.get("deployment_palette_rgb"):
         stage1["paint"]["palette_rgb"] = stage3["deployment_palette_rgb"]
     stage3["palette_rgb"] = stage1["paint"]["palette_rgb"]
@@ -454,6 +454,10 @@ def main():
                         help="Penalize predicted paint darker than the goal in the planning objective")
     args = parser.parse_args()
     config, stage2, stage1, model, device, checkpoint = load_system()
+    # Freeze all execution/training settings: replay must not silently read a
+    # subsequently edited stage-1 configuration through its path.
+    config["resolved_stage1"] = copy.deepcopy(stage1)
+    config["resolved_stage2"] = copy.deepcopy(stage2)
     if args.report_dir is not None:
         config["report_dir"] = args.report_dir
     if args.overpaint_weight is not None:
@@ -494,6 +498,10 @@ def main():
         completed = previous["experiments"]
     (report_dir / "resolved_config.json").write_text(json.dumps(config, indent=2))
     results = {
+        "implementation_sha256": {path: hashlib.sha256((ROOT/path).read_bytes()).hexdigest()
+            for path in ("scripts/run_stage3.py", "src/impasto/stage3/planner.py",
+                         "src/impasto/stage3/splitter.py", "src/impasto/sim/mujoco_env.py",
+                         "src/impasto/sim/paint.py", "src/impasto/stage2/raster.py")},
         "paper_protocol": {
             "mpc_horizon": int(config["planner"]["horizon"]),
             "execute_steps_before_replan": int(config["planner"]["execute_steps"]),
@@ -502,7 +510,7 @@ def main():
             "checkpoint_matches_stage2_report": checkpoint_sha256 == stage2_metrics.get("best_checkpoint_sha256"),
             "target_scope": "public Fig. 8 panel crops; original high-resolution artist files and action annotations unavailable",
             "unpublished_planner_parameters": f"local choices in {config['config_file']}",
-            "planning_objective": "asymmetric weighted gray L1 + RGB auxiliary weight * weighted RGB L1",
+            "planning_objective": "weighted gray L1 with configured overpaint factor + weighted RGB auxiliary loss",
             "overpaint_weight": config["planner"].get("overpaint_weight", 1.0),
             "rgb_objective_weight": config["planner"].get("rgb_objective_weight", 0),
         },

@@ -1,0 +1,55 @@
+{
+  "protocol": "unaugmented training-only population BatchNorm moments; dropout disabled; no gradient or artwork; validation comparison, not independent test",
+  "train_samples": 1800,
+  "validation_samples": 200,
+  "variants": {
+    "old_raw": {
+      "full_patch_l1": 0.006981814280152321,
+      "changed_region_l1": 0.03213004767894745,
+      "union_region_l1": 0.03330085426568985,
+      "background_l1": 0.004003855399787426,
+      "checkpoint": "outputs/stage2_refined/impasto_unet_best.pt",
+      "sha256": "831ea440fd73c275e350e65cca236598b5aff4b5a1b4ba74a646a58744799d35"
+    },
+    "old_calibrated": {
+      "full_patch_l1": 0.016110332682728767,
+      "changed_region_l1": 0.04141923412680626,
+      "union_region_l1": 0.034361276775598526,
+      "background_l1": 0.013113349676132202,
+      "checkpoint": "outputs/stage2_stable/impasto_unet_old_calibrated.pt",
+      "sha256": "f6126c5d92cc67fa3f1132c9c2a25bf9810cc46aacdf99957cac4802e96c6358"
+    },
+    "best_raw": {
+      "full_patch_l1": 0.006573047023266554,
+      "changed_region_l1": 0.03789004683494568,
+      "union_region_l1": 0.03671485185623169,
+      "background_l1": 0.0028646057471632957,
+      "checkpoint": "outputs/stage2_stable/impasto_unet_best.pt",
+      "sha256": "5cee5bbb4ea37e8308e24fa5a28d5b585c8eb4d344b37e1ec4850193d049da34"
+    },
+    "best_calibrated": {
+      "full_patch_l1": 0.006930403411388397,
+      "changed_region_l1": 0.0315556637942791,
+      "union_region_l1": 0.032548658549785614,
+      "background_l1": 0.004014373291283846,
+      "checkpoint": "outputs/stage2_stable/impasto_unet_best_calibrated.pt",
+      "sha256": "8368f23e35705531a8f3701bbefa5fd59c98fb755f941577a562a3fd8dc2eb87"
+    },
+    "last_raw": {
+      "full_patch_l1": 0.0070860241539776325,
+      "changed_region_l1": 0.0418514721095562,
+      "union_region_l1": 0.03877090662717819,
+      "background_l1": 0.002969230990856886,
+      "checkpoint": "outputs/stage2_stable/impasto_unet_last.pt",
+      "sha256": "f55aaf2918adcf838e48a4c620b068fbdf09cbea1e65d30548f16d472b6b988c"
+    },
+    "last_calibrated": {
+      "full_patch_l1": 0.007143501657992601,
+      "changed_region_l1": 0.03880062326788902,
+      "union_region_l1": 0.036307718604803085,
+      "background_l1": 0.0033947848714888096,
+      "checkpoint": "outputs/stage2_stable/impasto_unet_last_calibrated.pt",
+      "sha256": "1be9e1980f3f2eea2e01ff4151e4b43052511eb0d5bf1d9f210f6df9f73265eb"
+    }
+  }
+}

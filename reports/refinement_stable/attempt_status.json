@@ -1,0 +1,5 @@
+{
+  "status": "stopped_before_complete",
+  "reason": "Raw expanded-data checkpoint regressed changed-region validation and independent force/model audit. Replaced by a separately logged train-only normalization-calibrated experiment; partial artwork images are not final results.",
+  "replacement": "reports/refinement_calibrated"
+}

@@ -1,5 +1,7 @@
 # Stage 2: Pixel Dynamics Model
 
+The new general refinement uses `configs/stage2_stable.json`: 2000 transitions (1800/200), stable low-force contact, quality rejection and training-only BatchNorm calibration. This exceeds the paper's data budget and is explicitly a local extension. The original training protocol remains below for historical reference; see [general refinement](general_refinement.md) and [the new raw-model training report](../reports/stage2_stable/report.md). Calibration and independent local prediction checks are reported separately; a lower full-patch error alone did not mean better brush predictions.
+
 ## Paper specification
 
 The model predicts the complete next grayscale canvas patch from the current patch and a rasterized candidate stroke. The image input is `100 x 100 x 2`: current grayscale observation and pre-rendered grayscale stroke. The output is the complete next `100 x 100 x 1` observation, with a sigmoid output. The action encoder receives six values; the paper's architecture description lists `(x0, y0, length, bend, force, angle)`. An MLP embedding is fused into the 64-channel encoder level. The U-Net feature widths shown in Appendix B are `32, 64, 128, 256`; encoder blocks use Conv2d, BatchNorm, LeakyReLU, and dropout, while decoder blocks upsample, convolve, normalize, and apply LeakyReLU. The output head uses two convolutions and sigmoid.

@@ -1,0 +1,3941 @@
+{
+  "protocol": "Two independent geometries, seven forces, blank and crossing-stroke canvases; no artwork targets",
+  "model_configuration": {
+    "seed": 3037,
+    "opacity_scale": 1.0,
+    "stage1_config": "configs/stage1_refined.json",
+    "stage2_config": "configs/stage2_refined.json",
+    "checkpoint": "outputs/stage2_refined/impasto_unet_best.pt",
+    "report_dir": "reports/refinement_final_v4",
+    "canvas_width_m": 0.4572,
+    "canvas_height_m": 0.5334,
+    "canvas_resolution": 512,
+    "patch_size": 100,
+    "action_bounds": {
+      "x_m": [
+        -0.125,
+        0.07
+      ],
+      "y_m": [
+        -0.135,
+        0.135
+      ],
+      "length_m": [
+        0.004,
+        0.105
+      ],
+      "bend_m": [
+        -0.05,
+        0.05
+      ],
+      "angle_rad": [
+        -3.141592653589793,
+        3.141592653589793
+      ],
+      "force_N": [
+        0.4,
+        1.5
+      ]
+    },
+    "force_radius_m": {
+      "minimum": 0.0004,
+      "scale": 0.0058,
+      "exponent": 1.65
+    },
+    "color_subset": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+    ],
+    "planner": {
+      "horizon": 5,
+      "execute_steps": 2,
+      "candidates": 64,
+      "iterations": 36,
+      "elite_ratio": 0.2,
+      "temperature": 0.0005,
+      "ema": 0.8,
+      "initial_sigma": [
+        0.003,
+        0.003,
+        0.006,
+        0.005,
+        0.15,
+        0.15
+      ],
+      "minimum_sigma": [
+        0.0003,
+        0.0003,
+        0.0006,
+        0.0008,
+        0.01,
+        0.02
+      ],
+      "maximum_sigma": [
+        0.01,
+        0.01,
+        0.012,
+        0.015,
+        0.3,
+        0.4
+      ],
+      "seed_trust_region": null,
+      "covariance_floor": 1e-07,
+      "objective_threshold": 0.015,
+      "objective_dilation_kernel": 9,
+      "objective_changed_weight": 4.0,
+      "splitter_components": 5,
+      "splitter_kmeans_iterations": 25,
+      "splitter_ransac_iterations": 80,
+      "splitter_ransac_threshold_px": 2.5,
+      "splitter_min_pixels": 10,
+      "splitter_curvature_penalty": 0.01,
+      "splitter_overlap_penalty": 0.15,
+      "allow_random_fill": false,
+      "splitter_color_guided": false,
+      "splitter_threshold": 0.02,
+      "warm_start": false,
+      "robust_candidates": true,
+      "candidate_missing_weight": 3.0,
+      "update_colors_with_geometry": true,
+      "rgb_objective_weight": 1.0,
+      "splitter_centerline_support_threshold": 0.72,
+      "splitter_max_centerline_gap_px": 10.0,
+      "splitter_candidate_quality_checks": true,
+      "learned_seed_selection": true,
+      "seed_force_hypotheses": [
+        0.4,
+        0.7,
+        1.0,
+        1.3
+      ],
+      "splitter_palette_regions": true
+    },
+    "experiments": {
+      "single_stroke_seed": 3101,
+      "flower_seed": 3102,
+      "fish_seed": 3103,
+      "run_single_stroke": true,
+      "run_flower": true,
+      "run_fish": true,
+      "use_published_prefix_targets": false,
+      "execution_render": false
+    },
+    "notes": "Selective rollback to 1107014 physics, checkpoint and symmetric objective. General continuity checks and learned ranking of PCA/RANSAC colour-region and force hypotheses. Shared 24-colour palette for every target; no artwork-specific action, colour subset, or prefix observation.",
+    "palette_rgb": [
+      [
+        173,
+        63,
+        46
+      ],
+      [
+        91,
+        107,
+        127
+      ],
+      [
+        183,
+        81,
+        68
+      ],
+      [
+        166,
+        95,
+        90
+      ],
+      [
+        91,
+        133,
+        101
+      ],
+      [
+        110,
+        131,
+        144
+      ],
+      [
+        196,
+        103,
+        88
+      ],
+      [
+        180,
+        124,
+        119
+      ],
+      [
+        127,
+        152,
+        174
+      ],
+      [
+        138,
+        169,
+        135
+      ],
+      [
+        218,
+        140,
+        106
+      ],
+      [
+        145,
+        173,
+        192
+      ],
+      [
+        203,
+        154,
+        141
+      ],
+      [
+        158,
+        189,
+        210
+      ],
+      [
+        170,
+        196,
+        212
+      ],
+      [
+        223,
+        179,
+        168
+      ],
+      [
+        199,
+        201,
+        118
+      ],
+      [
+        198,
+        212,
+        147
+      ],
+      [
+        184,
+        206,
+        219
+      ],
+      [
+        214,
+        221,
+        177
+      ],
+      [
+        243,
+        207,
+        195
+      ],
+      [
+        202,
+        223,
+        235
+      ],
+      [
+        112,
+        143,
+        123
+      ],
+      [
+        221,
+        187,
+        80
+      ]
+    ],
+    "opaque_colors": true,
+    "residual_patch_paste": true,
+    "deployment_palette_rgb": [
+      [
+        173,
+        63,
+        46
+      ],
+      [
+        91,
+        107,
+        127
+      ],
+      [
+        183,
+        81,
+        68
+      ],
+      [
+        166,
+        95,
+        90
+      ],
+      [
+        91,
+        133,
+        101
+      ],
+      [
+        110,
+        131,
+        144
+      ],
+      [
+        196,
+        103,
+        88
+      ],
+      [
+        180,
+        124,
+        119
+      ],
+      [
+        127,
+        152,
+        174
+      ],
+      [
+        138,
+        169,
+        135
+      ],
+      [
+        218,
+        140,
+        106
+      ],
+      [
+        145,
+        173,
+        192
+      ],
+      [
+        203,
+        154,
+        141
+      ],
+      [
+        158,
+        189,
+        210
+      ],
+      [
+        170,
+        196,
+        212
+      ],
+      [
+        223,
+        179,
+        168
+      ],
+      [
+        199,
+        201,
+        118
+      ],
+      [
+        198,
+        212,
+        147
+      ],
+      [
+        184,
+        206,
+        219
+      ],
+      [
+        214,
+        221,
+        177
+      ],
+      [
+        243,
+        207,
+        195
+      ],
+      [
+        202,
+        223,
+        235
+      ],
+      [
+        112,
+        143,
+        123
+      ],
+      [
+        221,
+        187,
+        80
+      ]
+    ],
+    "color_database_file": "reports/stage3_refined/color_database.json",
+    "inference_batch_size": 8,
+    "config_file": "configs/stage3_refined.json",
+    "color_database": {
+      "kind": "simulated opaque central 25x25 patches",
+      "samples_per_color": 2,
+      "forces_N": [
+        0.85,
+        1.2
+      ],
+      "covariance_regularization": 0.002,
+      "means_linear_rgb": [
+        [
+          0.4178850708481281,
+          0.049706565984125844,
+          0.027320891639074796
+        ],
+        [
+          0.10461648409110703,
+          0.1470272664975905,
+          0.21223075741405936
+        ],
+        [
+          0.4735314961479965,
+          0.08228270712981647,
+          0.05780543019106691
+        ],
+        [
+          0.3813260114325234,
+          0.114435373826976,
+          0.10224173308810357
+        ],
+        [
+          0.10461648409110703,
+          0.23455058216100247,
+          0.1301364766903637
+        ],
+        [
+          0.15592646370782845,
+          0.22696587351009642,
+          0.27889426347680624
+        ],
+        [
+          0.5520114015120038,
+          0.13563332965520644,
+          0.09758734714186451
+        ],
+        [
+          0.45641102318040766,
+          0.201556253794394,
+          0.18447499450044605
+        ],
+        [
+          0.21223075741405936,
+          0.31398871337571055,
+          0.42326766998606163
+        ],
+        [
+          0.25415209433082986,
+          0.39675523072561675,
+          0.24228112246555603
+        ],
+        [
+          0.7011018919329545,
+          0.2622506575297008,
+          0.14412847085805738
+        ],
+        [
+          0.28314874042998556,
+          0.4178850708481281,
+          0.5271151257058012
+        ],
+        [
+          0.5972017883637729,
+          0.3231432091129559,
+          0.2663556048028668
+        ],
+        [
+          0.34191442490866625,
+          0.5088813208549277,
+          0.6444796819705788
+        ],
+        [
+          0.40197777983219074,
+          0.5520114015120038,
+          0.6583748172794318
+        ],
+        [
+          0.7379104087727087,
+          0.45078578283822873,
+          0.39157247774971965
+        ],
+        [
+          0.5711248294648756,
+          0.5840784178911818,
+          0.18116424424985716
+        ],
+        [
+          0.5647115057049317,
+          0.6583748172794318,
+          0.2917706498175271
+        ],
+        [
+          0.479320183100828,
+          0.6172065624196341,
+          0.7083757798916707
+        ],
+        [
+          0.6724431569576841,
+          0.72305512892195,
+          0.4396571738409295
+        ],
+        [
+          0.8962693533742564,
+          0.6239603916750697,
+          0.5457244613701989
+        ],
+        [
+          0.5906188409193267,
+          0.7379104087727087,
+          0.822785754396272
+        ],
+        [
+          0.1620293756391136,
+          0.274677312060382,
+          0.19806931955994858
+        ],
+        [
+          0.72305512892195,
+          0.49693299506087907,
+          0.08021982031446838
+        ]
+      ],
+      "covariances": [
+        [
+          [
+            0.002,
+            1.3029710192211483e-29,
+            9.120797134548038e-31
+          ],
+          [
+            1.3029710192211483e-29,
+            0.002,
+            1.349230345347343e-31
+          ],
+          [
+            9.120797134548038e-31,
+            1.349230345347343e-31,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -1.280226850542436e-29,
+            1.1774925971038454e-29
+          ],
+          [
+            -1.280226850542436e-29,
+            0.002,
+            -1.8610126900568094e-29
+          ],
+          [
+            1.1774925971038454e-29,
+            -1.8610126900568094e-29,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -2.1923065639972397e-29,
+            4.1671942952013644e-30
+          ],
+          [
+            -2.1923065639972397e-29,
+            0.002,
+            -5.364154358716651e-31
+          ],
+          [
+            4.1671942952013644e-30,
+            -5.364154358716651e-31,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -1.5206211486448938e-29,
+            -1.511292184542778e-29
+          ],
+          [
+            -1.5206211486448938e-29,
+            0.002,
+            5.0896823570345626e-30
+          ],
+          [
+            -1.511292184542778e-29,
+            5.0896823570345626e-30,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -7.823608531092664e-30,
+            -1.6595533247772318e-30
+          ],
+          [
+            -7.823608531092664e-30,
+            0.002,
+            1.6028856502726435e-30
+          ],
+          [
+            -1.6595533247772318e-30,
+            1.6028856502726435e-30,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -2.050830124927961e-30,
+            -4.394635981988488e-30
+          ],
+          [
+            -2.050830124927961e-30,
+            0.002,
+            8.095382072084058e-30
+          ],
+          [
+            -4.394635981988488e-30,
+            8.095382072084058e-30,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            2.849574489373588e-30,
+            7.531018293344484e-30
+          ],
+          [
+            2.849574489373588e-30,
+            0.002,
+            1.597488728891254e-30
+          ],
+          [
+            7.531018293344484e-30,
+            1.597488728891254e-30,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -9.159346572986533e-30,
+            1.5154555238941354e-29
+          ],
+          [
+            -9.159346572986533e-30,
+            0.002,
+            -1.5435195150773602e-29
+          ],
+          [
+            1.5154555238941354e-29,
+            -1.5435195150773602e-29,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -2.894908628977259e-29,
+            -4.1585592209911416e-29
+          ],
+          [
+            -2.894908628977259e-29,
+            0.002,
+            7.033267944226629e-29
+          ],
+          [
+            -4.1585592209911416e-29,
+            7.033267944226629e-29,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -3.14316701252117e-29,
+            3.6267311682936575e-30
+          ],
+          [
+            -3.14316701252117e-29,
+            0.002,
+            -1.1786876296954388e-29
+          ],
+          [
+            3.6267311682936575e-30,
+            -1.1786876296954388e-29,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -8.496913022859426e-29,
+            7.253462336587315e-30
+          ],
+          [
+            -8.496913022859426e-29,
+            0.002,
+            -1.7701902130957138e-30
+          ],
+          [
+            7.253462336587315e-30,
+            -1.7701902130957138e-30,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            6.150023210723819e-29,
+            7.787603355591109e-29
+          ],
+          [
+            6.150023210723819e-29,
+            0.002,
+            1.1153431924533028e-28
+          ],
+          [
+            7.787603355591109e-29,
+            1.1153431924533028e-28,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            4.9330945380973934e-29,
+            4.1374341287268463e-29
+          ],
+          [
+            4.9330945380973934e-29,
+            0.002,
+            2.2371010114627714e-29
+          ],
+          [
+            4.1374341287268463e-29,
+            2.2371010114627714e-29,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -3.256656559284101e-29,
+            -1.7763581232458732e-29
+          ],
+          [
+            -3.256656559284101e-29,
+            0.002,
+            2.035410349552563e-29
+          ],
+          [
+            -1.7763581232458732e-29,
+            2.035410349552563e-29,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -1.8522234180928322e-29,
+            8.419197354967419e-29
+          ],
+          [
+            -1.8522234180928322e-29,
+            0.002,
+            -6.106231048657689e-29
+          ],
+          [
+            8.419197354967419e-29,
+            -6.106231048657689e-29,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -1.1660434138876122e-28,
+            7.978191779231031e-29
+          ],
+          [
+            -1.1660434138876122e-28,
+            0.002,
+            -1.9043422588616782e-29
+          ],
+          [
+            7.978191779231031e-29,
+            -1.9043422588616782e-29,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            4.5112094838264986e-29,
+            -7.802406339951492e-30
+          ],
+          [
+            4.5112094838264986e-29,
+            0.002,
+            -5.393837426314292e-29
+          ],
+          [
+            -7.802406339951492e-30,
+            -5.393837426314292e-29,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -4.070820699105126e-29,
+            -2.1439655681953663e-29
+          ],
+          [
+            -4.070820699105126e-29,
+            0.002,
+            1.4617947055877497e-28
+          ],
+          [
+            -2.1439655681953663e-29,
+            1.4617947055877497e-28,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -2.0761185565436141e-29,
+            -1.9675633379008109e-29
+          ],
+          [
+            -2.0761185565436141e-29,
+            0.002,
+            2.7367017336256735e-28
+          ],
+          [
+            -1.9675633379008109e-29,
+            2.7367017336256735e-28,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            6.653941469991833e-29,
+            -3.690260642840298e-29
+          ],
+          [
+            6.653941469991833e-29,
+            0.002,
+            -2.07130758662649e-28
+          ],
+          [
+            -3.690260642840298e-29,
+            -2.07130758662649e-28,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            6.43929819676629e-29,
+            -1.2323484480018246e-28
+          ],
+          [
+            6.43929819676629e-29,
+            0.002,
+            -7.941801109345091e-29
+          ],
+          [
+            -1.2323484480018246e-28,
+            -7.941801109345091e-29,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            2.2584419805823225e-28,
+            1.18029128633448e-28
+          ],
+          [
+            2.2584419805823225e-28,
+            0.002,
+            2.55302136935393e-28
+          ],
+          [
+            1.18029128633448e-28,
+            2.55302136935393e-28,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -6.95740264937967e-30,
+            -7.247294426437156e-31
+          ],
+          [
+            -6.95740264937967e-30,
+            0.002,
+            7.401492180191138e-31
+          ],
+          [
+            -7.247294426437156e-31,
+            7.401492180191138e-31,
+            0.002
+          ]
+        ],
+        [
+          [
+            0.002,
+            -1.6742175311592355e-28,
+            -1.073216366127715e-30
+          ],
+          [
+            -1.6742175311592355e-28,
+            0.002,
+            4.810969917124239e-31
+          ],
+          [
+            -1.073216366127715e-30,
+            4.810969917124239e-31,
+            0.002
+          ]
+        ]
+      ],
+      "palette_rgb": [
+        [
+          173,
+          63,
+          46
+        ],
+        [
+          91,
+          107,
+          127
+        ],
+        [
+          183,
+          81,
+          68
+        ],
+        [
+          166,
+          95,
+          90
+        ],
+        [
+          91,
+          133,
+          101
+        ],
+        [
+          110,
+          131,
+          144
+        ],
+        [
+          196,
+          103,
+          88
+        ],
+        [
+          180,
+          124,
+          119
+        ],
+        [
+          127,
+          152,
+          174
+        ],
+        [
+          138,
+          169,
+          135
+        ],
+        [
+          218,
+          140,
+          106
+        ],
+        [
+          145,
+          173,
+          192
+        ],
+        [
+          203,
+          154,
+          141
+        ],
+        [
+          158,
+          189,
+          210
+        ],
+        [
+          170,
+          196,
+          212
+        ],
+        [
+          223,
+          179,
+          168
+        ],
+        [
+          199,
+          201,
+          118
+        ],
+        [
+          198,
+          212,
+          147
+        ],
+        [
+          184,
+          206,
+          219
+        ],
+        [
+          214,
+          221,
+          177
+        ],
+        [
+          243,
+          207,
+          195
+        ],
+        [
+          202,
+          223,
+          235
+        ],
+        [
+          112,
+          143,
+          123
+        ],
+        [
+          221,
+          187,
+          80
+        ]
+      ],
+      "seed": 6127,
+      "records": [
+        {
+          "color": 0,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999999097,
+            "force_acquisition_duration_s": 1.1000000000001968,
+            "first_contact_delay_s": 0.2639999999999709,
+            "contact_to_stroke_s": 0.8360000000002259,
+            "peak_acquisition_force_N": 0.8388679203375702,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012449267366135424,
+            "force_mean_N": 0.8596237973477316,
+            "force_rmse_N": 0.012449267366135424,
+            "force_max_N": 0.8819995643727684,
+            "force_std_N": 0.007897264245503962,
+            "force_range_N": 0.03526155678810039,
+            "brush_tilt_mean_deg": 0.0006124253740991356,
+            "brush_tilt_max_deg": 0.002905130406356648,
+            "trajectory_rmse_m": 7.890038580694551e-05,
+            "wall_seconds": 1.182057194000663
+          }
+        },
+        {
+          "color": 0,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999995455,
+            "force_acquisition_duration_s": 1.2039999999993327,
+            "first_contact_delay_s": 0.2639999999998537,
+            "contact_to_stroke_s": 0.939999999999479,
+            "peak_acquisition_force_N": 1.190691605140322,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009762053582619947,
+            "force_mean_N": 1.2078043443603272,
+            "force_rmse_N": 0.009762053582619947,
+            "force_max_N": 1.2237322414006027,
+            "force_std_N": 0.005864290174894854,
+            "force_range_N": 0.023053500190618248,
+            "brush_tilt_mean_deg": 0.0011558658383994337,
+            "brush_tilt_max_deg": 0.0058736113653124825,
+            "trajectory_rmse_m": 9.286067753751233e-05,
+            "wall_seconds": 1.0222868130003917
+          }
+        },
+        {
+          "color": 1,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999995455,
+            "force_acquisition_duration_s": 1.0999999999993904,
+            "first_contact_delay_s": 0.2639999999998537,
+            "contact_to_stroke_s": 0.8359999999995367,
+            "peak_acquisition_force_N": 0.8388786068673855,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012560103405687572,
+            "force_mean_N": 0.8596492808037957,
+            "force_rmse_N": 0.012560103405687572,
+            "force_max_N": 0.8821974724909645,
+            "force_std_N": 0.008040371728413353,
+            "force_range_N": 0.035544982478920906,
+            "brush_tilt_mean_deg": 0.0006715072147443409,
+            "brush_tilt_max_deg": 0.0029307089646220617,
+            "trajectory_rmse_m": 7.896158518538944e-05,
+            "wall_seconds": 0.9804928949997702
+          }
+        },
+        {
+          "color": 1,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000010021,
+            "force_acquisition_duration_s": 1.2040000000014714,
+            "first_contact_delay_s": 0.26400000000032264,
+            "contact_to_stroke_s": 0.9400000000011488,
+            "peak_acquisition_force_N": 1.190703312074481,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009766772927157637,
+            "force_mean_N": 1.2077970287515096,
+            "force_rmse_N": 0.009766772927157637,
+            "force_max_N": 1.223827648554341,
+            "force_std_N": 0.0058818531143499395,
+            "force_range_N": 0.023155416260900008,
+            "brush_tilt_mean_deg": 0.0011768293902674558,
+            "brush_tilt_max_deg": 0.005883428474636702,
+            "trajectory_rmse_m": 9.286744903447953e-05,
+            "wall_seconds": 1.0054114979993756
+          }
+        },
+        {
+          "color": 2,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000010021,
+            "force_acquisition_duration_s": 1.1000000000013443,
+            "first_contact_delay_s": 0.26400000000032264,
+            "contact_to_stroke_s": 0.8360000000010217,
+            "peak_acquisition_force_N": 0.8388896142690798,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012662341560906022,
+            "force_mean_N": 0.85967965940391,
+            "force_rmse_N": 0.012662341560906022,
+            "force_max_N": 0.882352004750149,
+            "force_std_N": 0.008163276770350333,
+            "force_range_N": 0.03579808821258268,
+            "brush_tilt_mean_deg": 0.0007260893915435489,
+            "brush_tilt_max_deg": 0.0029538180708710317,
+            "trajectory_rmse_m": 7.90396328751283e-05,
+            "wall_seconds": 0.9695048129997303
+          }
+        },
+        {
+          "color": 2,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000010021,
+            "force_acquisition_duration_s": 1.2040000000014714,
+            "first_contact_delay_s": 0.26400000000032264,
+            "contact_to_stroke_s": 0.9400000000011488,
+            "peak_acquisition_force_N": 1.1907159480726008,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009772202606300939,
+            "force_mean_N": 1.2077890995793485,
+            "force_rmse_N": 0.009772202606300939,
+            "force_max_N": 1.22396961360384,
+            "force_std_N": 0.005901344890920091,
+            "force_range_N": 0.02330384179586842,
+            "brush_tilt_mean_deg": 0.001198766570363652,
+            "brush_tilt_max_deg": 0.005892954386313526,
+            "trajectory_rmse_m": 9.28808958399571e-05,
+            "wall_seconds": 0.9955650060001062
+          }
+        },
+        {
+          "color": 3,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999980889,
+            "force_acquisition_duration_s": 1.0999999999974364,
+            "first_contact_delay_s": 0.2639999999993847,
+            "contact_to_stroke_s": 0.8359999999980516,
+            "peak_acquisition_force_N": 0.8389018074515809,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012755473002489637,
+            "force_mean_N": 0.8597214418450244,
+            "force_rmse_N": 0.012755473002489637,
+            "force_max_N": 0.8824923688695473,
+            "force_std_N": 0.008258066357873788,
+            "force_range_N": 0.036003879220344426,
+            "brush_tilt_mean_deg": 0.0007713893641925934,
+            "brush_tilt_max_deg": 0.0029771306183387775,
+            "trajectory_rmse_m": 7.916543050855608e-05,
+            "wall_seconds": 0.9600170989997423
+          }
+        },
+        {
+          "color": 3,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999980889,
+            "force_acquisition_duration_s": 1.203999999997194,
+            "first_contact_delay_s": 0.2639999999993847,
+            "contact_to_stroke_s": 0.9399999999978093,
+            "peak_acquisition_force_N": 1.1907298636255335,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009777682310996185,
+            "force_mean_N": 1.2077802529684432,
+            "force_rmse_N": 0.009777682310996185,
+            "force_max_N": 1.2240991857246697,
+            "force_std_N": 0.005922054974567331,
+            "force_range_N": 0.023439857967944455,
+            "brush_tilt_mean_deg": 0.001222105074899115,
+            "brush_tilt_max_deg": 0.005902050951932762,
+            "trajectory_rmse_m": 9.289933520804988e-05,
+            "wall_seconds": 0.987546612001097
+          }
+        },
+        {
+          "color": 4,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999980889,
+            "force_acquisition_duration_s": 1.0999999999974364,
+            "first_contact_delay_s": 0.2639999999993847,
+            "contact_to_stroke_s": 0.8359999999980516,
+            "peak_acquisition_force_N": 0.8389136895806526,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012846182743785739,
+            "force_mean_N": 0.8597500190824013,
+            "force_rmse_N": 0.012846182743785739,
+            "force_max_N": 0.8826108031740199,
+            "force_std_N": 0.008364301463932794,
+            "force_range_N": 0.03621433709297839,
+            "brush_tilt_mean_deg": 0.0008175979599361784,
+            "brush_tilt_max_deg": 0.002998502516793198,
+            "trajectory_rmse_m": 7.924309738340776e-05,
+            "wall_seconds": 0.9558495270011917
+          }
+        },
+        {
+          "color": 4,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999980889,
+            "force_acquisition_duration_s": 1.203999999997194,
+            "first_contact_delay_s": 0.2639999999993847,
+            "contact_to_stroke_s": 0.9399999999978093,
+            "peak_acquisition_force_N": 1.1907434487039676,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009782743452206831,
+            "force_mean_N": 1.2077715576230963,
+            "force_rmse_N": 0.009782743452206831,
+            "force_max_N": 1.2242089910886742,
+            "force_std_N": 0.0059417978392561095,
+            "force_range_N": 0.02355552552864104,
+            "brush_tilt_mean_deg": 0.0012441923761688331,
+            "brush_tilt_max_deg": 0.005910049853703883,
+            "trajectory_rmse_m": 9.291960700388355e-05,
+            "wall_seconds": 0.9844037349994323
+          }
+        },
+        {
+          "color": 5,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999980889,
+            "force_acquisition_duration_s": 1.0999999999974364,
+            "first_contact_delay_s": 0.2639999999993847,
+            "contact_to_stroke_s": 0.8359999999980516,
+            "peak_acquisition_force_N": 0.8389243222536232,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012918044174175287,
+            "force_mean_N": 0.8597729520169796,
+            "force_rmse_N": 0.012918044174175287,
+            "force_max_N": 0.8827061087652788,
+            "force_std_N": 0.008447797000387561,
+            "force_range_N": 0.036389458326750224,
+            "brush_tilt_mean_deg": 0.0008573200364969506,
+            "brush_tilt_max_deg": 0.003016818210011657,
+            "trajectory_rmse_m": 7.931534859173761e-05,
+            "wall_seconds": 0.955036706998726
+          }
+        },
+        {
+          "color": 5,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8199999999980889,
+            "force_acquisition_duration_s": 1.203999999997194,
+            "first_contact_delay_s": 0.2639999999993847,
+            "contact_to_stroke_s": 0.9399999999978093,
+            "peak_acquisition_force_N": 1.1907556304371738,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009787128101915477,
+            "force_mean_N": 1.2077637344179046,
+            "force_rmse_N": 0.009787128101915477,
+            "force_max_N": 1.2242976814025257,
+            "force_std_N": 0.0059592201143728795,
+            "force_range_N": 0.023649214359610538,
+            "brush_tilt_mean_deg": 0.001263483548126377,
+            "brush_tilt_max_deg": 0.0059166981252388685,
+            "trajectory_rmse_m": 9.29391175895641e-05,
+            "wall_seconds": 1.2767443109987653
+          }
+        },
+        {
+          "color": 6,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8389335945170344,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012968758313808561,
+            "force_mean_N": 0.8597785409507162,
+            "force_rmse_N": 0.012968758313808561,
+            "force_max_N": 0.8827830211723523,
+            "force_std_N": 0.008518734006714098,
+            "force_range_N": 0.036562981436732866,
+            "brush_tilt_mean_deg": 0.0008842076217105122,
+            "brush_tilt_max_deg": 0.003032318786302349,
+            "trajectory_rmse_m": 7.93283544736463e-05,
+            "wall_seconds": 1.191422160000002
+          }
+        },
+        {
+          "color": 6,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1907662906335443,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009790882813453335,
+            "force_mean_N": 1.2077568786572628,
+            "force_rmse_N": 0.009790882813453335,
+            "force_max_N": 1.2243694873578965,
+            "force_std_N": 0.00597429659150558,
+            "force_range_N": 0.023725236687813123,
+            "brush_tilt_mean_deg": 0.001280002336967895,
+            "brush_tilt_max_deg": 0.005922199284379946,
+            "trajectory_rmse_m": 9.2956982781256e-05,
+            "wall_seconds": 0.9992194500009646
+          }
+        },
+        {
+          "color": 7,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8389397809405716,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.013007725312399472,
+            "force_mean_N": 0.8597906490514132,
+            "force_rmse_N": 0.013007725312399472,
+            "force_max_N": 0.8828319469281293,
+            "force_std_N": 0.008564117523417084,
+            "force_range_N": 0.03665453623000603,
+            "brush_tilt_mean_deg": 0.0009051054184456729,
+            "brush_tilt_max_deg": 0.0030425183125115155,
+            "trajectory_rmse_m": 7.936845376454913e-05,
+            "wall_seconds": 0.9966188999987935
+          }
+        },
+        {
+          "color": 7,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1907736677509173,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009793448051336215,
+            "force_mean_N": 1.2077521273771537,
+            "force_rmse_N": 0.009793448051336215,
+            "force_max_N": 1.2244165850924054,
+            "force_std_N": 0.005984659210231175,
+            "force_range_N": 0.02377518153845859,
+            "brush_tilt_mean_deg": 0.0012912576960538449,
+            "brush_tilt_max_deg": 0.005925864583691361,
+            "trajectory_rmse_m": 9.296971347150134e-05,
+            "wall_seconds": 1.0172983909997129
+          }
+        },
+        {
+          "color": 8,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8388591749249349,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012400505690954038,
+            "force_mean_N": 0.8596303602186097,
+            "force_rmse_N": 0.012400505690954038,
+            "force_max_N": 0.8817813377978441,
+            "force_std_N": 0.007812087009960812,
+            "force_range_N": 0.034962753478801956,
+            "brush_tilt_mean_deg": 0.000558906343605595,
+            "brush_tilt_max_deg": 0.0028747878479202277,
+            "trajectory_rmse_m": 7.895010141251514e-05,
+            "wall_seconds": 0.958859719999964
+          }
+        },
+        {
+          "color": 8,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1906809515972465,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.00975786966918599,
+            "force_mean_N": 1.2078108137516272,
+            "force_rmse_N": 0.00975786966918599,
+            "force_max_N": 1.2237433824917519,
+            "force_std_N": 0.005848692932460283,
+            "force_range_N": 0.02305705742283215,
+            "brush_tilt_mean_deg": 0.0011359255365550754,
+            "brush_tilt_max_deg": 0.0058613046375611995,
+            "trajectory_rmse_m": 9.287175631483608e-05,
+            "wall_seconds": 0.991589956000098
+          }
+        },
+        {
+          "color": 9,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8388644843852217,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012432928167752036,
+            "force_mean_N": 0.8596328808028447,
+            "force_rmse_N": 0.012432928167752036,
+            "force_max_N": 0.8819161107717963,
+            "force_std_N": 0.007860363239867703,
+            "force_range_N": 0.035115405697629054,
+            "brush_tilt_mean_deg": 0.0005983327603608028,
+            "brush_tilt_max_deg": 0.002895374157511418,
+            "trajectory_rmse_m": 7.893599226227947e-05,
+            "wall_seconds": 1.1060901829987415
+          }
+        },
+        {
+          "color": 9,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1906871797080143,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009760638210460918,
+            "force_mean_N": 1.2078071191460356,
+            "force_rmse_N": 0.009760638210460918,
+            "force_max_N": 1.2237355894085598,
+            "force_std_N": 0.00585823769704779,
+            "force_range_N": 0.023054239597326776,
+            "brush_tilt_mean_deg": 0.0011478088278062326,
+            "brush_tilt_max_deg": 0.005869642097158729,
+            "trajectory_rmse_m": 9.286120085609637e-05,
+            "wall_seconds": 1.0996393660007016
+          }
+        },
+        {
+          "color": 10,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8388730423117279,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.01250220612597869,
+            "force_mean_N": 0.8596344236318202,
+            "force_rmse_N": 0.01250220612597869,
+            "force_max_N": 0.8821045816297175,
+            "force_std_N": 0.007967624445158125,
+            "force_range_N": 0.035403738223087844,
+            "brush_tilt_mean_deg": 0.0006421631416595337,
+            "brush_tilt_max_deg": 0.002918149239548464,
+            "trajectory_rmse_m": 7.892579264066755e-05,
+            "wall_seconds": 0.9363807940007973
+          }
+        },
+        {
+          "color": 10,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1906970184688999,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009763787680883833,
+            "force_mean_N": 1.2078008833435467,
+            "force_rmse_N": 0.009763787680883833,
+            "force_max_N": 1.2237426641807043,
+            "force_std_N": 0.00587177732358365,
+            "force_range_N": 0.02306687132750529,
+            "brush_tilt_mean_deg": 0.0011656313619998466,
+            "brush_tilt_max_deg": 0.00587795619771907,
+            "trajectory_rmse_m": 9.286275760649439e-05,
+            "wall_seconds": 0.963709136000034
+          }
+        },
+        {
+          "color": 11,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8388831630646135,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012604049307604772,
+            "force_mean_N": 0.859662347783195,
+            "force_rmse_N": 0.012604049307604772,
+            "force_max_N": 0.8822686218127859,
+            "force_std_N": 0.008093274631761706,
+            "force_range_N": 0.03565877278183438,
+            "brush_tilt_mean_deg": 0.0006969362757293907,
+            "brush_tilt_max_deg": 0.002941046116741725,
+            "trajectory_rmse_m": 7.89965143989784e-05,
+            "wall_seconds": 0.922908283999277
+          }
+        },
+        {
+          "color": 11,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1907087638736396,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009769195099746072,
+            "force_mean_N": 1.2077935930654138,
+            "force_rmse_N": 0.009769195099746072,
+            "force_max_N": 1.223893098300031,
+            "force_std_N": 0.0058904227376002085,
+            "force_range_N": 0.02322376860894071,
+            "brush_tilt_mean_deg": 0.001186458544936939,
+            "brush_tilt_max_deg": 0.005887765753076042,
+            "trajectory_rmse_m": 9.287277699565114e-05,
+            "wall_seconds": 0.9545929619998788
+          }
+        },
+        {
+          "color": 12,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8388940475940414,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012704073705323319,
+            "force_mean_N": 0.859692626463768,
+            "force_rmse_N": 0.012704073705323319,
+            "force_max_N": 0.8824088611930369,
+            "force_std_N": 0.008212580650693862,
+            "force_range_N": 0.03589228335334893,
+            "brush_tilt_mean_deg": 0.000746790512741789,
+            "brush_tilt_max_deg": 0.0029630430575934607,
+            "trajectory_rmse_m": 7.907100226716511e-05,
+            "wall_seconds": 0.9270257750013116
+          }
+        },
+        {
+          "color": 12,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.190721283159689,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009774356328878919,
+            "force_mean_N": 1.2077856752051825,
+            "force_rmse_N": 0.009774356328878919,
+            "force_max_N": 1.2240222852182376,
+            "force_std_N": 0.005909424950306022,
+            "force_range_N": 0.023359074365265187,
+            "brush_tilt_mean_deg": 0.0012078925978919652,
+            "brush_tilt_max_deg": 0.005896612460515642,
+            "trajectory_rmse_m": 9.288768417902351e-05,
+            "wall_seconds": 0.9488216689987894
+          }
+        },
+        {
+          "color": 13,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8389036929043092,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012772925865143706,
+            "force_mean_N": 0.8597268484800991,
+            "force_rmse_N": 0.012772925865143706,
+            "force_max_N": 0.8825155928305704,
+            "force_std_N": 0.008278650481911497,
+            "force_range_N": 0.03604563188675036,
+            "brush_tilt_mean_deg": 0.0007803990720439668,
+            "brush_tilt_max_deg": 0.0029812642478446697,
+            "trajectory_rmse_m": 7.918035299110794e-05,
+            "wall_seconds": 0.9238479609994101
+          }
+        },
+        {
+          "color": 13,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1907323575029602,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009778636311347,
+            "force_mean_N": 1.2077786042070222,
+            "force_rmse_N": 0.009778636311347,
+            "force_max_N": 1.224120882779805,
+            "force_std_N": 0.005925794858083394,
+            "force_range_N": 0.023462689629895728,
+            "brush_tilt_mean_deg": 0.0012263166895086538,
+            "brush_tilt_max_deg": 0.005903618323795418,
+            "trajectory_rmse_m": 9.290301065204843e-05,
+            "wall_seconds": 0.9672984389999328
+          }
+        },
+        {
+          "color": 14,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8389126918587888,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.0128417762381783,
+            "force_mean_N": 0.8597485980363927,
+            "force_rmse_N": 0.0128417762381783,
+            "force_max_N": 0.8826050252910858,
+            "force_std_N": 0.008359189749986642,
+            "force_range_N": 0.03620402233814857,
+            "brush_tilt_mean_deg": 0.0008154303582176814,
+            "brush_tilt_max_deg": 0.0029975040693432974,
+            "trajectory_rmse_m": 7.923928363565524e-05,
+            "wall_seconds": 0.9234820880010375
+          }
+        },
+        {
+          "color": 14,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1907427067122853,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009782480520804436,
+            "force_mean_N": 1.207771966755861,
+            "force_rmse_N": 0.009782480520804436,
+            "force_max_N": 1.2242038613471287,
+            "force_std_N": 0.005940829730408652,
+            "force_range_N": 0.023550120197214364,
+            "brush_tilt_mean_deg": 0.0012431288925878643,
+            "brush_tilt_max_deg": 0.00590967927524484,
+            "trajectory_rmse_m": 9.291857701981575e-05,
+            "wall_seconds": 0.9575325200003135
+          }
+        },
+        {
+          "color": 15,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8389200394492943,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.01289100339170315,
+            "force_mean_N": 0.8597645594235926,
+            "force_rmse_N": 0.01289100339170315,
+            "force_max_N": 0.8826725620493796,
+            "force_std_N": 0.008416136150754023,
+            "force_range_N": 0.03632714796919989,
+            "brush_tilt_mean_deg": 0.0008438503170845757,
+            "brush_tilt_max_deg": 0.0030103512747312318,
+            "trajectory_rmse_m": 7.929061227982716e-05,
+            "wall_seconds": 0.9431999850003194
+          }
+        },
+        {
+          "color": 15,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1907511719015078,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009785545401386287,
+            "force_mean_N": 1.207766523345872,
+            "force_rmse_N": 0.009785545401386287,
+            "force_max_N": 1.2242667001051135,
+            "force_std_N": 0.005952983615012855,
+            "force_range_N": 0.023616467891818038,
+            "brush_tilt_mean_deg": 0.0012566182619667115,
+            "brush_tilt_max_deg": 0.005914366561889343,
+            "trajectory_rmse_m": 9.293199799854247e-05,
+            "wall_seconds": 0.9668768449992058
+          }
+        },
+        {
+          "color": 16,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8388584863484752,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.0123882938063931,
+            "force_mean_N": 0.8596244745218934,
+            "force_rmse_N": 0.0123882938063931,
+            "force_max_N": 0.881786326031554,
+            "force_std_N": 0.007799956000577171,
+            "force_range_N": 0.03499174367277014,
+            "brush_tilt_mean_deg": 0.000540380235422564,
+            "brush_tilt_max_deg": 0.00286048511551693,
+            "trajectory_rmse_m": 7.897778287904467e-05,
+            "wall_seconds": 0.9233755239984021
+          }
+        },
+        {
+          "color": 16,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.190680165063591,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.00975531511126803,
+            "force_mean_N": 1.2078106048447539,
+            "force_rmse_N": 0.00975531511126803,
+            "force_max_N": 1.2237529164864216,
+            "force_std_N": 0.005844709135555072,
+            "force_range_N": 0.023062376955854003,
+            "brush_tilt_mean_deg": 0.0011334076449710892,
+            "brush_tilt_max_deg": 0.005852651663981421,
+            "trajectory_rmse_m": 9.290055827330708e-05,
+            "wall_seconds": 0.9571176070003276
+          }
+        },
+        {
+          "color": 17,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8388586999024168,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.01239786082120233,
+            "force_mean_N": 0.8596301408216908,
+            "force_rmse_N": 0.01239786082120233,
+            "force_max_N": 0.881782008515146,
+            "force_std_N": 0.0078081585983064495,
+            "force_range_N": 0.03496195515068801,
+            "brush_tilt_mean_deg": 0.0005546496084318348,
+            "brush_tilt_max_deg": 0.0028725452546832777,
+            "trajectory_rmse_m": 7.895399997953151e-05,
+            "wall_seconds": 0.9164402709993738
+          }
+        },
+        {
+          "color": 17,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1906804471308092,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009757496964683528,
+            "force_mean_N": 1.2078110596680325,
+            "force_rmse_N": 0.009757496964683528,
+            "force_max_N": 1.2237445781453822,
+            "force_std_N": 0.005847742630985474,
+            "force_range_N": 0.023057612398633465,
+            "brush_tilt_mean_deg": 0.0011349054565575557,
+            "brush_tilt_max_deg": 0.005860122012648725,
+            "trajectory_rmse_m": 9.287447438019304e-05,
+            "wall_seconds": 0.9379553189992293
+          }
+        },
+        {
+          "color": 18,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8388629555466623,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012424670645296251,
+            "force_mean_N": 0.8596322353809246,
+            "force_rmse_N": 0.012424670645296251,
+            "force_max_N": 0.8818884111943931,
+            "force_std_N": 0.007848087805991475,
+            "force_range_N": 0.03508310426038008,
+            "brush_tilt_mean_deg": 0.0005890280394931721,
+            "brush_tilt_max_deg": 0.0028907953650479266,
+            "trajectory_rmse_m": 7.89369218964973e-05,
+            "wall_seconds": 0.9050604249987373
+          }
+        },
+        {
+          "color": 18,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1906854931446105,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009760030624956138,
+            "force_mean_N": 1.2078081448044176,
+            "force_rmse_N": 0.009760030624956138,
+            "force_max_N": 1.223737116834584,
+            "force_std_N": 0.005855857965603953,
+            "force_range_N": 0.023054665171277744,
+            "brush_tilt_mean_deg": 0.0011447101135061927,
+            "brush_tilt_max_deg": 0.005867896274160952,
+            "trajectory_rmse_m": 9.286228232396484e-05,
+            "wall_seconds": 0.9357340290007414
+          }
+        },
+        {
+          "color": 19,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8388702119973466,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012472838618861306,
+            "force_mean_N": 0.8596278317682732,
+            "force_rmse_N": 0.012472838618861306,
+            "force_max_N": 0.8820524788281072,
+            "force_std_N": 0.007929474046491709,
+            "force_range_N": 0.03532970203858188,
+            "brush_tilt_mean_deg": 0.0006268386755881406,
+            "brush_tilt_max_deg": 0.0029115520275616556,
+            "trajectory_rmse_m": 7.891014513661676e-05,
+            "wall_seconds": 0.8959788100000878
+          }
+        },
+        {
+          "color": 19,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1906939047715515,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009762724064548894,
+            "force_mean_N": 1.2078028269933012,
+            "force_rmse_N": 0.009762724064548894,
+            "force_max_N": 1.2237306734385804,
+            "force_std_N": 0.005867424654235497,
+            "force_range_N": 0.023053211039267607,
+            "brush_tilt_mean_deg": 0.0011601088542670668,
+            "brush_tilt_max_deg": 0.005875486625973274,
+            "trajectory_rmse_m": 9.286129354265645e-05,
+            "wall_seconds": 0.9260833330008609
+          }
+        },
+        {
+          "color": 20,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8388788869577831,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012563687345192979,
+            "force_mean_N": 0.8596508653607576,
+            "force_rmse_N": 0.012563687345192979,
+            "force_max_N": 0.8822084600783422,
+            "force_std_N": 0.008044068466658515,
+            "force_range_N": 0.035561680384950445,
+            "brush_tilt_mean_deg": 0.0006767848650772726,
+            "brush_tilt_max_deg": 0.002932331669910233,
+            "trajectory_rmse_m": 7.896865611766433e-05,
+            "wall_seconds": 0.8939863169998716
+          }
+        },
+        {
+          "color": 20,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1907040601113832,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009767128864789898,
+            "force_mean_N": 1.207796492898133,
+            "force_rmse_N": 0.009767128864789898,
+            "force_max_N": 1.2238379819279603,
+            "force_std_N": 0.005883154319816157,
+            "force_range_N": 0.023166204598958018,
+            "brush_tilt_mean_deg": 0.001178302049088156,
+            "brush_tilt_max_deg": 0.005884114752911877,
+            "trajectory_rmse_m": 9.286819534938934e-05,
+            "wall_seconds": 0.9248215139996319
+          }
+        },
+        {
+          "color": 21,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8388881346121837,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012652815788468594,
+            "force_mean_N": 0.8596769009845497,
+            "force_rmse_N": 0.012652815788468594,
+            "force_max_N": 0.8823382997447923,
+            "force_std_N": 0.008151768808801052,
+            "force_range_N": 0.035775606149363814,
+            "brush_tilt_mean_deg": 0.0007213257904196515,
+            "brush_tilt_max_deg": 0.002951731341891146,
+            "trajectory_rmse_m": 7.903243732025747e-05,
+            "wall_seconds": 0.8985681779995502
+          }
+        },
+        {
+          "color": 21,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1907146438079224,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009771683479575488,
+            "force_mean_N": 1.2077898323976712,
+            "force_rmse_N": 0.009771683479575488,
+            "force_max_N": 1.2239573030992674,
+            "force_std_N": 0.005899517712593237,
+            "force_range_N": 0.023290954229606697,
+            "brush_tilt_mean_deg": 0.0011967248126068775,
+            "brush_tilt_max_deg": 0.005892121797788611,
+            "trajectory_rmse_m": 9.287946054382788e-05,
+            "wall_seconds": 0.926222713000243
+          }
+        },
+        {
+          "color": 22,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8388965636673662,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012729024785665451,
+            "force_mean_N": 0.8597002944032928,
+            "force_rmse_N": 0.012729024785665451,
+            "force_max_N": 0.8824424948105212,
+            "force_std_N": 0.008242108982750017,
+            "force_range_N": 0.035951346697132625,
+            "brush_tilt_mean_deg": 0.0007593778449286748,
+            "brush_tilt_max_deg": 0.0029687232047848964,
+            "trajectory_rmse_m": 7.909126110007634e-05,
+            "wall_seconds": 0.8966327560010541
+          }
+        },
+        {
+          "color": 22,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1907245838620255,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.00977566442676739,
+            "force_mean_N": 1.207783505006953,
+            "force_rmse_N": 0.00977566442676739,
+            "force_max_N": 1.224053595972579,
+            "force_std_N": 0.005914445433978117,
+            "force_range_N": 0.02339195237353353,
+            "brush_tilt_mean_deg": 0.001213567304241298,
+            "brush_tilt_max_deg": 0.005898821848035309,
+            "trajectory_rmse_m": 9.289218878775128e-05,
+            "wall_seconds": 0.9245542359985848
+          }
+        },
+        {
+          "color": 23,
+          "force": 0.85,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.1000000000052523,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.8360000000039918,
+            "peak_acquisition_force_N": 0.8389033578961957,
+            "target_force_N": 0.85,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.012773911119011544,
+            "force_mean_N": 0.8597270909633202,
+            "force_rmse_N": 0.012773911119011544,
+            "force_max_N": 0.8825167090275547,
+            "force_std_N": 0.008279885667550054,
+            "force_range_N": 0.03604794629581054,
+            "brush_tilt_mean_deg": 0.000780970635306126,
+            "brush_tilt_max_deg": 0.002981549569735227,
+            "trajectory_rmse_m": 7.918130228980708e-05,
+            "wall_seconds": 0.9017578719995072
+          }
+        },
+        {
+          "color": 23,
+          "force": 1.2,
+          "execution": {
+            "success": true,
+            "reason": "ok",
+            "force_acquired": true,
+            "approach_duration_s": 0.8200000000039154,
+            "force_acquisition_duration_s": 1.204000000005749,
+            "first_contact_delay_s": 0.26400000000126056,
+            "contact_to_stroke_s": 0.9400000000044884,
+            "peak_acquisition_force_N": 1.1907324309094847,
+            "target_force_N": 1.2,
+            "contact_samples": 334,
+            "force_samples": 334,
+            "contact_fraction": 1.0,
+            "force_all_samples_rmse_N": 0.009778674576799441,
+            "force_mean_N": 1.2077784803493141,
+            "force_rmse_N": 0.009778674576799441,
+            "force_max_N": 1.2241221885542655,
+            "force_std_N": 0.005926020581661586,
+            "force_range_N": 0.02346407100485992,
+            "brush_tilt_mean_deg": 0.0012265868383857775,
+            "brush_tilt_max_deg": 0.005903722656409866,
+            "trajectory_rmse_m": 9.290324896541187e-05,
+            "wall_seconds": 0.9325067819991091
+          }
+        }
+      ]
+    }
+  },
+  "physics_configurations": {
+    "original": {
+      "seed": 42,
+      "timestep": 0.002,
+      "control_decimation": 2,
+      "canvas_resolution": 512,
+      "brush_stiffness": 350.0,
+      "brush_damping": 2.5,
+      "force_ema": 0.9,
+      "force_approach_clearance_m": 0.0015,
+      "force_acquire_gain_m_per_N_s": 0.01,
+      "force_acquire_descent_speed_m_s": 0.008,
+      "force_acquire_ascent_speed_m_s": 0.004,
+      "force_limit": 4.0,
+      "force_tolerance": 0.04,
+      "force_settle_time": 0.16,
+      "force_timeout": 8.0,
+      "stroke_force_admittance_gain": 0.006,
+      "joint_position_gain": 2400.0,
+      "joint_velocity_gain": 26.0,
+      "gravity_compensation": true,
+      "stroke_speed": 0.045,
+      "camera_width": 960,
+      "camera_height": 540,
+      "render_fps": 24,
+      "notes": "Paper robot family, 18x21 inch canvas, 24 wells, short 50 mm brush and Fig. A1 mount structure. Unpublished assembly dimensions estimated locally. Axial spring brush and continuous height-feedback force servo are simulation approximations.",
+      "stroke_force_speed_limit": 0.008,
+      "workstation_motion": {
+        "clearance_m": 0.025,
+        "travel_speed_m_s": 0.45,
+        "vertical_speed_m_s": 0.25,
+        "insertion_speed_m_s": 0.09,
+        "acceleration_m_s2": 0.6,
+        "settle_timeout_s": 0.8,
+        "dip_hold_s": 0.1,
+        "clean_hold_s": 0.3,
+        "vertical_acceleration_m_s2": 0.6,
+        "travel_acceleration_m_s2": 0.6
+      },
+      "stroke_velocity_feedforward": true,
+      "paint": {
+        "palette_rgb": [
+          [
+            173,
+            63,
+            46
+          ],
+          [
+            91,
+            107,
+            127
+          ],
+          [
+            183,
+            81,
+            68
+          ],
+          [
+            166,
+            95,
+            90
+          ],
+          [
+            91,
+            133,
+            101
+          ],
+          [
+            110,
+            131,
+            144
+          ],
+          [
+            196,
+            103,
+            88
+          ],
+          [
+            180,
+            124,
+            119
+          ],
+          [
+            127,
+            152,
+            174
+          ],
+          [
+            138,
+            169,
+            135
+          ],
+          [
+            218,
+            140,
+            106
+          ],
+          [
+            145,
+            173,
+            192
+          ],
+          [
+            203,
+            154,
+            141
+          ],
+          [
+            158,
+            189,
+            210
+          ],
+          [
+            170,
+            196,
+            212
+          ],
+          [
+            223,
+            179,
+            168
+          ],
+          [
+            199,
+            201,
+            118
+          ],
+          [
+            198,
+            212,
+            147
+          ],
+          [
+            184,
+            206,
+            219
+          ],
+          [
+            214,
+            221,
+            177
+          ],
+          [
+            243,
+            207,
+            195
+          ],
+          [
+            202,
+            223,
+            235
+          ],
+          [
+            112,
+            143,
+            123
+          ],
+          [
+            221,
+            187,
+            80
+          ]
+        ],
+        "force_radius_m": {
+          "minimum": 0.0004,
+          "scale": 0.0058,
+          "exponent": 1.65
+        }
+      },
+      "reload_brush_each_stroke": true
+    },
+    "stable": {
+      "seed": 42,
+      "timestep": 0.002,
+      "control_decimation": 2,
+      "canvas_resolution": 512,
+      "brush_stiffness": 350.0,
+      "brush_damping": 2.5,
+      "force_ema": 0.9,
+      "force_approach_clearance_m": 0.0015,
+      "force_acquire_gain_m_per_N_s": 0.01,
+      "force_acquire_descent_speed_m_s": 0.008,
+      "force_acquire_ascent_speed_m_s": 0.004,
+      "force_limit": 4.0,
+      "force_tolerance": 0.04,
+      "force_settle_time": 0.16,
+      "force_timeout": 8.0,
+      "stroke_force_admittance_gain": 0.006,
+      "joint_position_gain": 2400.0,
+      "joint_velocity_gain": 26.0,
+      "gravity_compensation": true,
+      "stroke_speed": 0.045,
+      "camera_width": 960,
+      "camera_height": 540,
+      "render_fps": 24,
+      "notes": "Paper robot family, 18x21 inch canvas, 24 wells, short 50 mm brush and Fig. A1 mount structure. Unpublished assembly dimensions estimated locally. Axial spring brush and continuous height-feedback force servo are simulation approximations. General stability refinement: brush penalty-contact relaxation 20 ms instead of 6 ms. Original timestep, controller period, axial spring, servo and paint deposition retained. This is a local numerical contact choice, not a paper hardware parameter.",
+      "stroke_force_speed_limit": 0.008,
+      "workstation_motion": {
+        "clearance_m": 0.025,
+        "travel_speed_m_s": 0.45,
+        "vertical_speed_m_s": 0.25,
+        "insertion_speed_m_s": 0.09,
+        "acceleration_m_s2": 0.6,
+        "settle_timeout_s": 0.8,
+        "dip_hold_s": 0.1,
+        "clean_hold_s": 0.3,
+        "vertical_acceleration_m_s2": 0.6,
+        "travel_acceleration_m_s2": 0.6
+      },
+      "stroke_velocity_feedforward": true,
+      "paint": {
+        "palette_rgb": [
+          [
+            173,
+            63,
+            46
+          ],
+          [
+            91,
+            107,
+            127
+          ],
+          [
+            183,
+            81,
+            68
+          ],
+          [
+            166,
+            95,
+            90
+          ],
+          [
+            91,
+            133,
+            101
+          ],
+          [
+            110,
+            131,
+            144
+          ],
+          [
+            196,
+            103,
+            88
+          ],
+          [
+            180,
+            124,
+            119
+          ],
+          [
+            127,
+            152,
+            174
+          ],
+          [
+            138,
+            169,
+            135
+          ],
+          [
+            218,
+            140,
+            106
+          ],
+          [
+            145,
+            173,
+            192
+          ],
+          [
+            203,
+            154,
+            141
+          ],
+          [
+            158,
+            189,
+            210
+          ],
+          [
+            170,
+            196,
+            212
+          ],
+          [
+            223,
+            179,
+            168
+          ],
+          [
+            199,
+            201,
+            118
+          ],
+          [
+            198,
+            212,
+            147
+          ],
+          [
+            184,
+            206,
+            219
+          ],
+          [
+            214,
+            221,
+            177
+          ],
+          [
+            243,
+            207,
+            195
+          ],
+          [
+            202,
+            223,
+            235
+          ],
+          [
+            112,
+            143,
+            123
+          ],
+          [
+            221,
+            187,
+            80
+          ]
+        ],
+        "force_radius_m": {
+          "minimum": 0.0004,
+          "scale": 0.0058,
+          "exponent": 1.65
+        }
+      },
+      "reload_brush_each_stroke": true,
+      "brush_contact_timeconst_s": 0.02
+    }
+  },
+  "samples": [
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 0.4,
+        "color": 0,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.1720000000001178,
+        "first_contact_delay_s": 0.44799999999995066,
+        "contact_to_stroke_s": 0.7240000000001672,
+        "peak_acquisition_force_N": 0.3855961519794768,
+        "target_force_N": 0.4,
+        "contact_samples": 303,
+        "force_samples": 315,
+        "contact_fraction": 0.9619047619047619,
+        "force_all_samples_rmse_N": 0.19697958755005027,
+        "force_mean_N": 0.3517102137457163,
+        "force_rmse_N": 0.18439358949939824,
+        "force_max_N": 0.6665323327517072,
+        "force_std_N": 0.1779581197697598,
+        "force_range_N": 0.5699463004724855,
+        "brush_tilt_mean_deg": 0.0022251374184167803,
+        "brush_tilt_max_deg": 0.0031543711599639783,
+        "trajectory_rmse_m": 6.23214688247094e-05,
+        "wall_seconds": 1.0620835540175904
+      },
+      "prediction_union_gray_l1": 0.16163621842861176,
+      "prediction_full_gray_l1": 0.00033038220135495067,
+      "union_pixels": 447,
+      "physics": "original",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 0.4,
+        "color": 0,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.2840000000001552,
+        "first_contact_delay_s": 0.4519999999999502,
+        "contact_to_stroke_s": 0.832000000000205,
+        "peak_acquisition_force_N": 0.38362791823765524,
+        "target_force_N": 0.4,
+        "contact_samples": 315,
+        "force_samples": 315,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.034382825821287634,
+        "force_mean_N": 0.42886079498032376,
+        "force_rmse_N": 0.034382825821287634,
+        "force_max_N": 0.4838296101228984,
+        "force_std_N": 0.01868778276202724,
+        "force_range_N": 0.0827879156986312,
+        "brush_tilt_mean_deg": 0.0009346736085929235,
+        "brush_tilt_max_deg": 0.0026015105043177647,
+        "trajectory_rmse_m": 7.298564156758068e-05,
+        "wall_seconds": 1.0599734470015392
+      },
+      "prediction_union_gray_l1": 0.17806272208690643,
+      "prediction_full_gray_l1": 0.0003318922535981983,
+      "union_pixels": 406,
+      "physics": "stable",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 0.45,
+        "color": 1,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.1520000000000685,
+        "first_contact_delay_s": 0.40799999999995507,
+        "contact_to_stroke_s": 0.7440000000001135,
+        "peak_acquisition_force_N": 0.43597063882143705,
+        "target_force_N": 0.45,
+        "contact_samples": 310,
+        "force_samples": 315,
+        "contact_fraction": 0.9841269841269841,
+        "force_all_samples_rmse_N": 0.2161934655762729,
+        "force_mean_N": 0.3920651118330494,
+        "force_rmse_N": 0.21030299635657726,
+        "force_max_N": 0.7425185404756472,
+        "force_std_N": 0.20216552379087158,
+        "force_range_N": 0.6365828236219251,
+        "brush_tilt_mean_deg": 0.001989449224330972,
+        "brush_tilt_max_deg": 0.003049022332451237,
+        "trajectory_rmse_m": 6.357725820843085e-05,
+        "wall_seconds": 1.0106170159997419
+      },
+      "prediction_union_gray_l1": 0.1518561691045761,
+      "prediction_full_gray_l1": 0.0003433130623307079,
+      "union_pixels": 501,
+      "physics": "original",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 0.45,
+        "color": 1,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.252000000000102,
+        "first_contact_delay_s": 0.4119999999999546,
+        "contact_to_stroke_s": 0.8400000000001473,
+        "peak_acquisition_force_N": 0.434482537441476,
+        "target_force_N": 0.45,
+        "contact_samples": 315,
+        "force_samples": 315,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.029921322950150753,
+        "force_mean_N": 0.4742826677119663,
+        "force_rmse_N": 0.029921322950150753,
+        "force_max_N": 0.5266402541839403,
+        "force_std_N": 0.0174824945553387,
+        "force_range_N": 0.0760689146698234,
+        "brush_tilt_mean_deg": 0.0009570085900099909,
+        "brush_tilt_max_deg": 0.0022392104874659606,
+        "trajectory_rmse_m": 7.496189017981418e-05,
+        "wall_seconds": 2.3184610449825414
+      },
+      "prediction_union_gray_l1": 0.15250517427921295,
+      "prediction_full_gray_l1": 0.00030816782964393497,
+      "union_pixels": 436,
+      "physics": "stable",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 0.5,
+        "color": 2,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.1360000000000312,
+        "first_contact_delay_s": 0.37199999999995903,
+        "contact_to_stroke_s": 0.7640000000000722,
+        "peak_acquisition_force_N": 0.48632577659877285,
+        "target_force_N": 0.5,
+        "contact_samples": 315,
+        "force_samples": 315,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.03195727876864244,
+        "force_mean_N": 0.5258011115880709,
+        "force_rmse_N": 0.03195727876864244,
+        "force_max_N": 0.5815468117024114,
+        "force_std_N": 0.018856571987417046,
+        "force_range_N": 0.08264662960377589,
+        "brush_tilt_mean_deg": 0.0012502954816384394,
+        "brush_tilt_max_deg": 0.0020273541528570043,
+        "trajectory_rmse_m": 6.955835606030993e-05,
+        "wall_seconds": 2.175966637005331
+      },
+      "prediction_union_gray_l1": 0.13018789887428284,
+      "prediction_full_gray_l1": 0.00029298834851942956,
+      "union_pixels": 483,
+      "physics": "original",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 0.5,
+        "color": 2,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.2240000000000606,
+        "first_contact_delay_s": 0.37999999999995815,
+        "contact_to_stroke_s": 0.8440000000001024,
+        "peak_acquisition_force_N": 0.4852175361943264,
+        "target_force_N": 0.5,
+        "contact_samples": 315,
+        "force_samples": 315,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.025585521647288664,
+        "force_mean_N": 0.52046420975563,
+        "force_rmse_N": 0.025585521647288664,
+        "force_max_N": 0.570883039142858,
+        "force_std_N": 0.015356921470185787,
+        "force_range_N": 0.07321348377295772,
+        "brush_tilt_mean_deg": 0.0009824977202352863,
+        "brush_tilt_max_deg": 0.001979123921894441,
+        "trajectory_rmse_m": 7.667750295698499e-05,
+        "wall_seconds": 1.0408826930215582
+      },
+      "prediction_union_gray_l1": 0.13068479299545288,
+      "prediction_full_gray_l1": 0.00029295997228473425,
+      "union_pixels": 481,
+      "physics": "stable",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 0.7,
+        "color": 3,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.0959999999999948,
+        "first_contact_delay_s": 0.2879999999999683,
+        "contact_to_stroke_s": 0.8080000000000265,
+        "peak_acquisition_force_N": 0.687950277792629,
+        "target_force_N": 0.7,
+        "contact_samples": 315,
+        "force_samples": 315,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.01930119720088253,
+        "force_mean_N": 0.7149064970747347,
+        "force_rmse_N": 0.01930119720088253,
+        "force_max_N": 0.7570485555092168,
+        "force_std_N": 0.012261017834922101,
+        "force_range_N": 0.05841504851726442,
+        "brush_tilt_mean_deg": 0.0008843724655335617,
+        "brush_tilt_max_deg": 0.0017786496523231,
+        "trajectory_rmse_m": 7.772216128502536e-05,
+        "wall_seconds": 1.1452551069960464
+      },
+      "prediction_union_gray_l1": 0.09950614720582962,
+      "prediction_full_gray_l1": 0.0003139911568723619,
+      "union_pixels": 694,
+      "physics": "original",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 0.7,
+        "color": 3,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.1560000000000148,
+        "first_contact_delay_s": 0.29199999999996784,
+        "contact_to_stroke_s": 0.864000000000047,
+        "peak_acquisition_force_N": 0.6870520856946252,
+        "target_force_N": 0.7,
+        "contact_samples": 315,
+        "force_samples": 315,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.01677741113060741,
+        "force_mean_N": 0.7125979455435354,
+        "force_rmse_N": 0.01677741113060741,
+        "force_max_N": 0.7576058566951883,
+        "force_std_N": 0.011080311021245974,
+        "force_range_N": 0.061651341019327566,
+        "brush_tilt_mean_deg": 0.0008388857715223487,
+        "brush_tilt_max_deg": 0.0017675409619098213,
+        "trajectory_rmse_m": 8.249693472566137e-05,
+        "wall_seconds": 0.9794826490106061
+      },
+      "prediction_union_gray_l1": 0.09978178143501282,
+      "prediction_full_gray_l1": 0.0003143943613395095,
+      "union_pixels": 693,
+      "physics": "stable",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 1.0,
+        "color": 4,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.1400000000000006,
+        "first_contact_delay_s": 0.2639999999999709,
+        "contact_to_stroke_s": 0.8760000000000296,
+        "peak_acquisition_force_N": 0.9900465842855645,
+        "target_force_N": 1.0,
+        "contact_samples": 315,
+        "force_samples": 315,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.011077958682447328,
+        "force_mean_N": 1.009119890874542,
+        "force_rmse_N": 0.011077958682447328,
+        "force_max_N": 1.0360390531812795,
+        "force_std_N": 0.006288780406919696,
+        "force_range_N": 0.03678595202256352,
+        "brush_tilt_mean_deg": 0.0008435395074428286,
+        "brush_tilt_max_deg": 0.004202371458312561,
+        "trajectory_rmse_m": 8.823055516242138e-05,
+        "wall_seconds": 0.9728062489884906
+      },
+      "prediction_union_gray_l1": 0.06914902478456497,
+      "prediction_full_gray_l1": 0.00033485429594293237,
+      "union_pixels": 1079,
+      "physics": "original",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 1.0,
+        "color": 4,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.192000000000018,
+        "first_contact_delay_s": 0.2679999999999705,
+        "contact_to_stroke_s": 0.9240000000000475,
+        "peak_acquisition_force_N": 0.9885506282045083,
+        "target_force_N": 1.0,
+        "contact_samples": 315,
+        "force_samples": 315,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.013164495063346455,
+        "force_mean_N": 1.0100570769642587,
+        "force_rmse_N": 0.013164495063346455,
+        "force_max_N": 1.0503534153179386,
+        "force_std_N": 0.008494653212924632,
+        "force_range_N": 0.050223720766708,
+        "brush_tilt_mean_deg": 0.0008627370997190538,
+        "brush_tilt_max_deg": 0.0041826654135209175,
+        "trajectory_rmse_m": 8.990380690123877e-05,
+        "wall_seconds": 0.9775653329852503
+      },
+      "prediction_union_gray_l1": 0.06898901611566544,
+      "prediction_full_gray_l1": 0.00033444707514718175,
+      "union_pixels": 1080,
+      "physics": "stable",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 1.3,
+        "color": 5,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.2360000000000326,
+        "first_contact_delay_s": 0.2639999999999709,
+        "contact_to_stroke_s": 0.9720000000000617,
+        "peak_acquisition_force_N": 1.2915573058645367,
+        "target_force_N": 1.3,
+        "contact_samples": 315,
+        "force_samples": 315,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.009167500800618228,
+        "force_mean_N": 1.3078743623453426,
+        "force_rmse_N": 0.009167500800618228,
+        "force_max_N": 1.3263842737860725,
+        "force_std_N": 0.004694410355261228,
+        "force_range_N": 0.024165591400982622,
+        "brush_tilt_mean_deg": 0.0014491888095463433,
+        "brush_tilt_max_deg": 0.00665347517454408,
+        "trajectory_rmse_m": 9.74521224382487e-05,
+        "wall_seconds": 0.9907427320140414
+      },
+      "prediction_union_gray_l1": 0.048835258930921555,
+      "prediction_full_gray_l1": 0.00035524932900443673,
+      "union_pixels": 1651,
+      "physics": "original",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 1.3,
+        "color": 5,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.2960000000000527,
+        "first_contact_delay_s": 0.2679999999999705,
+        "contact_to_stroke_s": 1.0280000000000822,
+        "peak_acquisition_force_N": 1.2887503945980048,
+        "target_force_N": 1.3,
+        "contact_samples": 315,
+        "force_samples": 315,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.012015833238656067,
+        "force_mean_N": 1.3096901863356145,
+        "force_rmse_N": 0.012015833238656067,
+        "force_max_N": 1.3457464985050622,
+        "force_std_N": 0.007104965671997677,
+        "force_range_N": 0.04262224417399452,
+        "brush_tilt_mean_deg": 0.0014651489176762682,
+        "brush_tilt_max_deg": 0.006650107715201324,
+        "trajectory_rmse_m": 9.76110364379912e-05,
+        "wall_seconds": 0.9874695039761718
+      },
+      "prediction_union_gray_l1": 0.048574067652225494,
+      "prediction_full_gray_l1": 0.0003535654104780406,
+      "union_pixels": 1651,
+      "physics": "stable",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 1.5,
+        "color": 6,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.304000000000066,
+        "first_contact_delay_s": 0.2639999999999709,
+        "contact_to_stroke_s": 1.040000000000095,
+        "peak_acquisition_force_N": 1.4919936832502618,
+        "target_force_N": 1.5,
+        "contact_samples": 315,
+        "force_samples": 315,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.008832717547201201,
+        "force_mean_N": 1.50760481280828,
+        "force_rmse_N": 0.008832717547201201,
+        "force_max_N": 1.5230041999314445,
+        "force_std_N": 0.004492629677556012,
+        "force_range_N": 0.021025844909633218,
+        "brush_tilt_mean_deg": 0.0022930485440038413,
+        "brush_tilt_max_deg": 0.008302035809456109,
+        "trajectory_rmse_m": 0.00010315538511499398,
+        "wall_seconds": 1.1488028110179584
+      },
+      "prediction_union_gray_l1": 0.04078129678964615,
+      "prediction_full_gray_l1": 0.00037587666884064674,
+      "union_pixels": 2118,
+      "physics": "original",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": -0.06,
+        "y": -0.03,
+        "length": 0.055,
+        "bend": 0.012,
+        "angle": 0.1,
+        "force": 1.5,
+        "color": 6,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999999097,
+        "force_acquisition_duration_s": 1.3800000000000914,
+        "first_contact_delay_s": 0.2679999999999705,
+        "contact_to_stroke_s": 1.112000000000121,
+        "peak_acquisition_force_N": 1.4884007936193644,
+        "target_force_N": 1.5,
+        "contact_samples": 315,
+        "force_samples": 315,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.012004778821955183,
+        "force_mean_N": 1.5098189489852274,
+        "force_rmse_N": 0.012004778821955183,
+        "force_max_N": 1.543445526546322,
+        "force_std_N": 0.006906732613151176,
+        "force_range_N": 0.040186885341223055,
+        "brush_tilt_mean_deg": 0.0023174413447477624,
+        "brush_tilt_max_deg": 0.00828398887761995,
+        "trajectory_rmse_m": 0.00010338151105681604,
+        "wall_seconds": 1.126408090989571
+      },
+      "prediction_union_gray_l1": 0.04038206487894058,
+      "prediction_full_gray_l1": 0.0003730692551471293,
+      "union_pixels": 2121,
+      "physics": "stable",
+      "path": 0
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 0.4,
+        "color": 4,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.1759999999993482,
+        "first_contact_delay_s": 0.4479999999997517,
+        "contact_to_stroke_s": 0.7279999999995965,
+        "peak_acquisition_force_N": 0.385045476324683,
+        "target_force_N": 0.4,
+        "contact_samples": 407,
+        "force_samples": 410,
+        "contact_fraction": 0.9926829268292683,
+        "force_all_samples_rmse_N": 0.14725211392642246,
+        "force_mean_N": 0.36672160219269173,
+        "force_rmse_N": 0.14374856796960495,
+        "force_max_N": 0.6280376635877686,
+        "force_std_N": 0.13984348047975165,
+        "force_range_N": 0.5406599604169373,
+        "brush_tilt_mean_deg": 0.0012861004015418504,
+        "brush_tilt_max_deg": 0.002110686458031342,
+        "trajectory_rmse_m": 7.300258960077241e-05,
+        "wall_seconds": 1.412757504003821
+      },
+      "prediction_union_gray_l1": 0.06099623814225197,
+      "prediction_full_gray_l1": 0.00032622594153508544,
+      "union_pixels": 1126,
+      "physics": "original",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 0.4,
+        "color": 4,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.2879999999992862,
+        "first_contact_delay_s": 0.4519999999997495,
+        "contact_to_stroke_s": 0.8359999999995367,
+        "peak_acquisition_force_N": 0.3832114273675772,
+        "target_force_N": 0.4,
+        "contact_samples": 410,
+        "force_samples": 410,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.018654554562194392,
+        "force_mean_N": 0.41699985827752356,
+        "force_rmse_N": 0.018654554562194392,
+        "force_max_N": 0.45540456423714515,
+        "force_std_N": 0.0076809650733486385,
+        "force_range_N": 0.0631668967519658,
+        "brush_tilt_mean_deg": 0.002070475021884252,
+        "brush_tilt_max_deg": 0.002365942030487341,
+        "trajectory_rmse_m": 7.391742017345062e-05,
+        "wall_seconds": 1.3498288620030507
+      },
+      "prediction_union_gray_l1": 0.06106720492243767,
+      "prediction_full_gray_l1": 0.0003265324339736253,
+      "union_pixels": 1126,
+      "physics": "stable",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 0.45,
+        "color": 7,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.1559999999993593,
+        "first_contact_delay_s": 0.4039999999997761,
+        "contact_to_stroke_s": 0.7519999999995832,
+        "peak_acquisition_force_N": 0.43534909088713536,
+        "target_force_N": 0.45,
+        "contact_samples": 408,
+        "force_samples": 410,
+        "contact_fraction": 0.9951219512195122,
+        "force_all_samples_rmse_N": 0.11458338327880543,
+        "force_mean_N": 0.43357502096400863,
+        "force_rmse_N": 0.11045842761902205,
+        "force_max_N": 0.609631539198709,
+        "force_std_N": 0.10923041836289916,
+        "force_range_N": 0.5228538412891622,
+        "brush_tilt_mean_deg": 0.0023255236212894616,
+        "brush_tilt_max_deg": 0.0029932409099440306,
+        "trajectory_rmse_m": 7.606985176196395e-05,
+        "wall_seconds": 1.372869796003215
+      },
+      "prediction_union_gray_l1": 0.05108845606446266,
+      "prediction_full_gray_l1": 0.00028578663477674127,
+      "union_pixels": 1151,
+      "physics": "original",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 0.45,
+        "color": 7,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.255999999999304,
+        "first_contact_delay_s": 0.41199999999977166,
+        "contact_to_stroke_s": 0.8439999999995322,
+        "peak_acquisition_force_N": 0.43398526862991377,
+        "target_force_N": 0.45,
+        "contact_samples": 410,
+        "force_samples": 410,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.01553156819915135,
+        "force_mean_N": 0.46368850311096727,
+        "force_rmse_N": 0.01553156819915135,
+        "force_max_N": 0.5002948721054185,
+        "force_std_N": 0.007338562073453415,
+        "force_range_N": 0.05807827783922276,
+        "brush_tilt_mean_deg": 0.002655661778304881,
+        "brush_tilt_max_deg": 0.0030135170564091285,
+        "trajectory_rmse_m": 7.605446708922392e-05,
+        "wall_seconds": 1.3936187780054752
+      },
+      "prediction_union_gray_l1": 0.05210157856345177,
+      "prediction_full_gray_l1": 0.0002899885002989322,
+      "union_pixels": 1149,
+      "physics": "stable",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 0.5,
+        "color": 10,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.143999999999366,
+        "first_contact_delay_s": 0.37199999999979383,
+        "contact_to_stroke_s": 0.7719999999995721,
+        "peak_acquisition_force_N": 0.48589289866009366,
+        "target_force_N": 0.5,
+        "contact_samples": 410,
+        "force_samples": 410,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.021327067647737254,
+        "force_mean_N": 0.5200282703580621,
+        "force_rmse_N": 0.021327067647737254,
+        "force_max_N": 0.5531796425641241,
+        "force_std_N": 0.00732886081976814,
+        "force_range_N": 0.060702078565197826,
+        "brush_tilt_mean_deg": 0.0033329876379273858,
+        "brush_tilt_max_deg": 0.0038925731562364785,
+        "trajectory_rmse_m": 7.640864275348561e-05,
+        "wall_seconds": 1.357256490009604
+      },
+      "prediction_union_gray_l1": 0.04647504538297653,
+      "prediction_full_gray_l1": 0.0002723673824220896,
+      "union_pixels": 1202,
+      "physics": "original",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 0.5,
+        "color": 10,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.2319999999993172,
+        "first_contact_delay_s": 0.3759999999997916,
+        "contact_to_stroke_s": 0.8559999999995256,
+        "peak_acquisition_force_N": 0.48490493715163147,
+        "target_force_N": 0.5,
+        "contact_samples": 410,
+        "force_samples": 410,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.013447071923233932,
+        "force_mean_N": 0.5112097162427649,
+        "force_rmse_N": 0.013447071923233932,
+        "force_max_N": 0.5478100656428552,
+        "force_std_N": 0.007427382113862128,
+        "force_range_N": 0.05545032946986228,
+        "brush_tilt_mean_deg": 0.0032243082276560433,
+        "brush_tilt_max_deg": 0.003675683452470977,
+        "trajectory_rmse_m": 7.623905185215466e-05,
+        "wall_seconds": 1.3613516130135395
+      },
+      "prediction_union_gray_l1": 0.0467480905354023,
+      "prediction_full_gray_l1": 0.0002735789166763425,
+      "union_pixels": 1202,
+      "physics": "stable",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 0.7,
+        "color": 13,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.1039999999993881,
+        "first_contact_delay_s": 0.2879999999998404,
+        "contact_to_stroke_s": 0.8159999999995478,
+        "peak_acquisition_force_N": 0.687224183152668,
+        "target_force_N": 0.7,
+        "contact_samples": 410,
+        "force_samples": 410,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.012284507548510041,
+        "force_mean_N": 0.7101010885368503,
+        "force_rmse_N": 0.012284507548510041,
+        "force_max_N": 0.7407513818921249,
+        "force_std_N": 0.006991218497523232,
+        "force_range_N": 0.04822032808576249,
+        "brush_tilt_mean_deg": 0.005694085747682018,
+        "brush_tilt_max_deg": 0.006492703392309868,
+        "trajectory_rmse_m": 8.687645457552727e-05,
+        "wall_seconds": 1.3668975320179015
+      },
+      "prediction_union_gray_l1": 0.035252202302217484,
+      "prediction_full_gray_l1": 0.0002488969767000526,
+      "union_pixels": 1428,
+      "physics": "original",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 0.7,
+        "color": 13,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.1639999999993549,
+        "first_contact_delay_s": 0.29199999999983817,
+        "contact_to_stroke_s": 0.8719999999995167,
+        "peak_acquisition_force_N": 0.6864292542217649,
+        "target_force_N": 0.7,
+        "contact_samples": 410,
+        "force_samples": 410,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.009167935453759076,
+        "force_mean_N": 0.7062025917164929,
+        "force_rmse_N": 0.009167935453759076,
+        "force_max_N": 0.739009246710925,
+        "force_std_N": 0.006751214445030203,
+        "force_range_N": 0.04609121008865569,
+        "brush_tilt_mean_deg": 0.005608706552464449,
+        "brush_tilt_max_deg": 0.006377674168304801,
+        "trajectory_rmse_m": 8.65560695293199e-05,
+        "wall_seconds": 1.294816819980042
+      },
+      "prediction_union_gray_l1": 0.03544216603040695,
+      "prediction_full_gray_l1": 0.0002496859524399042,
+      "union_pixels": 1425,
+      "physics": "stable",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 1.0,
+        "color": 16,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.1519999999993615,
+        "first_contact_delay_s": 0.2639999999998537,
+        "contact_to_stroke_s": 0.8879999999995078,
+        "peak_acquisition_force_N": 0.9893216301644594,
+        "target_force_N": 1.0,
+        "contact_samples": 410,
+        "force_samples": 410,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.007086456616019472,
+        "force_mean_N": 1.0029478995844237,
+        "force_rmse_N": 0.007086456616019472,
+        "force_max_N": 1.0290239287343568,
+        "force_std_N": 0.006444203240966329,
+        "force_range_N": 0.03559094034067889,
+        "brush_tilt_mean_deg": 0.00917131987952901,
+        "brush_tilt_max_deg": 0.010511000200957975,
+        "trajectory_rmse_m": 0.00010313825223671795,
+        "wall_seconds": 1.3582221740216482
+      },
+      "prediction_union_gray_l1": 0.028204960748553276,
+      "prediction_full_gray_l1": 0.0002555595710873604,
+      "union_pixels": 1863,
+      "physics": "original",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 1.0,
+        "color": 16,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.199999999999335,
+        "first_contact_delay_s": 0.26799999999985147,
+        "contact_to_stroke_s": 0.9319999999994835,
+        "peak_acquisition_force_N": 0.9876472598269811,
+        "target_force_N": 1.0,
+        "contact_samples": 410,
+        "force_samples": 410,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.008001716324878002,
+        "force_mean_N": 1.0030744759971415,
+        "force_rmse_N": 0.008001716324878002,
+        "force_max_N": 1.03596036199444,
+        "force_std_N": 0.007387493586245584,
+        "force_range_N": 0.04304612159805532,
+        "brush_tilt_mean_deg": 0.009154417924896149,
+        "brush_tilt_max_deg": 0.010494775187929744,
+        "trajectory_rmse_m": 0.00010317247034380012,
+        "wall_seconds": 1.3558533560135402
+      },
+      "prediction_union_gray_l1": 0.028222545981407166,
+      "prediction_full_gray_l1": 0.00025581844965927303,
+      "union_pixels": 1865,
+      "physics": "stable",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 1.3,
+        "color": 19,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.2439999999993105,
+        "first_contact_delay_s": 0.2639999999998537,
+        "contact_to_stroke_s": 0.9799999999994569,
+        "peak_acquisition_force_N": 1.290347478656972,
+        "target_force_N": 1.3,
+        "contact_samples": 410,
+        "force_samples": 410,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.005403945278587975,
+        "force_mean_N": 1.2997489374801907,
+        "force_rmse_N": 0.005403945278587975,
+        "force_max_N": 1.3211636609084785,
+        "force_std_N": 0.005398110056781012,
+        "force_range_N": 0.02799670072913374,
+        "brush_tilt_mean_deg": 0.012623064377123338,
+        "brush_tilt_max_deg": 0.01455427645689561,
+        "trajectory_rmse_m": 0.00012537470912370643,
+        "wall_seconds": 1.3075165770133026
+      },
+      "prediction_union_gray_l1": 0.01872866414487362,
+      "prediction_full_gray_l1": 0.00022460552281700075,
+      "union_pixels": 2406,
+      "physics": "original",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 1.3,
+        "color": 19,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.307999999999275,
+        "first_contact_delay_s": 0.26799999999985147,
+        "contact_to_stroke_s": 1.0399999999994236,
+        "peak_acquisition_force_N": 1.2880119834245336,
+        "target_force_N": 1.3,
+        "contact_samples": 410,
+        "force_samples": 410,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.007860677413125561,
+        "force_mean_N": 1.3006706411682984,
+        "force_rmse_N": 0.007860677413125561,
+        "force_max_N": 1.333095497671897,
+        "force_std_N": 0.007832016969887487,
+        "force_range_N": 0.04167908371674778,
+        "brush_tilt_mean_deg": 0.012631488692048654,
+        "brush_tilt_max_deg": 0.014560272348151012,
+        "trajectory_rmse_m": 0.00012558070316137066,
+        "wall_seconds": 1.3252195060194936
+      },
+      "prediction_union_gray_l1": 0.018745606765151024,
+      "prediction_full_gray_l1": 0.00022475099831353873,
+      "union_pixels": 2407,
+      "physics": "stable",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 1.5,
+        "color": 22,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.3159999999992706,
+        "first_contact_delay_s": 0.2639999999998537,
+        "contact_to_stroke_s": 1.051999999999417,
+        "peak_acquisition_force_N": 1.4909903691386437,
+        "target_force_N": 1.5,
+        "contact_samples": 410,
+        "force_samples": 410,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.005459847313597248,
+        "force_mean_N": 1.498644277436369,
+        "force_rmse_N": 0.005459847313597248,
+        "force_max_N": 1.518665406060129,
+        "force_std_N": 0.005288851389314801,
+        "force_range_N": 0.02639643282673987,
+        "brush_tilt_mean_deg": 0.014902124374364743,
+        "brush_tilt_max_deg": 0.017169890794778698,
+        "trajectory_rmse_m": 0.00014102241365671699,
+        "wall_seconds": 1.2963018759910483
+      },
+      "prediction_union_gray_l1": 0.027886316180229187,
+      "prediction_full_gray_l1": 0.00036694720620289445,
+      "union_pixels": 2941,
+      "physics": "original",
+      "path": 1
+    },
+    {
+      "stroke": {
+        "x": 0.015,
+        "y": -0.04,
+        "length": 0.07,
+        "bend": -0.02,
+        "angle": 2.1,
+        "force": 1.5,
+        "color": 22,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "execution": {
+        "success": true,
+        "reason": "ok",
+        "force_acquired": true,
+        "approach_duration_s": 0.8199999999995455,
+        "force_acquisition_duration_s": 1.3879999999992307,
+        "first_contact_delay_s": 0.26799999999985147,
+        "contact_to_stroke_s": 1.1199999999993793,
+        "peak_acquisition_force_N": 1.4873598362732405,
+        "target_force_N": 1.5,
+        "contact_samples": 410,
+        "force_samples": 410,
+        "contact_fraction": 1.0,
+        "force_all_samples_rmse_N": 0.008686425967248909,
+        "force_mean_N": 1.4992074514563356,
+        "force_rmse_N": 0.008686425967248909,
+        "force_max_N": 1.531816367826435,
+        "force_std_N": 0.008650194384546022,
+        "force_range_N": 0.043184589397706086,
+        "brush_tilt_mean_deg": 0.014889669117224856,
+        "brush_tilt_max_deg": 0.017176937211747494,
+        "trajectory_rmse_m": 0.00014108263221658405,
+        "wall_seconds": 1.3058357309782878
+      },
+      "prediction_union_gray_l1": 0.02792731299996376,
+      "prediction_full_gray_l1": 0.0003673788160085678,
+      "union_pixels": 2940,
+      "physics": "stable",
+      "path": 1
+    }
+  ],
+  "summary": {
+    "original": {
+      "mean_force_all_samples_rmse_N": 0.0576362162668425,
+      "worst_force_all_samples_rmse_N": 0.2161934655762729,
+      "minimum_contact_fraction": 0.9619047619047619,
+      "mean_prediction_union_gray_l1": 0.06932742122028555
+    },
+    "stable": {
+      "mean_force_all_samples_rmse_N": 0.016085867036920245,
+      "worst_force_all_samples_rmse_N": 0.034382825821287634,
+      "minimum_contact_fraction": 1.0,
+      "mean_prediction_union_gray_l1": 0.07065958037440266
+    }
+  }
+}

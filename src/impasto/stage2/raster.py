@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import math
 
 import numpy as np
 from PIL import Image
+from scipy.spatial import cKDTree
 
 from impasto.actions import Stroke
 from impasto.sim.paint import PALETTE
@@ -90,15 +90,22 @@ def render_stroke_patch(stroke: Stroke, crop: CropTransform, radius_cfg, color_v
     pixels = crop.world_to_patch(points)
     rp = radius / crop.side_m * (crop.patch_size - 1)
     value = color_gray(stroke.color, palette) if color_value is None else float(color_value)
-    for px, py in pixels:
-        x0, x1 = max(0, int(math.floor(px - rp - 1))), min(crop.patch_size, int(math.ceil(px + rp + 2)))
-        y0, y1 = max(0, int(math.floor(py - rp - 1))), min(crop.patch_size, int(math.ceil(py + rp + 2)))
-        if x0 >= x1 or y0 >= y1:
-            continue
-        yy, xx = np.mgrid[y0:y1, x0:x1]
-        disk = ((xx - px) ** 2 + (yy - py) ** 2) <= rp ** 2
-        image[y0:y1, x0:x1] = np.minimum(image[y0:y1, x0:x1],
-                                         np.where(disk, value, 1.0))
+    # The union of equal-radius disk stamps is exactly the set of pixels
+    # within rp of the nearest sampled center. A spatial index avoids 256
+    # Python stamping loops for every candidate, without changing the
+    # centers, radius, antialiasing contract or pigment value.
+    lo = np.maximum(0, np.floor(pixels.min(axis=0) - rp).astype(int))
+    hi = np.minimum(crop.patch_size, np.ceil(pixels.max(axis=0) + rp).astype(int) + 1)
+    x0, y0 = lo
+    x1, y1 = hi
+    if x1 <= x0 or y1 <= y0:
+        return image
+    yy, xx = np.mgrid[y0:y1, x0:x1]
+    grid = np.column_stack([xx.ravel(), yy.ravel()])
+    _, nearest = cKDTree(pixels).query(grid)
+    distances_sq = np.sum((grid - pixels[nearest]) ** 2, axis=1)
+    mask = (distances_sq <= rp ** 2).reshape(y1-y0, x1-x0)
+    image[y0:y1, x0:x1][mask] = min(value, 1.0)
     return image
 
 

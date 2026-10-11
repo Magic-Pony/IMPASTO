@@ -1,0 +1,1305 @@
+{
+  "protocol": "24 colors x 3 forces, random reachable geometry, alternating blank/overlap. Fixed seed, no artwork targets.",
+  "samples": [
+    {
+      "seed": 2026101213,
+      "stroke": {
+        "x": -0.04398774961261756,
+        "y": -0.1312147622429464,
+        "length": 0.09014281222175068,
+        "bend": 0.03193132342275963,
+        "angle": 1.4363436932596017,
+        "force": 0.45,
+        "color": 0,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 0,
+        "footprint_disk": 0
+      }
+    },
+    {
+      "seed": 2026101214,
+      "stroke": {
+        "x": -0.02482397682253927,
+        "y": -0.11000087767827608,
+        "length": 0.08501325325492468,
+        "bend": -0.00029654139439997534,
+        "angle": 2.424096231234712,
+        "force": 0.7,
+        "color": 0,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 0,
+        "footprint_disk": 0
+      }
+    },
+    {
+      "seed": 2026101215,
+      "stroke": {
+        "x": -0.03996120673236436,
+        "y": -0.08211089266614965,
+        "length": 0.05278653625998918,
+        "bend": 0.025440455518839042,
+        "angle": -0.22682028604163706,
+        "force": 1.2,
+        "color": 0,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 0,
+        "footprint_disk": 0
+      }
+    },
+    {
+      "seed": 2026101216,
+      "stroke": {
+        "x": -0.007628426825253262,
+        "y": -0.10526553579349142,
+        "length": 0.048668699922680386,
+        "bend": 0.02748543955798946,
+        "angle": -0.0773721993193579,
+        "force": 0.45,
+        "color": 1,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 1,
+        "footprint_disk": 1
+      }
+    },
+    {
+      "seed": 2026101217,
+      "stroke": {
+        "x": 0.05355954281063213,
+        "y": -0.1055863178870605,
+        "length": 0.09102516649423079,
+        "bend": -0.015491426311680725,
+        "angle": -0.5043408549528645,
+        "force": 0.7,
+        "color": 1,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 1,
+        "footprint_disk": 1
+      }
+    },
+    {
+      "seed": 2026101218,
+      "stroke": {
+        "x": 0.001116595178701718,
+        "y": -0.018915917904265986,
+        "length": 0.033399260951378885,
+        "bend": -0.006650535228348874,
+        "angle": -1.0541211796235674,
+        "force": 1.2,
+        "color": 1,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 1,
+        "footprint_disk": 1
+      }
+    },
+    {
+      "seed": 2026101219,
+      "stroke": {
+        "x": 0.035257472866932815,
+        "y": 0.09507452575393158,
+        "length": 0.08371527131741707,
+        "bend": 0.012694110029763964,
+        "angle": -0.11607106538101686,
+        "force": 0.45,
+        "color": 2,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 2,
+        "footprint_disk": 2
+      }
+    },
+    {
+      "seed": 2026101220,
+      "stroke": {
+        "x": -0.016059850841622092,
+        "y": -0.021196672904802566,
+        "length": 0.00571804209771418,
+        "bend": -0.018648535806114606,
+        "angle": 2.313188729475468,
+        "force": 0.7,
+        "color": 2,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 2,
+        "footprint_disk": 2
+      }
+    },
+    {
+      "seed": 2026101221,
+      "stroke": {
+        "x": 0.00030331599534910714,
+        "y": 0.13388179578338516,
+        "length": 0.09806479362812047,
+        "bend": -0.017754905776325394,
+        "angle": -2.632434744980616,
+        "force": 1.2,
+        "color": 2,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 2,
+        "footprint_disk": 2
+      }
+    },
+    {
+      "seed": 2026101222,
+      "stroke": {
+        "x": -0.04007272386681464,
+        "y": 0.00869652694941156,
+        "length": 0.01825678223549318,
+        "bend": -0.03091968807323675,
+        "angle": 1.2492417967950233,
+        "force": 0.45,
+        "color": 3,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 3,
+        "footprint_disk": 3
+      }
+    },
+    {
+      "seed": 2026101223,
+      "stroke": {
+        "x": -0.08739454397512389,
+        "y": -0.05408352355412527,
+        "length": 0.010288354506509105,
+        "bend": -0.02624898781667504,
+        "angle": -0.9137854859296763,
+        "force": 0.7,
+        "color": 3,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 3,
+        "footprint_disk": 3
+      }
+    },
+    {
+      "seed": 2026101224,
+      "stroke": {
+        "x": 0.06261657162074052,
+        "y": 0.053086063324399385,
+        "length": 0.07484732584353848,
+        "bend": -0.013069312085322436,
+        "angle": -3.1098756336217663,
+        "force": 1.2,
+        "color": 3,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 3,
+        "footprint_disk": 3
+      }
+    },
+    {
+      "seed": 2026101225,
+      "stroke": {
+        "x": -0.03298953726680258,
+        "y": -0.06630551066274532,
+        "length": 0.0564283015325123,
+        "bend": -0.03077899472735304,
+        "angle": -2.2571075377209966,
+        "force": 0.45,
+        "color": 4,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 4,
+        "footprint_disk": 4
+      }
+    },
+    {
+      "seed": 2026101226,
+      "stroke": {
+        "x": -0.0590507969734415,
+        "y": -0.08090369543206877,
+        "length": 0.10010311743773043,
+        "bend": 0.03204786576708961,
+        "angle": -2.332482558405534,
+        "force": 0.7,
+        "color": 4,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 4,
+        "footprint_disk": 4
+      }
+    },
+    {
+      "seed": 2026101227,
+      "stroke": {
+        "x": -0.0546664163094642,
+        "y": 0.030003437019847812,
+        "length": 0.08394666999005462,
+        "bend": -0.039184829728158545,
+        "angle": 0.7834689643938075,
+        "force": 1.2,
+        "color": 4,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 4,
+        "footprint_disk": 4
+      }
+    },
+    {
+      "seed": 2026101228,
+      "stroke": {
+        "x": -0.00732512540130853,
+        "y": -0.07824520315704075,
+        "length": 0.1047769154188348,
+        "bend": 0.03708614335716785,
+        "angle": 2.327049724990588,
+        "force": 0.45,
+        "color": 5,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 5,
+        "footprint_disk": 5
+      }
+    },
+    {
+      "seed": 2026101229,
+      "stroke": {
+        "x": 0.057741895204783844,
+        "y": 0.03622678622510064,
+        "length": 0.05859304651446816,
+        "bend": -0.03352296247105524,
+        "angle": -1.7211096674686275,
+        "force": 0.7,
+        "color": 5,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 5,
+        "footprint_disk": 5
+      }
+    },
+    {
+      "seed": 2026101230,
+      "stroke": {
+        "x": -0.006187725145383086,
+        "y": -0.06339036774276768,
+        "length": 0.07491079441810983,
+        "bend": -0.04476616342714576,
+        "angle": -1.7793027942987758,
+        "force": 1.2,
+        "color": 5,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 5,
+        "footprint_disk": 5
+      }
+    },
+    {
+      "seed": 2026101231,
+      "stroke": {
+        "x": 0.03156339392012064,
+        "y": -0.054179918503567626,
+        "length": 0.010601820441463733,
+        "bend": 0.018079296973730424,
+        "angle": -2.232658830623024,
+        "force": 0.45,
+        "color": 6,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 6,
+        "footprint_disk": 6
+      }
+    },
+    {
+      "seed": 2026101232,
+      "stroke": {
+        "x": 0.026169158058146597,
+        "y": -0.0033635391954225935,
+        "length": 0.0072421091259151195,
+        "bend": -0.01981634830583047,
+        "angle": 2.4365873647813467,
+        "force": 0.7,
+        "color": 6,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 6,
+        "footprint_disk": 6
+      }
+    },
+    {
+      "seed": 2026101233,
+      "stroke": {
+        "x": 0.054659812644651445,
+        "y": 0.044851861670164556,
+        "length": 0.09966463582194576,
+        "bend": -0.028063672337491463,
+        "angle": 1.7476827784694482,
+        "force": 1.2,
+        "color": 6,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 6,
+        "footprint_disk": 6
+      }
+    },
+    {
+      "seed": 2026101234,
+      "stroke": {
+        "x": -0.060062834051128375,
+        "y": 0.12433039824784425,
+        "length": 0.08472816501190723,
+        "bend": 0.038647240822346815,
+        "angle": -1.7807723722429682,
+        "force": 0.45,
+        "color": 7,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 7,
+        "footprint_disk": 7
+      }
+    },
+    {
+      "seed": 2026101235,
+      "stroke": {
+        "x": -0.08191883586948628,
+        "y": -0.07730652035864896,
+        "length": 0.013731327462865046,
+        "bend": 0.03311449667729678,
+        "angle": 1.9726251705520959,
+        "force": 0.7,
+        "color": 7,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 7,
+        "footprint_disk": 7
+      }
+    },
+    {
+      "seed": 2026101236,
+      "stroke": {
+        "x": -0.0937406035998131,
+        "y": -0.0980683547663489,
+        "length": 0.09917543842428687,
+        "bend": -0.014630777567576352,
+        "angle": 0.6675437667926274,
+        "force": 1.2,
+        "color": 7,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 7,
+        "footprint_disk": 7
+      }
+    },
+    {
+      "seed": 2026101237,
+      "stroke": {
+        "x": 0.03829260711167154,
+        "y": -0.040269186872784524,
+        "length": 0.008803535264268357,
+        "bend": 0.02167593855801904,
+        "angle": 1.4040258034166255,
+        "force": 0.45,
+        "color": 8,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 8,
+        "footprint_disk": 8
+      }
+    },
+    {
+      "seed": 2026101238,
+      "stroke": {
+        "x": -0.11340464611480545,
+        "y": -0.01110181728433729,
+        "length": 0.064794244436308,
+        "bend": -0.030930782363266518,
+        "angle": -0.5716897672982917,
+        "force": 0.7,
+        "color": 8,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 8,
+        "footprint_disk": 8
+      }
+    },
+    {
+      "seed": 2026101239,
+      "stroke": {
+        "x": -0.0466050770367616,
+        "y": -0.12230419883149309,
+        "length": 0.09521069075793807,
+        "bend": -0.00948066248047924,
+        "angle": -3.0081379088337306,
+        "force": 1.2,
+        "color": 8,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 8,
+        "footprint_disk": 8
+      }
+    },
+    {
+      "seed": 2026101240,
+      "stroke": {
+        "x": -0.0482673242463002,
+        "y": 0.06889910330509363,
+        "length": 0.07997229348231817,
+        "bend": 0.037664926397523724,
+        "angle": 0.2941826903792504,
+        "force": 0.45,
+        "color": 9,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 9,
+        "footprint_disk": 9
+      }
+    },
+    {
+      "seed": 2026101241,
+      "stroke": {
+        "x": 0.04110111381483647,
+        "y": 0.0861009685325034,
+        "length": 0.08644638232468978,
+        "bend": 0.03142512789152334,
+        "angle": 0.5048343134871365,
+        "force": 0.7,
+        "color": 9,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 9,
+        "footprint_disk": 9
+      }
+    },
+    {
+      "seed": 2026101242,
+      "stroke": {
+        "x": -0.0239830966188483,
+        "y": -0.0968590290078299,
+        "length": 0.03616635686903777,
+        "bend": 0.01879004959745892,
+        "angle": -1.4503549122443533,
+        "force": 1.2,
+        "color": 9,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 9,
+        "footprint_disk": 9
+      }
+    },
+    {
+      "seed": 2026101243,
+      "stroke": {
+        "x": -0.06737300023621531,
+        "y": -0.11577900861300625,
+        "length": 0.0820531062568705,
+        "bend": 0.033106101249892564,
+        "angle": -0.24035995240529928,
+        "force": 0.45,
+        "color": 10,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 10,
+        "footprint_disk": 10
+      }
+    },
+    {
+      "seed": 2026101244,
+      "stroke": {
+        "x": 0.012760234522674163,
+        "y": -0.13076168812957287,
+        "length": 0.07111779259683892,
+        "bend": 0.04454774758259809,
+        "angle": -0.2230493712805095,
+        "force": 0.7,
+        "color": 10,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 10,
+        "footprint_disk": 10
+      }
+    },
+    {
+      "seed": 2026101245,
+      "stroke": {
+        "x": -0.10109855667757266,
+        "y": -0.1314998398782928,
+        "length": 0.018298165877666417,
+        "bend": -0.04130947094161556,
+        "angle": 0.9310649746916022,
+        "force": 1.2,
+        "color": 10,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 10,
+        "footprint_disk": 10
+      }
+    },
+    {
+      "seed": 2026101246,
+      "stroke": {
+        "x": -0.08197562454365713,
+        "y": -0.033753650036634136,
+        "length": 0.027806515521592412,
+        "bend": -0.049292838437055446,
+        "angle": 3.082106339295234,
+        "force": 0.45,
+        "color": 11,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 11,
+        "footprint_disk": 11
+      }
+    },
+    {
+      "seed": 2026101247,
+      "stroke": {
+        "x": -0.09813622800583272,
+        "y": -0.06220407974822688,
+        "length": 0.09640150046243538,
+        "bend": -0.02056277606096848,
+        "angle": 1.8081759208553265,
+        "force": 0.7,
+        "color": 11,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 11,
+        "footprint_disk": 11
+      }
+    },
+    {
+      "seed": 2026101248,
+      "stroke": {
+        "x": 0.022855850350119195,
+        "y": -0.055090532692540925,
+        "length": 0.09148251741973178,
+        "bend": 0.037466943852332554,
+        "angle": -0.3210036578061475,
+        "force": 1.2,
+        "color": 11,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 11,
+        "footprint_disk": 11
+      }
+    },
+    {
+      "seed": 2026101249,
+      "stroke": {
+        "x": 0.06270572281238768,
+        "y": -0.06259364843616641,
+        "length": 0.0077372718777322744,
+        "bend": -0.04250129100790117,
+        "angle": 2.953405807695553,
+        "force": 0.45,
+        "color": 12,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 12,
+        "footprint_disk": 12
+      }
+    },
+    {
+      "seed": 2026101250,
+      "stroke": {
+        "x": -0.11890199920146115,
+        "y": 0.10773242975352423,
+        "length": 0.08283614754242305,
+        "bend": 0.024566066283628757,
+        "angle": -0.9074044414587825,
+        "force": 0.7,
+        "color": 12,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 12,
+        "footprint_disk": 12
+      }
+    },
+    {
+      "seed": 2026101251,
+      "stroke": {
+        "x": -0.11543542879168454,
+        "y": 0.12308379520176477,
+        "length": 0.025533185122992706,
+        "bend": 0.017345095699757826,
+        "angle": 2.287215012659246,
+        "force": 1.2,
+        "color": 12,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 12,
+        "footprint_disk": 12
+      }
+    },
+    {
+      "seed": 2026101252,
+      "stroke": {
+        "x": -0.058082744090928146,
+        "y": -0.059385636477265455,
+        "length": 0.07376017629809552,
+        "bend": -0.03622807632415294,
+        "angle": 1.9415942595258535,
+        "force": 0.45,
+        "color": 13,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 13,
+        "footprint_disk": 13
+      }
+    },
+    {
+      "seed": 2026101253,
+      "stroke": {
+        "x": -0.012421010409922467,
+        "y": -0.005214429490679767,
+        "length": 0.09221719108315476,
+        "bend": 0.024555996302199998,
+        "angle": -1.6326740726354838,
+        "force": 0.7,
+        "color": 13,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 13,
+        "footprint_disk": 13
+      }
+    },
+    {
+      "seed": 2026101254,
+      "stroke": {
+        "x": 0.03893848630034838,
+        "y": 0.04114652294906715,
+        "length": 0.09056112970698622,
+        "bend": 0.022034575574091456,
+        "angle": -2.564253680566828,
+        "force": 1.2,
+        "color": 13,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 13,
+        "footprint_disk": 13
+      }
+    },
+    {
+      "seed": 2026101255,
+      "stroke": {
+        "x": -0.09897313196900875,
+        "y": -0.032741677950669595,
+        "length": 0.06671233855731618,
+        "bend": -0.03601320312863199,
+        "angle": -1.543924037482085,
+        "force": 0.45,
+        "color": 14,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 14,
+        "footprint_disk": 14
+      }
+    },
+    {
+      "seed": 2026101256,
+      "stroke": {
+        "x": -0.08925986035981676,
+        "y": -0.023823603903928334,
+        "length": 0.015729900658083072,
+        "bend": -0.012948481062037831,
+        "angle": -1.33348666861717,
+        "force": 0.7,
+        "color": 14,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 14,
+        "footprint_disk": 14
+      }
+    },
+    {
+      "seed": 2026101257,
+      "stroke": {
+        "x": -0.0872835082172356,
+        "y": -0.12052209029952606,
+        "length": 0.04123877646426968,
+        "bend": 0.02610453077731896,
+        "angle": 2.2155381855562837,
+        "force": 1.2,
+        "color": 14,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 14,
+        "footprint_disk": 14
+      }
+    },
+    {
+      "seed": 2026101258,
+      "stroke": {
+        "x": 0.039348222244486836,
+        "y": 0.09849339257422407,
+        "length": 0.0861397606156401,
+        "bend": 0.0032319625726172987,
+        "angle": -0.8413838945080148,
+        "force": 0.45,
+        "color": 15,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 15,
+        "footprint_disk": 15
+      }
+    },
+    {
+      "seed": 2026101259,
+      "stroke": {
+        "x": 0.06696039002971307,
+        "y": -0.08216056460016374,
+        "length": 0.01782031508987137,
+        "bend": 0.010771389707611864,
+        "angle": 0.9237534177878306,
+        "force": 0.7,
+        "color": 15,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 15,
+        "footprint_disk": 15
+      }
+    },
+    {
+      "seed": 2026101260,
+      "stroke": {
+        "x": -0.11083548030143363,
+        "y": -0.0589666868988709,
+        "length": 0.040961993534056065,
+        "bend": 0.01861553007180841,
+        "angle": -0.9439026194449349,
+        "force": 1.2,
+        "color": 15,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 15,
+        "footprint_disk": 15
+      }
+    },
+    {
+      "seed": 2026101261,
+      "stroke": {
+        "x": -0.028753887962349955,
+        "y": -0.04102202194667667,
+        "length": 0.08733707740734152,
+        "bend": 0.041781162990919996,
+        "angle": -0.1845359224388079,
+        "force": 0.45,
+        "color": 16,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 16,
+        "footprint_disk": 16
+      }
+    },
+    {
+      "seed": 2026101262,
+      "stroke": {
+        "x": 0.02965316323742101,
+        "y": -0.03861403831535974,
+        "length": 0.017479586107077373,
+        "bend": -0.008686794008251286,
+        "angle": 2.750092231721786,
+        "force": 0.7,
+        "color": 16,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 16,
+        "footprint_disk": 16
+      }
+    },
+    {
+      "seed": 2026101263,
+      "stroke": {
+        "x": -0.0943427112100496,
+        "y": 0.032843379441600845,
+        "length": 0.041431663538779515,
+        "bend": 0.03749966737472275,
+        "angle": 1.9449268500022727,
+        "force": 1.2,
+        "color": 16,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 16,
+        "footprint_disk": 16
+      }
+    },
+    {
+      "seed": 2026101264,
+      "stroke": {
+        "x": -0.09085717091710124,
+        "y": -0.03305805796399085,
+        "length": 0.035956680419976544,
+        "bend": 0.03863338203940275,
+        "angle": 2.3140657698747233,
+        "force": 0.45,
+        "color": 17,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 17,
+        "footprint_disk": 17
+      }
+    },
+    {
+      "seed": 2026101265,
+      "stroke": {
+        "x": 0.02212498200267038,
+        "y": 0.0018877113603458229,
+        "length": 0.09526985267144286,
+        "bend": 0.02373817769898967,
+        "angle": 0.08451279779263521,
+        "force": 0.7,
+        "color": 17,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 17,
+        "footprint_disk": 17
+      }
+    },
+    {
+      "seed": 2026101266,
+      "stroke": {
+        "x": -0.10808952648639292,
+        "y": -0.019922837432937657,
+        "length": 0.09808205699681018,
+        "bend": -0.04874523613394689,
+        "angle": 1.5117492046253602,
+        "force": 1.2,
+        "color": 17,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 17,
+        "footprint_disk": 17
+      }
+    },
+    {
+      "seed": 2026101267,
+      "stroke": {
+        "x": 0.033489722523882465,
+        "y": 0.012675831809739802,
+        "length": 0.02374837609470596,
+        "bend": -0.03683292900284553,
+        "angle": -0.42993981180796226,
+        "force": 0.45,
+        "color": 18,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 18,
+        "footprint_disk": 18
+      }
+    },
+    {
+      "seed": 2026101268,
+      "stroke": {
+        "x": -0.08942610780826224,
+        "y": 0.07867837381492807,
+        "length": 0.005821289103909207,
+        "bend": -0.044025943986666254,
+        "angle": 2.6518689900624475,
+        "force": 0.7,
+        "color": 18,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 18,
+        "footprint_disk": 18
+      }
+    },
+    {
+      "seed": 2026101269,
+      "stroke": {
+        "x": 0.018790852090098675,
+        "y": 0.009351022621534116,
+        "length": 0.01821107558414243,
+        "bend": -0.01933833586475151,
+        "angle": -2.4224506466546343,
+        "force": 1.2,
+        "color": 18,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 18,
+        "footprint_disk": 18
+      }
+    },
+    {
+      "seed": 2026101270,
+      "stroke": {
+        "x": 0.06451692146412238,
+        "y": 0.05598818315294948,
+        "length": 0.008567050254492193,
+        "bend": 0.01113329974401548,
+        "angle": 1.175122839355839,
+        "force": 0.45,
+        "color": 19,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 19,
+        "footprint_disk": 19
+      }
+    },
+    {
+      "seed": 2026101271,
+      "stroke": {
+        "x": -0.04008057328201187,
+        "y": 0.014175797320717332,
+        "length": 0.05611503361831795,
+        "bend": 0.03615894469661299,
+        "angle": 1.2859947199191772,
+        "force": 0.7,
+        "color": 19,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 19,
+        "footprint_disk": 19
+      }
+    },
+    {
+      "seed": 2026101272,
+      "stroke": {
+        "x": -0.04846258877680737,
+        "y": 0.04317281539695045,
+        "length": 0.02011744170628033,
+        "bend": -0.015327228687669815,
+        "angle": 1.1580245115210293,
+        "force": 1.2,
+        "color": 19,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 19,
+        "footprint_disk": 19
+      }
+    },
+    {
+      "seed": 2026101273,
+      "stroke": {
+        "x": 0.043082441134560695,
+        "y": -0.1021048389852291,
+        "length": 0.08414845585608402,
+        "bend": -0.039318319865761724,
+        "angle": -2.83336915270957,
+        "force": 0.45,
+        "color": 20,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 20,
+        "footprint_disk": 20
+      }
+    },
+    {
+      "seed": 2026101274,
+      "stroke": {
+        "x": -0.059008244293988474,
+        "y": -0.01916024310187525,
+        "length": 0.03729686804540128,
+        "bend": -0.03517159885868622,
+        "angle": -0.15918429518884425,
+        "force": 0.7,
+        "color": 20,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 20,
+        "footprint_disk": 20
+      }
+    },
+    {
+      "seed": 2026101275,
+      "stroke": {
+        "x": -0.037768513539694015,
+        "y": 0.08809256042231436,
+        "length": 0.09336575907134605,
+        "bend": -0.023565223850537477,
+        "angle": -0.3480665156209173,
+        "force": 1.2,
+        "color": 20,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 20,
+        "footprint_disk": 20
+      }
+    },
+    {
+      "seed": 2026101276,
+      "stroke": {
+        "x": 0.030467992130921356,
+        "y": 0.09039209068766907,
+        "length": 0.06283392107316134,
+        "bend": 0.025810062658643496,
+        "angle": -0.5580382980439289,
+        "force": 0.45,
+        "color": 21,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 21,
+        "footprint_disk": 21
+      }
+    },
+    {
+      "seed": 2026101277,
+      "stroke": {
+        "x": -0.05562052492952703,
+        "y": 0.07779466170579113,
+        "length": 0.08512180715752518,
+        "bend": -0.03421601229558028,
+        "angle": -0.6392709384020945,
+        "force": 0.7,
+        "color": 21,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 21,
+        "footprint_disk": 21
+      }
+    },
+    {
+      "seed": 2026101278,
+      "stroke": {
+        "x": 0.020232504481832725,
+        "y": 0.10035787530286544,
+        "length": 0.05013391510864658,
+        "bend": -0.04595588920350059,
+        "angle": -1.1259599247724834,
+        "force": 1.2,
+        "color": 21,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 21,
+        "footprint_disk": 21
+      }
+    },
+    {
+      "seed": 2026101279,
+      "stroke": {
+        "x": 0.056293249583748206,
+        "y": -0.015219655128011642,
+        "length": 0.03730683138071336,
+        "bend": -0.027861666260343056,
+        "angle": -2.0973036223841826,
+        "force": 0.45,
+        "color": 22,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 22,
+        "footprint_disk": 22
+      }
+    },
+    {
+      "seed": 2026101280,
+      "stroke": {
+        "x": -0.07103327563431858,
+        "y": 0.02835094742548852,
+        "length": 0.08714597376952286,
+        "bend": -0.00980319028317135,
+        "angle": 0.6013588634934699,
+        "force": 0.7,
+        "color": 22,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 22,
+        "footprint_disk": 22
+      }
+    },
+    {
+      "seed": 2026101281,
+      "stroke": {
+        "x": -0.0713218122825704,
+        "y": -0.05568148669692921,
+        "length": 0.015121234820685135,
+        "bend": 0.0487103831684232,
+        "angle": 3.1141178455733067,
+        "force": 1.2,
+        "color": 22,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 22,
+        "footprint_disk": 22
+      }
+    },
+    {
+      "seed": 2026101282,
+      "stroke": {
+        "x": -0.06335263351368574,
+        "y": -0.028455216338650002,
+        "length": 0.018978471968415962,
+        "bend": -0.009372596334987535,
+        "angle": -1.4371630078108648,
+        "force": 0.45,
+        "color": 23,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 23,
+        "footprint_disk": 23
+      }
+    },
+    {
+      "seed": 2026101283,
+      "stroke": {
+        "x": -0.07296401589856596,
+        "y": 0.058326381056089865,
+        "length": 0.06549991390947878,
+        "bend": 0.004345231688183793,
+        "angle": -1.6866240141053521,
+        "force": 0.7,
+        "color": 23,
+        "opacity": 1.0
+      },
+      "overlap": false,
+      "classified": {
+        "sparse": 23,
+        "footprint_disk": 23
+      }
+    },
+    {
+      "seed": 2026101284,
+      "stroke": {
+        "x": -0.11509981039824788,
+        "y": -0.12316980275551194,
+        "length": 0.06378330926213381,
+        "bend": -0.042044872955863816,
+        "angle": 1.0678083761981574,
+        "force": 1.2,
+        "color": 23,
+        "opacity": 1.0
+      },
+      "overlap": true,
+      "classified": {
+        "sparse": 23,
+        "footprint_disk": 23
+      }
+    }
+  ],
+  "accuracy": {
+    "sparse": 1.0,
+    "footprint_disk": 1.0
+  }
+}

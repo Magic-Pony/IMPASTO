@@ -1,0 +1,6 @@
+{
+  "data/stage2_stable/stage2_selfplay.npz": "a8ad25586009ea654f10c059127dcbd4a3c9b9a397657882de2bdc8936c022bd",
+  "data/stage2_stable/manifest.json": "91f352ed8353b4b3d1654ad5c42bdb8fc87ab14eb20a44e33652916477a3fe4e",
+  "configs/stage1_stable.json": "c95bfa9d72ae8c4b29f671c7cc04ae0d1c1117b9dc5a4bd1fc7a4edff485622c",
+  "configs/stage2_stable.json": "abf96d3f213289f4252a227022b7710ca28b82851110716259e81e8dbc920263"
+}

@@ -25,7 +25,9 @@ def main():
     report = ROOT / args.report_dir
     config = json.loads((report / "resolved_config.json").read_text())
     metrics = json.loads((report / "metrics.json").read_text())
-    stage1 = json.loads((ROOT / config["stage1_config"]).read_text())
+    stage1 = config.get("resolved_stage1")
+    if stage1 is None:
+        stage1 = json.loads((ROOT / config["stage1_config"]).read_text())
     stage1["canvas_resolution"] = int(config["canvas_resolution"])
     experiment = metrics["experiments"][args.task]
     target = Image.open(report / f"{args.task}_target.png").convert("RGB").resize((160, 180))

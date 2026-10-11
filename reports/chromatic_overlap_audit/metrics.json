@@ -1,0 +1,240 @@
+{
+  "protocol": "8 near-luminance pigment pairs; random crossing curves; no artwork; same grayscale prediction, optional learned blank-reference coverage",
+  "seed": 2026101144,
+  "samples": [
+    {
+      "seed": 2026101144,
+      "colours": [
+        15,
+        16
+      ],
+      "pigment_gray_difference": 0.00014901960784308166,
+      "action": {
+        "x": 0.0010192499828594985,
+        "y": 0.011293815227932835,
+        "length": 0.064,
+        "bend": -0.010495583907882695,
+        "angle": -2.009050763743675,
+        "force": 0.45,
+        "color": 16,
+        "opacity": 1.0
+      },
+      "changed_pixels": 291,
+      "ambiguous_pixels": 67,
+      "previous": {
+        "changed_region_rgb_l1": 0.076414555311203,
+        "ambiguous_region_rgb_l1": 0.11339381337165833
+      },
+      "proposed": {
+        "changed_region_rgb_l1": 0.05702641233801842,
+        "ambiguous_region_rgb_l1": 0.02918560802936554
+      }
+    },
+    {
+      "seed": 2026101145,
+      "colours": [
+        11,
+        12
+      ],
+      "pigment_gray_difference": 0.0014705882352942234,
+      "action": {
+        "x": -0.03727817573351518,
+        "y": 0.002480010288473493,
+        "length": 0.064,
+        "bend": -0.001047294338958983,
+        "angle": -0.7655370753801506,
+        "force": 0.7,
+        "color": 12,
+        "opacity": 1.0
+      },
+      "changed_pixels": 544,
+      "ambiguous_pixels": 102,
+      "previous": {
+        "changed_region_rgb_l1": 0.05064697191119194,
+        "ambiguous_region_rgb_l1": 0.1553504914045334
+      },
+      "proposed": {
+        "changed_region_rgb_l1": 0.023440908640623093,
+        "ambiguous_region_rgb_l1": 0.010251503437757492
+      }
+    },
+    {
+      "seed": 2026101146,
+      "colours": [
+        17,
+        18
+      ],
+      "pigment_gray_difference": 0.0019607843137254832,
+      "action": {
+        "x": -0.011513152642177778,
+        "y": 0.016926169798194834,
+        "length": 0.064,
+        "bend": -0.009126347035719115,
+        "angle": -1.4559030172895513,
+        "force": 0.45,
+        "color": 18,
+        "opacity": 1.0
+      },
+      "changed_pixels": 295,
+      "ambiguous_pixels": 49,
+      "previous": {
+        "changed_region_rgb_l1": 0.04325252026319504,
+        "ambiguous_region_rgb_l1": 0.10628250986337662
+      },
+      "proposed": {
+        "changed_region_rgb_l1": 0.02937353029847145,
+        "ambiguous_region_rgb_l1": 0.022725336253643036
+      }
+    },
+    {
+      "seed": 2026101147,
+      "colours": [
+        14,
+        15
+      ],
+      "pigment_gray_difference": 0.0033411764705880698,
+      "action": {
+        "x": 0.02643362188393296,
+        "y": -0.016655202248224643,
+        "length": 0.064,
+        "bend": 0.0050747743182068365,
+        "angle": 1.821058351103162,
+        "force": 1.3,
+        "color": 15,
+        "opacity": 1.0
+      },
+      "changed_pixels": 1566,
+      "ambiguous_pixels": 394,
+      "previous": {
+        "changed_region_rgb_l1": 0.04906550049781799,
+        "ambiguous_region_rgb_l1": 0.14383730292320251
+      },
+      "proposed": {
+        "changed_region_rgb_l1": 0.014817196875810623,
+        "ambiguous_region_rgb_l1": 0.007713326718658209
+      }
+    },
+    {
+      "seed": 2026101148,
+      "colours": [
+        14,
+        16
+      ],
+      "pigment_gray_difference": 0.0034901960784311514,
+      "action": {
+        "x": -0.028266328765104803,
+        "y": 0.012561503915227621,
+        "length": 0.064,
+        "bend": -0.010266883837208722,
+        "angle": -1.195383837313917,
+        "force": 1.3,
+        "color": 16,
+        "opacity": 1.0
+      },
+      "changed_pixels": 1591,
+      "ambiguous_pixels": 299,
+      "previous": {
+        "changed_region_rgb_l1": 0.0453779511153698,
+        "ambiguous_region_rgb_l1": 0.15914484858512878
+      },
+      "proposed": {
+        "changed_region_rgb_l1": 0.017188746482133865,
+        "ambiguous_region_rgb_l1": 0.009148121811449528
+      }
+    },
+    {
+      "seed": 2026101149,
+      "colours": [
+        3,
+        4
+      ],
+      "pigment_gray_difference": 0.004450980392156856,
+      "action": {
+        "x": -0.022666602062689473,
+        "y": 0.020699436075654748,
+        "length": 0.064,
+        "bend": -0.009047117842677765,
+        "angle": 0.0852775462999853,
+        "force": 1.3,
+        "color": 4,
+        "opacity": 1.0
+      },
+      "changed_pixels": 1592,
+      "ambiguous_pixels": 254,
+      "previous": {
+        "changed_region_rgb_l1": 0.06108184531331062,
+        "ambiguous_region_rgb_l1": 0.15452629327774048
+      },
+      "proposed": {
+        "changed_region_rgb_l1": 0.038006946444511414,
+        "ambiguous_region_rgb_l1": 0.009899365715682507
+      }
+    },
+    {
+      "seed": 2026101150,
+      "colours": [
+        20,
+        21
+      ],
+      "pigment_gray_difference": 0.006639215686274569,
+      "action": {
+        "x": 0.03641912017125473,
+        "y": -0.021801906619364972,
+        "length": 0.064,
+        "bend": -0.011252872459851666,
+        "angle": 2.769196157534446,
+        "force": 0.45,
+        "color": 21,
+        "opacity": 1.0
+      },
+      "changed_pixels": 290,
+      "ambiguous_pixels": 76,
+      "previous": {
+        "changed_region_rgb_l1": 0.04388057813048363,
+        "ambiguous_region_rgb_l1": 0.11388027667999268
+      },
+      "proposed": {
+        "changed_region_rgb_l1": 0.01973717287182808,
+        "ambiguous_region_rgb_l1": 0.02175411395728588
+      }
+    },
+    {
+      "seed": 2026101151,
+      "colours": [
+        6,
+        22
+      ],
+      "pigment_gray_difference": 0.009231372549019512,
+      "action": {
+        "x": 0.004393546606623397,
+        "y": 0.012308832419690257,
+        "length": 0.064,
+        "bend": 0.009382890704979413,
+        "angle": -2.0593093918845744,
+        "force": 0.45,
+        "color": 22,
+        "opacity": 1.0
+      },
+      "changed_pixels": 290,
+      "ambiguous_pixels": 55,
+      "previous": {
+        "changed_region_rgb_l1": 0.13203102350234985,
+        "ambiguous_region_rgb_l1": 0.18868687748908997
+      },
+      "proposed": {
+        "changed_region_rgb_l1": 0.10622454434633255,
+        "ambiguous_region_rgb_l1": 0.052616339176893234
+      }
+    }
+  ],
+  "means": {
+    "previous": {
+      "changed_region_rgb_l1": 0.06271886825561523,
+      "ambiguous_region_rgb_l1": 0.14188780169934034
+    },
+    "proposed": {
+      "changed_region_rgb_l1": 0.038226932287216187,
+      "ambiguous_region_rgb_l1": 0.020411714387591928
+    }
+  }
+}

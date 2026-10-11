@@ -27,6 +27,8 @@ bash scripts/run.sh -m pytest -q
 
 ## 文档与结果
 
+- [1107014 选择性回退后的通用修正：完整图文、RGB逐笔审计和场景视频](reports/refinement_coverage_order/index.html)
+- [通用修正的设计边界、数据版本与完整复现命令](docs/general_refinement.md)
 - [四阶段计划](docs/reproduction_plan.md)
 - [论文一致性和替代假设](docs/fidelity.md)
 - [工具装配与场景审计](docs/scene_audit.md)
@@ -36,8 +38,8 @@ bash scripts/run.sh -m pytest -q
 - [阶段 2：训练与验证报告](reports/stage2/report.md)
 - [阶段 3：规划与闭环绘画复现说明](docs/stage3_reproduction.md)
 - [阶段 3：Flower/Fish 结果、视频与数值报告](reports/stage3/report.md)
-- [阶段 3：最终优化报告（逐轮视觉审计、视频与归因）](reports/refinement_final/report.md)
-- [阶段 3：最终优化交互报告](reports/refinement_final/index.html)
+- [阶段 3：历史优化报告（逐轮视觉审计、视频与归因）](reports/refinement_final/report.md)
+- [阶段 3：历史优化交互报告](reports/refinement_final/index.html)
 - [数据接口](docs/data_contract.md)
 - `papers/`：正文、附录、文本提取和来源清单。
 - `assets/`：机器人资源、许可证及场景。
@@ -47,7 +49,8 @@ bash scripts/run.sh -m pytest -q
 - `reports/stage1/`：实际执行生成的文字、图片、视频、数值报告。
 - `reports/stage2/`：自探索数据质量、训练曲线、验证预测图和数值报告；模型与数据归档在 Git 忽略的 `outputs/`、`data/`。
 - `reports/stage3/`：单笔、Flower、Fish 的目标/执行/模型预测图，闭环视频、逐笔力控记录和聚合指标。
-- `reports/stage2_refined/`、`reports/stage3_refined/`：当前 refined 配置的训练、预测、闭环动作、逐轮图像和连续场景重放。
+- `reports/stage2_refined/`、`reports/stage3_refined/`：历史 refined 配置的训练、预测、闭环动作、逐轮图像和连续场景重放。
+- `reports/stage2_stable/`、`reports/refinement_coverage_order/`：本轮通用修正的数采训练、冻结配置、逐轮预测/执行审计和连续场景重放。
 - `reports/refinement_final/`：Flower/Fish 每一轮的目标、观测、PCA/RANSAC 种子、MPC 预测、真实执行和视觉归因报告。
 
 首次公开代码检索时，作者项目页的代码入口为 Code coming soon。本项目是依据论文的独立实现，不能宣称使用作者原始代码、真实自探索数据或忠实油画流体模拟器。

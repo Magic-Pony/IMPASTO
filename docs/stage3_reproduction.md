@@ -1,5 +1,7 @@
 # 阶段 3：规划与闭环绘画
 
+当前共享配置为 `configs/stage3_coverage_order.json`。选择性回退、重新数采训练、BN校准、通用RGB覆盖修复、新种子测试和完整命令见 [通用修正说明](general_refinement.md)。以下 refined 说明和数值对应历史版本；最终本轮结果见 [完整图文报告](../reports/refinement_coverage_order/index.html)。
+
 ## 目标
 
 用阶段二训练的 IMPASTO-UNet 对单笔和多笔绘画进行模型预测规划，并在 MuJoCo 环境中执行动作、读取实际画布后重新规划。本阶段不实现或比较论文 baseline。

@@ -1,0 +1,60 @@
+{
+  "validation_samples": 200,
+  "unweighted_l1": 0.006573047023266554,
+  "stroke_region_l1": 0.03789004683494568,
+  "background_l1": 0.0028646057471632957,
+  "changed_pixel_fraction": 0.1058785,
+  "paper_unweighted_l1_reference": 0.0285,
+  "difference_from_paper_reference": -0.02192695252597332,
+  "numerically_below_noncomparable_paper_reference": true,
+  "checkpoint_sha256": "5cee5bbb4ea37e8308e24fa5a28d5b585c8eb4d344b37e1ec4850193d049da34",
+  "best_epoch": 608,
+  "validation_episode_ids": [
+    18,
+    19
+  ],
+  "device": "cuda",
+  "collection_quality": {
+    "mean_target_force_N": 0.7574587464332581,
+    "mean_force_N": 0.7689678072929382,
+    "mean_force_rmse_N": 0.021317128092050552,
+    "max_force_rmse_N": 0.07513010501861572,
+    "mean_contact_fraction": 1.0,
+    "min_contact_fraction": 1.0,
+    "mean_trajectory_rmse_m": 9.534657147014514e-05,
+    "mean_force_acquisition_s": 1.226565957069397,
+    "mean_failed_attempts": 0.04749999940395355
+  },
+  "force_strata": {
+    "low_force_0.4_to_0.65": {
+      "samples": 118,
+      "full_patch_l1": 0.0052894181571900845,
+      "changed_region_l1": 0.049273621290922165
+    },
+    "higher_force": {
+      "samples": 82,
+      "full_patch_l1": 0.008420218713581562,
+      "changed_region_l1": 0.032777007669210434
+    }
+  },
+  "same_validation_comparison": {
+    "checkpoint": "outputs/stage2_refined/impasto_unet_best.pt",
+    "sha256": "831ea440fd73c275e350e65cca236598b5aff4b5a1b4ba74a646a58744799d35",
+    "unweighted_l1": 0.006981814280152321,
+    "stroke_region_l1": 0.03213004767894745,
+    "background_l1": 0.004003855399787426,
+    "force_strata": {
+      "low_force_0.4_to_0.65": {
+        "samples": 118,
+        "full_patch_l1": 0.006285556126385927,
+        "changed_region_l1": 0.04751237854361534
+      },
+      "higher_force": {
+        "samples": 82,
+        "full_patch_l1": 0.007983746938407421,
+        "changed_region_l1": 0.025220930576324463
+      }
+    },
+    "protocol": "same episode-held-out stable-physics validation set; new checkpoint selected on this set; old checkpoint fixed before collection"
+  }
+}

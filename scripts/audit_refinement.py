@@ -10,6 +10,9 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import cv2
 import matplotlib
@@ -79,11 +82,21 @@ def draw_actions(ax, actions, colors, palette, config, prefix, count=None):
                 color="black", bbox=dict(facecolor="white", alpha=.8, edgecolor="none", pad=1))
 
 
-def audit(report_dir, out_dir):
+def audit(report_dir, out_dir, previous_report=None, rgb_prediction=False):
     config = json.loads((report_dir / "resolved_config.json").read_text())
     metrics = json.loads((report_dir / "metrics.json").read_text())
     out_dir.mkdir(parents=True, exist_ok=True)
     results = {"source_report": str(report_dir.relative_to(ROOT)), "experiments": {}}
+    dynamics=rgb_planner=None
+    if rgb_prediction:
+        from scripts.run_stage3 import load_system
+        from impasto.stage3.planner import LearnedCanvasDynamics,AdaptiveMPCPlanner
+        cfg,s2,_,model,device,_=load_system(str(report_dir/'resolved_config.json'))
+        actual_hash=hashlib.sha256((ROOT/cfg['checkpoint']).read_bytes()).hexdigest()
+        if actual_hash!=metrics['paper_protocol']['checkpoint_sha256']:
+            raise ValueError('RGB audit checkpoint differs from the recorded run')
+        dynamics=LearnedCanvasDynamics(model,device,s2,cfg)
+        rgb_planner=AdaptiveMPCPlanner(dynamics,cfg)
     for name in ("flower", "fish"):
         if name not in metrics["experiments"]:
             continue
@@ -114,6 +127,49 @@ def audit(report_dir, out_dir):
                    "actions": d["actions"][:count].tolist(),
                    "colors": d["colors"][:count].tolist()}
             audited["cycles"].append(rec)
+            if rgb_prediction:
+                initial=srgb_gray(before)[None]
+                if config.get('rgb_equal_luminance_coverage',False):
+                    _,frames,coverages=dynamics.rollout_batch(initial,d['actions'][None],
+                        d['colors'][None],d['opacities'][None],return_coverage=True)
+                else:
+                    _,frames=dynamics.rollout_batch(initial,d['actions'][None],
+                        d['colors'][None],d['opacities'][None])
+                    coverages=[None]*len(frames)
+                max_difference=float(abs(frames[count-1][0]-predicted).max())
+                if max_difference>1e-4:
+                    raise ValueError(f'Recomputed grayscale does not match archive: {max_difference}')
+                rgb=before[None].astype(np.float32)/255
+                previous_gray=initial
+                rgb_frames=[]
+                for t,frame in enumerate(frames):
+                    rgb=rgb_planner._rgb_step(rgb,previous_gray,frame,[d['colors'][t]],coverages[t])
+                    previous_gray=frame
+                    rgb_frames.append(rgb[0].copy())
+                    if t==count-1:
+                        rgb_after=rgb[0].copy()
+                error_rgb=np.mean(abs(rgb_after-after.astype(float)/255),axis=-1)
+                rec['prediction_execution_union_rgb_l1']=float(error_rgb[union].mean())
+                rec['rgb_recomputed_gray_max_difference']=max_difference
+                np.savez_compressed(out_dir/f'{name}_rgb_prediction_{i+1:02d}.npz',
+                    after_actions=rgb_after,terminal=rgb[0],frames=np.asarray(rgb_frames))
+                color_fig,color_axes=plt.subplots(1,4,figsize=(14,4))
+                for axis,arr,title in zip(color_axes,[target,rgb[0],rgb_after,after],
+                    ['Checkpoint target','Predicted RGB terminal','Predicted RGB executed prefix','MuJoCo executed prefix']):
+                    image_axis(axis,arr,title,box)
+                color_fig.tight_layout()
+                color_fig.savefig(out_dir/f'{name}_rgb_audit_{i+1:02d}.png',dpi=145)
+                plt.close(color_fig)
+                sequence_fig,sequence_axes=plt.subplots(1,len(rgb_frames)+2,
+                    figsize=(3*(len(rgb_frames)+2),3.5))
+                image_axis(sequence_axes[0],before,'Observed before',box)
+                for t,frame in enumerate(rgb_frames,1):
+                    image_axis(sequence_axes[t],frame,
+                        f'Predict action {t}'+(' (executed)' if t<=count else ' (not executed)'),box)
+                image_axis(sequence_axes[-1],after,f'Actual after {count}',box)
+                sequence_fig.tight_layout()
+                sequence_fig.savefig(out_dir/f'{name}_rgb_rollout_{i+1:02d}.png',dpi=145)
+                plt.close(sequence_fig)
             fig2, ax = plt.subplots(2, 4, figsize=(14, 7.5))
             ax = ax.ravel()
             image_axis(ax[0], target, f"Target at stroke {goal}", box)
@@ -145,11 +201,13 @@ def audit(report_dir, out_dir):
         results["experiments"][name] = audited
         fig, axes = plt.subplots(1, 3, figsize=(12, 4))
         image_axis(axes[0], final_target, "Published target (normalized crop)", box)
-        previous = ROOT / "reports/stage3_refined_attempt6" / f"{name}_after_{exp['executed_strokes']:02d}.png"
+        previous_dir = previous_report or ROOT / "reports/stage3_refined_attempt6"
+        previous = previous_dir / f"{name}_after_{exp['executed_strokes']:02d}.png"
         if previous.exists():
             previous_image = np.asarray(Image.open(previous))
-            image_axis(axes[1], previous_image, "Previous full run (attempt 6)", box)
+            image_axis(axes[1], previous_image, f"Previous: {previous_dir.name}", box)
             audited["previous_on_current_target"] = region_metrics(previous_image, final_target)
+            audited["previous_report"] = str(previous_dir.relative_to(ROOT))
         image_axis(axes[2], final, "Refined execution", box)
         fig.tight_layout(); fig.savefig(out_dir / f"{name}_comparison.png", dpi=170); plt.close(fig)
     (out_dir / "visual_audit_metrics.json").write_text(json.dumps(results, indent=2))
@@ -160,6 +218,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report-dir", default="reports/stage3_refined")
     parser.add_argument("--out-dir", default="reports/refinement")
+    parser.add_argument("--previous-report", help="Local run to compare on the current target")
+    parser.add_argument('--rgb-prediction',action='store_true',help='Recompute RGB rollout using the recorded checkpoint')
     args = parser.parse_args()
-    result = audit(ROOT/args.report_dir, ROOT/args.out_dir)
+    result = audit(ROOT/args.report_dir, ROOT/args.out_dir,
+                   ROOT/args.previous_report if args.previous_report else None,
+                   rgb_prediction=args.rgb_prediction)
     print(json.dumps({k: v["final"] for k, v in result["experiments"].items()}, indent=2))

@@ -1,0 +1,62 @@
+original path=0 F=0.40: force RMSE=0.1970, union model L1=0.1650
+stable path=0 F=0.40: force RMSE=0.0344, union model L1=0.1809
+stable_raw path=0 F=0.40: force RMSE=0.0344, union model L1=0.1809
+original path=0 F=0.45: force RMSE=0.2162, union model L1=0.1572
+stable path=0 F=0.45: force RMSE=0.0299, union model L1=0.1546
+stable_raw path=0 F=0.45: force RMSE=0.0299, union model L1=0.1546
+original path=0 F=0.50: force RMSE=0.0320, union model L1=0.1346
+stable path=0 F=0.50: force RMSE=0.0256, union model L1=0.1347
+stable_raw path=0 F=0.50: force RMSE=0.0256, union model L1=0.1347
+original path=0 F=0.70: force RMSE=0.0193, union model L1=0.1089
+stable path=0 F=0.70: force RMSE=0.0168, union model L1=0.1090
+stable_raw path=0 F=0.70: force RMSE=0.0168, union model L1=0.1090
+original path=0 F=1.00: force RMSE=0.0111, union model L1=0.0802
+stable path=0 F=1.00: force RMSE=0.0132, union model L1=0.0800
+stable_raw path=0 F=1.00: force RMSE=0.0132, union model L1=0.0800
+original path=0 F=1.30: force RMSE=0.0092, union model L1=0.0599
+stable path=0 F=1.30: force RMSE=0.0120, union model L1=0.0597
+stable_raw path=0 F=1.30: force RMSE=0.0120, union model L1=0.0597
+original path=0 F=1.50: force RMSE=0.0088, union model L1=0.0530
+stable path=0 F=1.50: force RMSE=0.0120, union model L1=0.0526
+stable_raw path=0 F=1.50: force RMSE=0.0120, union model L1=0.0526
+original path=1 F=0.40: force RMSE=0.1473, union model L1=0.0626
+stable path=1 F=0.40: force RMSE=0.0187, union model L1=0.0638
+stable_raw path=1 F=0.40: force RMSE=0.0187, union model L1=0.0652
+original path=1 F=0.45: force RMSE=0.1146, union model L1=0.0536
+stable path=1 F=0.45: force RMSE=0.0155, union model L1=0.0561
+stable_raw path=1 F=0.45: force RMSE=0.0155, union model L1=0.0557
+original path=1 F=0.50: force RMSE=0.0213, union model L1=0.0502
+stable path=1 F=0.50: force RMSE=0.0134, union model L1=0.0503
+stable_raw path=1 F=0.50: force RMSE=0.0134, union model L1=0.0501
+original path=1 F=0.70: force RMSE=0.0123, union model L1=0.0372
+stable path=1 F=0.70: force RMSE=0.0092, union model L1=0.0374
+stable_raw path=1 F=0.70: force RMSE=0.0092, union model L1=0.0373
+original path=1 F=1.00: force RMSE=0.0071, union model L1=0.0299
+stable path=1 F=1.00: force RMSE=0.0080, union model L1=0.0299
+stable_raw path=1 F=1.00: force RMSE=0.0080, union model L1=0.0299
+original path=1 F=1.30: force RMSE=0.0054, union model L1=0.0204
+stable path=1 F=1.30: force RMSE=0.0079, union model L1=0.0204
+stable_raw path=1 F=1.30: force RMSE=0.0079, union model L1=0.0204
+original path=1 F=1.50: force RMSE=0.0055, union model L1=0.0412
+stable path=1 F=1.50: force RMSE=0.0087, union model L1=0.0412
+stable_raw path=1 F=1.50: force RMSE=0.0087, union model L1=0.0417
+{
+  "original": {
+    "mean_force_all_samples_rmse_N": 0.0576362162668425,
+    "worst_force_all_samples_rmse_N": 0.2161934655762729,
+    "minimum_contact_fraction": 0.9619047619047619,
+    "mean_prediction_union_gray_l1": 0.07527135418994087
+  },
+  "stable": {
+    "mean_force_all_samples_rmse_N": 0.016085867036920245,
+    "worst_force_all_samples_rmse_N": 0.034382825821287634,
+    "minimum_contact_fraction": 1.0,
+    "mean_prediction_union_gray_l1": 0.07647821799452816
+  },
+  "stable_raw": {
+    "mean_force_all_samples_rmse_N": 0.016085867036920245,
+    "worst_force_all_samples_rmse_N": 0.034382825821287634,
+    "minimum_contact_fraction": 1.0,
+    "mean_prediction_union_gray_l1": 0.07656905560621194
+  }
+}

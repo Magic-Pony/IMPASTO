@@ -1,0 +1,8 @@
+{
+  "task": "fish",
+  "frames": 804,
+  "fps": 3.0,
+  "video": "reports/refinement_coverage_order/fish_scene_replay.mp4",
+  "final_canvas_max_abs_rgb_difference": 0,
+  "final_canvas_mean_abs_rgb_difference": 0.0
+}
