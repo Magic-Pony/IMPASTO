@@ -1,6 +1,6 @@
 import numpy as np
 
-from impasto.sim.paint import BrushState, Canvas, footprint_weight
+from impasto.sim.paint import BrushState, Canvas
 
 
 def test_contact_and_pigment_are_required_for_deposition():
@@ -21,21 +21,3 @@ def test_same_seed_gives_same_canvas_tooth():
 def test_world_positive_y_maps_to_image_top():
     c = Canvas(resolution=128)
     assert c.pixel([0.0, 0.10])[1] < c.pixel([0.0, -0.10])[1]
-
-
-def test_gaussian_footprint_has_smooth_monotone_edge_and_finite_support():
-    d2 = np.linspace(0.0, 1.1, 1001)
-    weight = footprint_weight(d2, {
-        "footprint_profile": "gaussian",
-        "footprint_sigma_fraction": .72,
-        "footprint_taper_start_fraction": .75,
-    })
-    assert weight[0] == 1.0
-    assert np.all(np.diff(weight) <= 1e-7)
-    assert weight[np.searchsorted(d2, 1.0)] == 0.0
-    assert np.all(weight[d2 >= 1.0] == 0.0)
-
-
-def test_legacy_linear_footprint_remains_the_default():
-    d2 = np.array([0.0, 1.0 / 3.0, 2.0 / 3.0, 1.0])
-    np.testing.assert_allclose(footprint_weight(d2, {}), [1.0, 1.0, 1.0, 0.0])

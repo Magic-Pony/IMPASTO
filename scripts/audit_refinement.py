@@ -8,11 +8,9 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+from itertools import permutations
 import json
 from pathlib import Path
-import sys
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import cv2
 import matplotlib
@@ -82,21 +80,37 @@ def draw_actions(ax, actions, colors, palette, config, prefix, count=None):
                 color="black", bbox=dict(facecolor="white", alpha=.8, edgecolor="none", pad=1))
 
 
-def audit(report_dir, out_dir, previous_report=None, rgb_prediction=False):
+def align_legacy_seed_masks(actions, masks, canvas_width, canvas_height):
+    """Best-effort display alignment for NPZ files written before the fix.
+
+    Older runs stored proposal masks before executable filtering and seed
+    actions after it.  This helper is only for auditing those immutable
+    archives; current runs carry the synchronized masks directly.
+    """
+    actions = np.asarray(actions)
+    masks = np.asarray(masks, dtype=bool)
+    if (actions.ndim != 2 or actions.shape[1] != 6 or masks.ndim != 3
+            or len(actions) == 0 or len(actions) != len(masks)):
+        return None
+    height, width = masks.shape[1:]
+    scores = np.zeros((len(actions), len(masks)), dtype=np.float32)
+    for i, action in enumerate(actions):
+        points = Stroke(*map(float, action)).points(np.linspace(0.0, 1.0, 257))
+        x = np.clip(np.rint((points[:, 0] / canvas_width + .5) * (width - 1)).astype(int),
+                    0, width - 1)
+        y = np.clip(np.rint((.5 - points[:, 1] / canvas_height) * (height - 1)).astype(int),
+                    0, height - 1)
+        scores[i] = masks[:, y, x].mean(axis=1)
+    best = max(permutations(range(len(masks))),
+               key=lambda order: float(sum(scores[i, order[i]] for i in range(len(actions)))))
+    return masks[np.asarray(best, dtype=int)]
+
+
+def audit(report_dir, out_dir):
     config = json.loads((report_dir / "resolved_config.json").read_text())
     metrics = json.loads((report_dir / "metrics.json").read_text())
     out_dir.mkdir(parents=True, exist_ok=True)
     results = {"source_report": str(report_dir.relative_to(ROOT)), "experiments": {}}
-    dynamics=rgb_planner=None
-    if rgb_prediction:
-        from scripts.run_stage3 import load_system
-        from impasto.stage3.planner import LearnedCanvasDynamics,AdaptiveMPCPlanner
-        cfg,s2,_,model,device,_=load_system(str(report_dir/'resolved_config.json'))
-        actual_hash=hashlib.sha256((ROOT/cfg['checkpoint']).read_bytes()).hexdigest()
-        if actual_hash!=metrics['paper_protocol']['checkpoint_sha256']:
-            raise ValueError('RGB audit checkpoint differs from the recorded run')
-        dynamics=LearnedCanvasDynamics(model,device,s2,cfg)
-        rgb_planner=AdaptiveMPCPlanner(dynamics,cfg)
     for name in ("flower", "fish"):
         if name not in metrics["experiments"]:
             continue
@@ -115,6 +129,20 @@ def audit(report_dir, out_dir, previous_report=None, rgb_prediction=False):
             count = cycle["prediction_execution"]["executed_actions"]
             start = cycle["executed_before_replan"]
             goal = cycle["goal_stroke_count"]
+            raw_masks = np.asarray(d.get("seed_masks", np.empty((0,), dtype=bool)))
+            seed_actions = np.asarray(d.get("seeds", np.empty((0, 6), dtype=np.float32)))
+            seed_colors = np.asarray(d.get("seed_colors", np.empty((0,), dtype=np.int64)))
+            has_mask_flag = "seed_masks_available" in d
+            masks_available = bool(np.asarray(d.get("seed_masks_available",
+                                                   raw_masks.ndim == 3)).item())
+            seed_masks = raw_masks
+            legacy_alignment = False
+            if masks_available and not has_mask_flag:
+                seed_masks = align_legacy_seed_masks(
+                    seed_actions, raw_masks, config["canvas_width_m"],
+                    config["canvas_height_m"])
+                masks_available = seed_masks is not None
+                legacy_alignment = masks_available
             p_error = np.abs(predicted-srgb_gray(after))
             # Fixed target+paint union avoids averaging over mostly blank canvas.
             union = foreground(target) | foreground(before) | foreground(after)
@@ -125,60 +153,27 @@ def audit(report_dir, out_dir, previous_report=None, rgb_prediction=False):
                    "after_metrics": region_metrics(after, target),
                    "source_npz_sha256": hashlib.sha256(data_path.read_bytes()).hexdigest(),
                    "actions": d["actions"][:count].tolist(),
-                   "colors": d["colors"][:count].tolist()}
+                   "colors": d["colors"][:count].tolist(),
+                   "seed_masks": ("legacy_centerline_assignment" if legacy_alignment
+                                  else "synchronized_with_seed_actions" if masks_available
+                                  else "unavailable")}
             audited["cycles"].append(rec)
-            if rgb_prediction:
-                initial=srgb_gray(before)[None]
-                if config.get('rgb_equal_luminance_coverage',False):
-                    _,frames,coverages=dynamics.rollout_batch(initial,d['actions'][None],
-                        d['colors'][None],d['opacities'][None],return_coverage=True)
-                else:
-                    _,frames=dynamics.rollout_batch(initial,d['actions'][None],
-                        d['colors'][None],d['opacities'][None])
-                    coverages=[None]*len(frames)
-                max_difference=float(abs(frames[count-1][0]-predicted).max())
-                if max_difference>1e-4:
-                    raise ValueError(f'Recomputed grayscale does not match archive: {max_difference}')
-                rgb=before[None].astype(np.float32)/255
-                previous_gray=initial
-                rgb_frames=[]
-                for t,frame in enumerate(frames):
-                    rgb=rgb_planner._rgb_step(rgb,previous_gray,frame,[d['colors'][t]],coverages[t])
-                    previous_gray=frame
-                    rgb_frames.append(rgb[0].copy())
-                    if t==count-1:
-                        rgb_after=rgb[0].copy()
-                error_rgb=np.mean(abs(rgb_after-after.astype(float)/255),axis=-1)
-                rec['prediction_execution_union_rgb_l1']=float(error_rgb[union].mean())
-                rec['rgb_recomputed_gray_max_difference']=max_difference
-                np.savez_compressed(out_dir/f'{name}_rgb_prediction_{i+1:02d}.npz',
-                    after_actions=rgb_after,terminal=rgb[0],frames=np.asarray(rgb_frames))
-                color_fig,color_axes=plt.subplots(1,4,figsize=(14,4))
-                for axis,arr,title in zip(color_axes,[target,rgb[0],rgb_after,after],
-                    ['Checkpoint target','Predicted RGB terminal','Predicted RGB executed prefix','MuJoCo executed prefix']):
-                    image_axis(axis,arr,title,box)
-                color_fig.tight_layout()
-                color_fig.savefig(out_dir/f'{name}_rgb_audit_{i+1:02d}.png',dpi=145)
-                plt.close(color_fig)
-                sequence_fig,sequence_axes=plt.subplots(1,len(rgb_frames)+2,
-                    figsize=(3*(len(rgb_frames)+2),3.5))
-                image_axis(sequence_axes[0],before,'Observed before',box)
-                for t,frame in enumerate(rgb_frames,1):
-                    image_axis(sequence_axes[t],frame,
-                        f'Predict action {t}'+(' (executed)' if t<=count else ' (not executed)'),box)
-                image_axis(sequence_axes[-1],after,f'Actual after {count}',box)
-                sequence_fig.tight_layout()
-                sequence_fig.savefig(out_dir/f'{name}_rgb_rollout_{i+1:02d}.png',dpi=145)
-                plt.close(sequence_fig)
             fig2, ax = plt.subplots(2, 4, figsize=(14, 7.5))
             ax = ax.ravel()
             image_axis(ax[0], target, f"Target at stroke {goal}", box)
             image_axis(ax[1], before, f"Observed after {start} strokes", box)
             seed_image = target.copy().astype(float)/255
-            for j, mask in enumerate(d["seed_masks"]):
-                seed_image[mask] = .35*seed_image[mask] + .65*np.array(plt.get_cmap("tab10")(j%10)[:3])
-            image_axis(ax[2], seed_image, "PCA/RANSAC masks + seed paths", box)
-            draw_actions(ax[2], d["seeds"], d["seed_colors"], config["palette_rgb"], config, "S")
+            if masks_available:
+                if (seed_masks.ndim != 3 or len(seed_masks) != len(seed_actions)
+                        or seed_masks.shape[1:] != target.shape[:2]):
+                    raise ValueError(f"Seed masks do not match seed actions in {data_path.name}")
+                for j, mask in enumerate(seed_masks):
+                    seed_image[mask] = .35*seed_image[mask] + .65*np.array(plt.get_cmap("tab10")(j%10)[:3])
+                seed_title = "PCA/RANSAC masks + seed paths"
+            else:
+                seed_title = "Seed paths; mask association unavailable"
+            image_axis(ax[2], seed_image, seed_title, box)
+            draw_actions(ax[2], seed_actions, seed_colors, config["palette_rgb"], config, "S")
             image_axis(ax[3], target, f"Optimized actions (execute first {count})", box)
             draw_actions(ax[3], d["actions"], d["colors"], config["palette_rgb"], config, "A", count)
             image_axis(ax[4], terminal, f"Predicted terminal: H={len(d['actions'])}", box, True)
@@ -201,13 +196,11 @@ def audit(report_dir, out_dir, previous_report=None, rgb_prediction=False):
         results["experiments"][name] = audited
         fig, axes = plt.subplots(1, 3, figsize=(12, 4))
         image_axis(axes[0], final_target, "Published target (normalized crop)", box)
-        previous_dir = previous_report or ROOT / "reports/stage3_refined_attempt6"
-        previous = previous_dir / f"{name}_after_{exp['executed_strokes']:02d}.png"
+        previous = ROOT / "reports/stage3_refined_attempt6" / f"{name}_after_{exp['executed_strokes']:02d}.png"
         if previous.exists():
             previous_image = np.asarray(Image.open(previous))
-            image_axis(axes[1], previous_image, f"Previous: {previous_dir.name}", box)
+            image_axis(axes[1], previous_image, "Previous full run (attempt 6)", box)
             audited["previous_on_current_target"] = region_metrics(previous_image, final_target)
-            audited["previous_report"] = str(previous_dir.relative_to(ROOT))
         image_axis(axes[2], final, "Refined execution", box)
         fig.tight_layout(); fig.savefig(out_dir / f"{name}_comparison.png", dpi=170); plt.close(fig)
     (out_dir / "visual_audit_metrics.json").write_text(json.dumps(results, indent=2))
@@ -218,10 +211,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report-dir", default="reports/stage3_refined")
     parser.add_argument("--out-dir", default="reports/refinement")
-    parser.add_argument("--previous-report", help="Local run to compare on the current target")
-    parser.add_argument('--rgb-prediction',action='store_true',help='Recompute RGB rollout using the recorded checkpoint')
     args = parser.parse_args()
-    result = audit(ROOT/args.report_dir, ROOT/args.out_dir,
-                   ROOT/args.previous_report if args.previous_report else None,
-                   rgb_prediction=args.rgb_prediction)
+    result = audit(ROOT/args.report_dir, ROOT/args.out_dir)
     print(json.dumps({k: v["final"] for k, v in result["experiments"].items()}, indent=2))

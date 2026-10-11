@@ -44,8 +44,8 @@ def validate_palette_contract(stage1, stage2, stage3, checkpoint):
             raise ValueError(f"Palette mismatch in {name}; recollect/retrain or use its matching palette")
 
 
-def load_system(config_name=None):
-    config_name = config_name or os.environ.get("IMPASTO_STAGE3_CONFIG", "configs/stage3.json")
+def load_system():
+    config_name = os.environ.get("IMPASTO_STAGE3_CONFIG", "configs/stage3.json")
     config_path = Path(config_name)
     if not config_path.is_absolute():
         config_path = ROOT / config_path
@@ -53,8 +53,8 @@ def load_system(config_name=None):
     stage3["config_file"] = str(config_path.relative_to(ROOT))
     if stage3.get("color_database_file"):
         stage3["color_database"] = json.loads((ROOT / stage3["color_database_file"]).read_text())
-    stage2 = copy.deepcopy(stage3.get("resolved_stage2")) or json.loads((ROOT / stage3["stage2_config"]).read_text())
-    stage1 = copy.deepcopy(stage3.get("resolved_stage1")) or json.loads((ROOT / stage3["stage1_config"]).read_text())
+    stage2 = json.loads((ROOT / stage3["stage2_config"]).read_text())
+    stage1 = json.loads((ROOT / stage3["stage1_config"]).read_text())
     if stage3.get("deployment_palette_rgb"):
         stage1["paint"]["palette_rgb"] = stage3["deployment_palette_rgb"]
     stage3["palette_rgb"] = stage1["paint"]["palette_rgb"]
@@ -324,12 +324,9 @@ def run_artwork(name, config, stage2, stage1, model, device, report_dir, lpips_m
                     # decompose the same incremental target window; falling
                     # back to the live, already-mismatched canvas would turn
                     # execution error into a new geometric proposal.
-                    # A published checkpoint is a valid geometric base only
-                    # when it represents the exact observed stroke count.
-                    # Reusing an older frame after additional live execution
-                    # would turn execution/model mismatch into a fake target
-                    # residual and seed an incorrect long stroke.
-                    prefix_count = executed if executed in published_counts else None
+                    available = [count for count in published_counts
+                                 if count <= executed]
+                    prefix_count = max(available) if available else None
                     proposal_frame = (target_frames.get(prefix_count)
                                       if prefix_count is not None else None)
                     if proposal_frame is not None:
@@ -387,7 +384,9 @@ def run_artwork(name, config, stage2, stage1, model, device, report_dir, lpips_m
                     opacities=plan.opacities, mask=objective_mask,
                     seeds=plan.initial_actions, seed_colors=plan.initial_colors,
                     initialized_from_warm_start=warm_actions is not None,
-                    seed_masks=np.array([p.mask for p in plan.proposals]))
+                    seed_masks=(plan.initial_masks if plan.initial_masks is not None
+                                else np.empty((0,), dtype=bool)),
+                    seed_masks_available=plan.initial_masks is not None)
                 Image.fromarray(actual_after_rgb).save(report_dir / f"{name}_after_{executed:02d}.png")
                 cycle_metrics = {
                     "executed_actions": count,
@@ -449,21 +448,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--resume", action="store_true",
                         help="Reuse completed experiments only when resolved settings match")
-    parser.add_argument("--report-dir", help="Write this experiment into a separate report directory")
-    parser.add_argument("--overpaint-weight", type=float,
-                        help="Penalize predicted paint darker than the goal in the planning objective")
     args = parser.parse_args()
     config, stage2, stage1, model, device, checkpoint = load_system()
-    # Freeze all execution/training settings: replay must not silently read a
-    # subsequently edited stage-1 configuration through its path.
-    config["resolved_stage1"] = copy.deepcopy(stage1)
-    config["resolved_stage2"] = copy.deepcopy(stage2)
-    if args.report_dir is not None:
-        config["report_dir"] = args.report_dir
-    if args.overpaint_weight is not None:
-        config["planner"]["overpaint_weight"] = args.overpaint_weight
-    if float(config["planner"].get("overpaint_weight", 1.0)) < 1.0:
-        parser.error("--overpaint-weight must be at least 1")
     report_dir = ROOT / config["report_dir"]
     report_dir.mkdir(parents=True, exist_ok=True)
     lpips_model = None
@@ -498,10 +484,6 @@ def main():
         completed = previous["experiments"]
     (report_dir / "resolved_config.json").write_text(json.dumps(config, indent=2))
     results = {
-        "implementation_sha256": {path: hashlib.sha256((ROOT/path).read_bytes()).hexdigest()
-            for path in ("scripts/run_stage3.py", "src/impasto/stage3/planner.py",
-                         "src/impasto/stage3/splitter.py", "src/impasto/sim/mujoco_env.py",
-                         "src/impasto/sim/paint.py", "src/impasto/stage2/raster.py")},
         "paper_protocol": {
             "mpc_horizon": int(config["planner"]["horizon"]),
             "execute_steps_before_replan": int(config["planner"]["execute_steps"]),
@@ -510,8 +492,7 @@ def main():
             "checkpoint_matches_stage2_report": checkpoint_sha256 == stage2_metrics.get("best_checkpoint_sha256"),
             "target_scope": "public Fig. 8 panel crops; original high-resolution artist files and action annotations unavailable",
             "unpublished_planner_parameters": f"local choices in {config['config_file']}",
-            "planning_objective": "weighted gray L1 with configured overpaint factor + weighted RGB auxiliary loss",
-            "overpaint_weight": config["planner"].get("overpaint_weight", 1.0),
+            "planning_objective": "weighted gray L1 + RGB auxiliary weight * weighted RGB L1",
             "rgb_objective_weight": config["planner"].get("rgb_objective_weight", 0),
         },
         "device": str(device),
@@ -572,7 +553,7 @@ def build_report(config, results, report_dir):
 
 ## 结果
 
-规划器使用阶段二训练的 IMPASTO-UNet、PCA–RANSAC 初始化、MPPI elite softmax 序列更新及 CMA 风格自适应。多笔绘画采用 H={config['planner']['horizon']}，每轮最多执行 {config['planner']['execute_steps']} 笔后读取仿真画布并重新规划。本配置的规划目标为加权灰度 L1（过度上色系数 {config['planner'].get('overpaint_weight', 1.0)}）+ {config['planner'].get('rgb_objective_weight', 0)} × RGB 辅助损失。这两项加权修改属于本地实验；不将综合规划代价标作论文的灰度 L1。
+规划器使用阶段二训练的 IMPASTO-UNet、PCA–RANSAC 初始化、MPPI elite softmax 序列更新及 CMA 风格自适应。多笔绘画采用 H={config['planner']['horizon']}，每轮最多执行 {config['planner']['execute_steps']} 笔后读取仿真画布并重新规划。本配置的规划目标为加权灰度 L1 + {config['planner'].get('rgb_objective_weight', 0)} × RGB 辅助损失，后者为本地扩展；不将综合规划代价标作论文的灰度 L1。
 
 |任务|目标笔数|执行笔数|综合规划代价均值|执行加权灰度 L1|LPIPS AlexNet|
 |---|---:|---:|---:|---:|---|
@@ -614,7 +595,7 @@ def build_report(config, results, report_dir):
 - 规划器配置：`{config.get("config_file", "configs/stage3.json")}`
 - 聚合数值和逐笔动作/力控日志：`{config["report_dir"]}/metrics.json`
 - Stage-2 checkpoint SHA-256：`{results['paper_protocol']['checkpoint_sha256']}`
-- 运行命令：`IMPASTO_STAGE3_CONFIG={config.get("config_file", "configs/stage3.json")} bash scripts/run.sh scripts/run_stage3.py --report-dir {config['report_dir']} --overpaint-weight {config['planner'].get('overpaint_weight', 1.0)}`
+- 运行命令：`IMPASTO_STAGE3_CONFIG={config.get("config_file", "configs/stage3.json")} bash scripts/run.sh scripts/run_stage3.py`
 
 ## 逐轮诊断图
 

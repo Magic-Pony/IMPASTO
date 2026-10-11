@@ -19,8 +19,6 @@ class StrokeProposal:
     mask: np.ndarray
     score: float
     model: str
-    centerline_support: float = 1.0
-    centerline_max_gap_px: float = 0.0
 
 
 def _kmeans(points, k, iterations, rng):
@@ -211,11 +209,7 @@ def split_difference(base, target, components=5, threshold=.015, min_pixels=18,
                      color_hints=None, color_subset=None, base_rgb=None, target_rgb=None,
                      palette=None, color_guided=False, opaque_colors=False,
                      radius_config=None, curvature_penalty=.01, overlap_penalty=.15,
-                     robust_candidates=False, centerline_support_threshold=.72,
-                     max_centerline_gap_px=10.0, candidate_quality_checks=False,
-                     return_pool=False, force_hypotheses=None, palette_regions=False,
-                     preserve_thin_regions=False, foreground_threshold=.06,
-                     region_mask=None):
+                     robust_candidates=False):
     """Return disjoint PCA-RANSAC stroke proposals in world action units."""
     base = np.asarray(base, dtype=np.float32)
     target = np.asarray(target, dtype=np.float32)
@@ -231,28 +225,15 @@ def split_difference(base, target, components=5, threshold=.015, min_pixels=18,
         return _multiway_candidates(base, target, components, threshold, min_pixels,
             kmeans_iterations, ransac_iterations, ransac_threshold_px, canvas_width,
             canvas_height, action_bounds, seed, color_subset, base_rgb, target_rgb,
-            palette, radius_config, curvature_penalty, overlap_penalty,
-            centerline_support_threshold, max_centerline_gap_px,
-            candidate_quality_checks, return_pool, force_hypotheses, palette_regions,
-            preserve_thin_regions, foreground_threshold)
+            palette, radius_config, curvature_penalty, overlap_penalty)
     changed = np.abs(target - base) > threshold
     # Paint cannot correct an excess dark mark by drawing another dark mark
     # over empty canvas. Use only goal foreground to seed new pigment strokes;
     # the full-canvas objective still penalizes all overpainting.
     background = float(np.quantile(target, .95))
-    if region_mask is None:
-        changed &= target < background - threshold
-    else:
-        # RGB-routed regions can have weak or identical luminance. Their
-        # support was already determined in RGB; a second grayscale gate
-        # would discard real pale/chromatic marks before PCA sees them.
-        region_mask = np.asarray(region_mask, dtype=bool)
-        if region_mask.shape != base.shape:
-            raise ValueError("region_mask must match the canvas shape")
-        changed &= region_mask
-    if not preserve_thin_regions:
-        changed = cv2.morphologyEx(changed.astype(np.uint8), cv2.MORPH_OPEN,
-                                  np.ones((3, 3), np.uint8)).astype(bool)
+    changed &= target < background - threshold
+    changed = cv2.morphologyEx(changed.astype(np.uint8), cv2.MORPH_OPEN,
+                              np.ones((3, 3), np.uint8)).astype(bool)
     labels_cc, ncc = ndimage.label(changed)
     sizes = np.bincount(labels_cc.ravel())
     changed &= sizes[labels_cc] >= min_pixels
@@ -374,10 +355,6 @@ def split_difference(base, target, components=5, threshold=.015, min_pixels=18,
         # The learned MPC, not this geometric estimate, selects final force.
         area_m2 = group.sum()*canvas_width*canvas_height/((width-1)*(height-1))
         radius = (np.sqrt(length**2 + np.pi*area_m2)-length)/np.pi
-        centerline_px = np.stack([
-            c + value * u + np.polyval(coeff, value) * v
-            for value in np.linspace(s_lo, s_hi, 64)
-        ])
         radius = max(radius, .0005)
         # Area is only a seed width estimate; MPC may search the full force range.
         rc = radius_config or {"minimum": .0004, "scale": .0058, "exponent": 1.65}
@@ -391,6 +368,10 @@ def split_difference(base, target, components=5, threshold=.015, min_pixels=18,
         # centerline band first and fall back to the full group when it is too
         # small. This follows the paper's centerline weighted-patch idea more
         # closely than averaging every antialiased boundary pixel.
+        centerline_px = np.stack([
+            c + value * u + np.polyval(coeff, value) * v
+            for value in np.linspace(s_lo, s_hi, 64)
+        ])
         centerline = _centerline_mask(group.shape, centerline_px, width=5)
         color_mask = centerline & changed
         if int(color_mask.sum()) < max(12, min_pixels // 2):
@@ -441,87 +422,11 @@ def _footprint(action, shape, canvas_width, canvas_height, radius_config):
     return mask.astype(bool)
 
 
-def _centerline_support(action, support_mask, canvas_width, canvas_height,
-                        support_radius_px=4):
-    """Measure whether a proposed centerline is one continuous residual stroke.
-
-    PCA can fit a single curve through two nearby disconnected marks.  A
-    footprint score alone cannot distinguish that failure from a valid long
-    stroke, so evaluate the sampled path against a small dilation of the
-    residual mask and report the longest unsupported run in image pixels.
-    """
-    height, width = support_mask.shape
-    points = Stroke(*map(float, action)).points(np.linspace(0.0, 1.0, 160))
-    pixels = np.column_stack([
-        (points[:, 0] / canvas_width + .5) * (width - 1),
-        (.5 - points[:, 1] / canvas_height) * (height - 1),
-    ])
-    kernel_size = max(3, int(2 * support_radius_px + 1))
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,
-                                       (kernel_size, kernel_size))
-    supported = cv2.dilate(support_mask.astype(np.uint8), kernel) > 0
-    x = np.clip(np.rint(pixels[:, 0]).astype(int), 0, width - 1)
-    y = np.clip(np.rint(pixels[:, 1]).astype(int), 0, height - 1)
-    samples = supported[y, x]
-    # Brush tips are antialiased and often do not exceed the residual
-    # threshold at the first and last few samples.
-    interior = samples[4:-4] if len(samples) > 12 else samples
-    support_rate = float(np.mean(interior)) if len(interior) else 0.0
-    step_px = float(np.mean(np.linalg.norm(np.diff(pixels, axis=0), axis=1)))
-    max_run = 0
-    run = 0
-    for value in interior:
-        run = run + 1 if not value else 0
-        max_run = max(max_run, run)
-    return support_rate, float(max_run * max(step_px, 1e-6))
-
-
-def _color_residual_support(rgb, changed, color, palette, foreground_threshold=.035,
-                            fit_threshold=.005, hue_threshold_deg=55.0):
-    """Keep residual pixels whose target colour is compatible with one pigment.
-
-    A global residual mask can make two adjacent strokes look like one path.
-    This mask uses the target-to-background colour direction and a loose hue
-    gate, so antialiased edges remain available while a path through a
-    different pigment or paper gap loses support.
-    """
-    image = np.asarray(rgb, dtype=np.float32)
-    if image.max() > 1.0:
-        image = image / 255.0
-    pal = np.asarray(palette, dtype=np.float32)
-    if pal.max() > 1.0:
-        pal = pal / 255.0
-    background = np.median(image.reshape(-1, 3), axis=0)
-    delta = image - background
-    contrast = pal[int(color)] - background
-    denominator = max(float(np.dot(contrast, contrast)), 1e-8)
-    alpha = np.clip(np.sum(delta * contrast, axis=-1) / denominator, 0.0, 1.0)
-    residual = np.mean(np.abs(delta - alpha[..., None] * contrast), axis=-1)
-    gain = np.mean(np.abs(delta), axis=-1) - residual
-    foreground = np.max(np.abs(delta), axis=-1) > foreground_threshold
-
-    hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-    palette_hsv = cv2.cvtColor(pal[int(color)][None, None, :], cv2.COLOR_RGB2HSV)[0, 0]
-    hue_error = np.abs(hsv[..., 0] - palette_hsv[0])
-    hue_error = np.minimum(hue_error, 360.0 - hue_error)
-    target_saturation = hsv[..., 1]
-    pigment_saturation = float(palette_hsv[1])
-    # Hue is unstable near gray; use direction and value there instead.
-    hue_ok = (hue_error <= hue_threshold_deg) | (target_saturation < .08)
-    if pigment_saturation < .08:
-        hue_ok = np.ones_like(hue_ok, dtype=bool)
-    return np.asarray(changed, dtype=bool) & foreground & hue_ok & (gain > fit_threshold)
-
-
 def _multiway_candidates(base, target, components, threshold, min_pixels,
                          kmeans_iterations, ransac_iterations, ransac_threshold_px,
                          canvas_width, canvas_height, bounds, seed, color_subset,
                          base_rgb, target_rgb, palette, radius_config,
-                         curvature_penalty, overlap_penalty,
-                         centerline_support_threshold, max_centerline_gap_px,
-                         candidate_quality_checks, return_pool, force_hypotheses,
-                         palette_regions, preserve_thin_regions,
-                         foreground_threshold):
+                         curvature_penalty, overlap_penalty):
     """Multi-start spatial PCA/RANSAC with explicit coverage and overlap scoring.
 
     Spatial k-means still provides geometry. Coarse color-connected regions add
@@ -532,15 +437,14 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
         return split_difference(base, target, components, threshold, min_pixels,
             kmeans_iterations, ransac_iterations, ransac_threshold_px,
             canvas_width, canvas_height, bounds, seed, color_subset=color_subset,
-            radius_config=radius_config, opaque_colors=True,
-            preserve_thin_regions=preserve_thin_regions)
+            radius_config=radius_config, opaque_colors=True)
     pal = np.asarray(palette, np.float32)
     if pal.max() > 1: pal /= 255
     rgb0 = np.asarray(base_rgb, np.float32)/255
     rgb1 = np.asarray(target_rgb, np.float32)/255
     error = np.mean(np.abs(rgb1-rgb0), axis=-1)
     bg = np.median(rgb1.reshape(-1,3), axis=0)
-    foreground = np.max(np.abs(rgb1-bg), axis=-1) > foreground_threshold
+    foreground = np.max(np.abs(rgb1-bg), axis=-1) > .06
     changed = (error > threshold) & foreground
     # We will not use color labels as action labels. They only stop unrelated
     # hues from being averaged into an invented pigment in an initial seed.
@@ -550,13 +454,7 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
     lab = cv2.cvtColor(rgb1, cv2.COLOR_RGB2Lab)
     family = hue_family*3 + np.digitize(lab[...,0], [53, 73])
     groups = [changed]
-    label_maps = [hue_family, family]
-    if palette_regions:
-        ids = list(color_subset or range(len(pal)))
-        palette_lab = cv2.cvtColor(pal[None], cv2.COLOR_RGB2Lab)[0]
-        distances = np.sum((lab[..., None, :] - palette_lab[ids]) ** 2, axis=-1)
-        label_maps.append(np.argmin(distances, axis=-1))
-    for labels in label_maps:
+    for labels in (hue_family, family):
         for label in np.unique(labels[changed]):
             # Preserve a complete color region instead of breaking it at
             # pixels already painted. The residual still controls its score.
@@ -570,37 +468,23 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
                     groups.append(group)
     candidates = []
     for gi, group in enumerate(groups):
-        residual_group = group & changed
-        if int(residual_group.sum()) < min_pixels:
-            continue
+        # Isolate each region in the difference image without changing target RGB.
         fake_base = target.copy()
         fake_base[group] = target[group]+.2
         ks = (sorted(set([components, components+2, components*2])) if gi == 0
               else list(range(1, components + 1)))
         for k in ks:
             if group.sum() < k*min_pixels: continue
-            local_candidates = split_difference(fake_base,target,k,threshold=.03,
+            candidates.extend(split_difference(fake_base,target,k,threshold=.03,
                 min_pixels=min_pixels,kmeans_iterations=kmeans_iterations,
                 ransac_iterations=ransac_iterations,ransac_threshold_px=ransac_threshold_px,
                 canvas_width=canvas_width,canvas_height=canvas_height,
                 action_bounds=bounds,seed=seed+gi+k, color_subset=color_subset,
                 base_rgb=base_rgb,target_rgb=target_rgb,palette=palette,
-                opaque_colors=True,radius_config=radius_config,
-                preserve_thin_regions=preserve_thin_regions,
-                region_mask=group if preserve_thin_regions else None)
-            if gi == 0:
-                local_candidates = [StrokeProposal(
-                    p.action, p.color, p.opacity, p.mask, p.score,
-                    f"global:{p.model}", p.centerline_support,
-                    p.centerline_max_gap_px)
-                    for p in local_candidates]
-            candidates.extend(local_candidates)
+                opaque_colors=True,radius_config=radius_config))
     # Rank by actual explained residual under a pigment footprint, rather than
     # by component size; subtract curved detours and already-covered area.
     pool=[]
-    color_support_cache = {}
-    pigment_error_cache = {}
-    missing = np.max(np.abs(rgb0-bg),axis=-1)<.04
     for proposal in candidates:
         action=proposal.action.copy()
         if bounds:
@@ -609,42 +493,18 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
         mask=_footprint(action,base.shape,canvas_width,canvas_height,radius_config)
         core=mask & proposal.mask
         if core.sum()<min_pixels: continue
-        if candidate_quality_checks:
-            support_rate, max_gap_px = _centerline_support(
-                action, changed, canvas_width, canvas_height, support_radius_px=1)
-            if (support_rate < centerline_support_threshold
-                    or max_gap_px > max_centerline_gap_px):
-                continue
         weights=cv2.distanceTransform(proposal.mask.astype(np.uint8),cv2.DIST_L2,5)[core]
         pixels=rgb1[core]
         ids=list(color_subset or range(len(pal)))
-        # Keep the calibrated opaque-palette classifier used by the 1107014
-        # run for the selected candidates.  The continuity filters above are
-        # geometric; mixing a new colour objective into this A/B would make
-        # it impossible to attribute changes in painting quality.
+        # L1 prototype classification is robust to mixed antialiased boundaries.
+        # A hue-distance term avoids replacing a green leaf by a similar gray.
         htarget=cv2.cvtColor(pixels[None].astype(np.float32),cv2.COLOR_RGB2HSV)[0]
         hpalette=cv2.cvtColor(pal[None].astype(np.float32),cv2.COLOR_RGB2HSV)[0]
         hdiff=abs(hpalette[ids,0,None]-htarget[None,:,0])
         hdiff=np.minimum(hdiff,360-hdiff)/180
         errors=np.mean(abs(pal[ids,None]-pixels[None]),axis=-1)
         errors += .10*hdiff*htarget[None,:,1]
-        color=ids[int(np.argmin(np.average(
-            errors,axis=1,weights=np.maximum(weights,.1))))]
-        if color not in color_support_cache:
-            color_support_cache[color] = _color_residual_support(target_rgb, changed, color, pal,
-                foreground_threshold=min(.035, foreground_threshold))
-            pigment_error_cache[color] = np.mean(np.abs(rgb1-pal[color]),axis=-1)
-        color_support = color_support_cache[color]
-        if candidate_quality_checks:
-            color_rate, color_gap = _centerline_support(
-                action, color_support, canvas_width, canvas_height,
-                support_radius_px=1)
-            # Colour support is stricter for long proposals, where a single
-            # PCA curve is most likely to bridge two separate brush marks.
-            minimum_rate = .58 if action[2] > .03 else .35
-            maximum_gap = 5.0 if action[2] > .03 else max_centerline_gap_px
-            if color_rate < minimum_rate or color_gap > maximum_gap:
-                continue
+        color=ids[int(np.argmin(np.average(errors,axis=1,weights=np.maximum(weights,.1))))]
         # A connected residual may join a petal to a stem. A long curve across
         # that junction is not a single pigment stroke, even if it covers area.
         path = Stroke(*map(float, action)).points(np.linspace(0, 1, 100))
@@ -661,33 +521,11 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
             incompatible = (hue_error > 45) & (samples[:, 1] > .06)
             if incompatible.mean() > .15:
                 continue
-        new_error=pigment_error_cache[color]
+        # Correct color/shape on the local target must be feasible before MPC.
+        new_error=np.mean(np.abs(rgb1-pal[color]),axis=-1)
+        missing = np.max(np.abs(rgb0-bg),axis=-1)<.04
         gain=(error-new_error)*mask*(1+3*missing)
         pool.append((action,color,mask,gain,proposal))
-    if return_pool:
-        # Keep diverse geometry rather than using disk coverage to commit the
-        # nominal sequence. The learned model will select width hypotheses.
-        pool.sort(key=lambda item: float(item[3].sum()), reverse=True)
-        result = []
-        paths = []
-        for action, color, mask, gain, proposal in pool:
-            path = Stroke(*map(float, action)).points(np.linspace(0, 1, 32))
-            if any(color == cid and min(np.mean(np.linalg.norm(path-other, axis=1)),
-                       np.mean(np.linalg.norm(path-other[::-1], axis=1))) < .002
-                   for cid, other in paths):
-                continue
-            paths.append((color, path))
-            support,gap=(_centerline_support(action,changed,canvas_width,canvas_height,
-                                             support_radius_px=1)
-                         if candidate_quality_checks else (1.,0.))
-            for force in sorted(set([float(action[5]), *(force_hypotheses or [])])):
-                variant = action.copy()
-                variant[5] = np.clip(force, *bounds['force_N']) if bounds else force
-                result.append(StrokeProposal(variant, color, 1., proposal.mask,
-                              float(gain.sum()), proposal.model,support,gap))
-            if len(paths) >= 48:
-                break
-        return result
     selected=[];covered=np.zeros(base.shape,bool)
     for _ in range(components):
         if not pool: break
@@ -696,12 +534,6 @@ def _multiway_candidates(base, target, components, threshold, min_pixels,
                       -curvature_penalty*abs(action[3])/canvas_width)
                 for action,color,mask,gain,proposal in pool]
         j=int(np.argmax(scores));action,color,mask,gain,proposal=pool.pop(j)
-        final_support, final_gap = (
-            _centerline_support(action, changed, canvas_width, canvas_height,
-                                support_radius_px=1)
-            if candidate_quality_checks else (1.0, 0.0))
-        selected.append(StrokeProposal(
-            action, color, 1., proposal.mask, scores[j], proposal.model,
-            final_support, final_gap))
+        selected.append(StrokeProposal(action,color,1.,proposal.mask,scores[j],proposal.model))
         covered |= mask
     return selected

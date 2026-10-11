@@ -1,8 +1,7 @@
 """Stage-3 learned-dynamics MPC with PCA-RANSAC and CMA-style sampling."""
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
-from itertools import permutations
+from dataclasses import dataclass
 import math
 
 import cv2
@@ -28,6 +27,7 @@ class PlanResult:
     proposals: list[StrokeProposal]
     initial_actions: np.ndarray | None = None
     initial_colors: list[int] | None = None
+    initial_masks: np.ndarray | None = None
 
 
 def _crop_box(crop: CropTransform, width, height, canvas_width, canvas_height):
@@ -168,7 +168,7 @@ class LearnedCanvasDynamics:
         return np.array([p0[0], p0[1], length_pixels, bend_image,
                          float(stroke.force), alpha_image], dtype=np.float32)
 
-    def apply_local(self, canvas_gray, prediction, crop, opacity=1.0, color=None):
+    def apply_local(self, canvas_gray, prediction, crop, opacity=1.0):
         result = np.asarray(canvas_gray, dtype=np.float32).copy()
         x0, x1, y0, y1 = _crop_box(crop, result.shape[1], result.shape[0],
                                    self.canvas_width, self.canvas_height)
@@ -183,26 +183,12 @@ class LearnedCanvasDynamics:
             mixed = current + alpha * delta
         else:
             mixed = current + alpha * (resized - current)
-        if self.cfg.get("convex_pigment_projection", False):
-            if color is None:
-                raise ValueError("Pigment colour is required for physical projection")
-            pigment=np.asarray(self.cfg['palette_rgb'][int(color)],np.float32)
-            if pigment.max()>1:
-                pigment=pigment/255
-            luminance=float(pigment @ np.array([.299,.587,.114],np.float32))
-            # The simulator mixes current RGB and one loaded pigment with
-            # coverage in [0,1]. Its linear grayscale observation must lie
-            # between the current value and pigment luminance. A grayscale
-            # U-Net can otherwise invent erasure or overshoot the pigment.
-            # Preserve the learned spatial change inside that feasible range.
-            mixed=np.clip(mixed,np.minimum(current,luminance),
-                          np.maximum(current,luminance))
         result[y0:y1, x0:x1] = np.clip(mixed, 0.0, 1.0)
         return result
 
     def step(self, canvas_gray, action, color, opacity=1.0):
         prediction, crop, rendered = self.predict_local(canvas_gray, action, color, opacity)
-        return self.apply_local(canvas_gray, prediction, crop, opacity, color), prediction, crop, rendered
+        return self.apply_local(canvas_gray, prediction, crop, opacity), prediction, crop, rendered
 
     def rollout(self, initial, actions, colors, opacities=None):
         canvases, frames = self.rollout_batch(np.asarray(initial, dtype=np.float32)[None],
@@ -211,7 +197,7 @@ class LearnedCanvasDynamics:
                                                None if opacities is None else np.asarray(opacities, dtype=np.float32)[None])
         return canvases[0], [frame[0] for frame in frames]
 
-    def rollout_batch(self, initial, actions, colors, opacities=None, return_coverage=False):
+    def rollout_batch(self, initial, actions, colors, opacities=None):
         states = np.asarray(initial, dtype=np.float32).copy()
         actions = np.asarray(actions, dtype=np.float32)
         colors = np.asarray(colors, dtype=np.int64)
@@ -219,7 +205,6 @@ class LearnedCanvasDynamics:
                      else np.asarray(opacities, dtype=np.float32))
         batch_size, horizon = actions.shape[:2]
         frames = []
-        coverages = []
         for t in range(horizon):
             local_inputs, local_actions, crops = [], [], []
             for i in range(batch_size):
@@ -230,42 +215,12 @@ class LearnedCanvasDynamics:
                 crops.append(crop)
             image_tensor = torch.from_numpy(np.asarray(local_inputs, dtype=np.float32)).to(self.device)
             action_tensor = torch.from_numpy(np.asarray(local_actions, dtype=np.float32)).to(self.device)
-            # Inference chunks keep independent runs usable on a shared GPU.
-            # Chunking changes memory use, not the candidate population.
-            chunk = int(self.cfg.get("inference_batch_size", 16))
             with torch.no_grad():
-                predictions = np.concatenate([
-                    self.model(image_tensor[j:j+chunk], action_tensor[j:j+chunk])[:, 0].cpu().numpy()
-                    for j in range(0, len(image_tensor), chunk)])
-                if return_coverage:
-                    # A grayscale change cannot identify coverage when the
-                    # current paint and new pigment have equal luminance.
-                    # Query the same learned model on a blank reference for
-                    # that action, rather than inventing a geometric alpha.
-                    reference = float(self.cfg.get('coverage_reference_gray', .955))
-                    blank = image_tensor.clone()
-                    blank[:, 0].fill_(reference)
-                    blank_predictions = np.concatenate([
-                        self.model(blank[j:j+chunk], action_tensor[j:j+chunk])[:, 0].cpu().numpy()
-                        for j in range(0, len(blank), chunk)])
-                    pigment = np.asarray(self.cfg['palette_rgb'], np.float32)[colors[:, t]] / 255
-                    luminance = pigment @ np.array([.299, .587, .114], np.float32)
-                    denominator = luminance - reference
-                    alpha_local = np.divide(blank_predictions-reference, denominator[:, None, None],
-                        out=np.zeros_like(blank_predictions), where=abs(denominator[:, None, None])>.025)
-                    alpha_local = np.clip(alpha_local, 0, 1)
-                    global_alpha = np.zeros_like(states)
-                    for i, crop in enumerate(crops):
-                        x0,x1,y0,y1=_crop_box(crop,states.shape[2],states.shape[1],
-                                            self.canvas_width,self.canvas_height)
-                        if x1>x0 and y1>y0:
-                            global_alpha[i,y0:y1,x0:x1]=cv2.resize(alpha_local[i],(x1-x0,y1-y0))
-                    coverages.append(global_alpha * opacities[:, t, None, None])
+                predictions = self.model(image_tensor, action_tensor)[:, 0].cpu().numpy()
             for i in range(batch_size):
-                states[i] = self.apply_local(states[i], predictions[i], crops[i],
-                                             opacities[i, t], colors[i, t])
+                states[i] = self.apply_local(states[i], predictions[i], crops[i], opacities[i, t])
             frames.append(states.copy())
-        return (states, frames, coverages) if return_coverage else (states, frames)
+        return states, frames
 
 
 class AdaptiveMPCPlanner:
@@ -288,12 +243,7 @@ class AdaptiveMPCPlanner:
         return 1.0 + float(self.pc["objective_changed_weight"]) * dilated.astype(np.float32)
 
     def cost(self, prediction, goal, weights):
-        error = np.asarray(prediction) - np.asarray(goal)
-        overpaint_weight = float(self.pc.get("overpaint_weight", 1.0))
-        if overpaint_weight < 1.0:
-            raise ValueError("overpaint_weight must be at least 1")
-        weighted_error = np.abs(error) * np.where(error < 0, overpaint_weight, 1.0)
-        return float(np.sum(weights * weighted_error) / max(float(weights.sum()), 1e-8))
+        return float(np.sum(weights * np.abs(prediction - goal)) / max(float(weights.sum()), 1e-8))
 
     def _random_action(self):
         b = self.bounds
@@ -318,12 +268,7 @@ class AdaptiveMPCPlanner:
         # must be estimated from the actually observed canvas.  The prefix is
         # only a target-frame alignment aid; feeding it as the RGB base makes
         # all antialiasing and registration differences look like pigment.
-        # Keep the grayscale and RGB geometry references paired.  A published
-        # prefix is used only as an initialization image; rollout and colour
-        # objectives still start from the live observation below.
-        proposal_base_rgb = (
-            proposal_images[1] if proposal_images is not None
-            else color_images[0] if color_images is not None else None)
+        proposal_base_rgb = (color_images[0] if color_images is not None else None)
         proposals = split_difference(
             proposal_base, goal,
             components=min(int(self.pc["splitter_components"]), int(horizon)),
@@ -346,24 +291,11 @@ class AdaptiveMPCPlanner:
             base_rgb=proposal_base_rgb,
             target_rgb=None if color_images is None else color_images[1],
             palette=self.cfg.get("palette_rgb"),
-            centerline_support_threshold=float(
-                self.pc.get("splitter_centerline_support_threshold", .72)),
-            max_centerline_gap_px=float(
-                self.pc.get("splitter_max_centerline_gap_px", 10.0)),
-            candidate_quality_checks=bool(
-                self.pc.get("splitter_candidate_quality_checks", False)),
-            return_pool=bool(self.pc.get("learned_seed_selection", False)),
-            force_hypotheses=self.pc.get("seed_force_hypotheses"),
-            palette_regions=bool(self.pc.get("splitter_palette_regions", False)),
-            preserve_thin_regions=bool(self.pc.get("splitter_preserve_thin_regions", False)),
-            foreground_threshold=float(self.pc.get("splitter_foreground_threshold", .06)),
         )
-        if self.pc.get("learned_seed_selection", False) and proposals:
-            proposals = self._select_learned_seeds(current, goal, proposals, horizon,
-                                                   color_images)
         actions = []
         colors = []
         opacities = []
+        masks = []
         for proposal in proposals[:horizon]:
             action = _project_action(proposal.action, self.bounds, self.dynamics.workspace_limits,
                                      (self.dynamics.canvas_width, self.dynamics.canvas_height))
@@ -372,6 +304,7 @@ class AdaptiveMPCPlanner:
             actions.append(action)
             colors.append(int(proposal.color))
             opacities.append(float(proposal.opacity))
+            masks.append(np.asarray(proposal.mask, dtype=bool))
         while len(actions) < horizon:
             if not actions:
                 if not bool(self.pc.get("allow_random_fill", True)):
@@ -379,82 +312,18 @@ class AdaptiveMPCPlanner:
                 actions.append(self._random_action())
                 colors.append(colors[-1] if colors else 0)
                 opacities.append(opacities[-1] if opacities else 1.0)
+                masks.append(np.zeros_like(goal, dtype=bool))
                 continue
             # A duplicate supported seed is safe for refinement. A random
             # workspace stroke is not: it can survive MPPI at the edge of a
             # sparse objective and permanently damage the canvas.
-            actions.append(actions[(len(actions) - 1) % len(actions)].copy())
-            colors.append(colors[-1] if colors else 0)
-            opacities.append(opacities[-1] if opacities else 1.0)
-        return np.asarray(actions, dtype=np.float32), colors, opacities, proposals
-
-    def _rgb_step(self, rgb, gray, next_gray, colors, coverage=None):
-        palette = np.asarray(self.cfg["palette_rgb"], np.float32) / 255
-        pigment = palette[np.asarray(colors, dtype=int)]
-        pg = pigment @ np.array([.299, .587, .114], np.float32)
-        denominator = pg[:, None, None] - gray
-        alpha = np.divide(next_gray-gray, denominator,
-                          out=np.zeros_like(gray), where=abs(denominator)>.025)
-        alpha = np.clip(alpha, 0, 1)
-        alpha[abs(next_gray-gray)<.003] = 0
-        if coverage is not None:
-            alpha=np.where(abs(denominator)<=.025,coverage,alpha)
-        return rgb + alpha[..., None]*(pigment[:, None, None, :]-rgb)
-
-    def _select_learned_seeds(self, current, goal, proposals, horizon, color_images):
-        """Rank alternative PCA curves/widths using the deployed dynamics.
-
-        Disk coverage cannot estimate a pale or overlapping stroke's value.
-        Greedy residual updates retain small remaining details and evaluate
-        overpainting with the same learned predictor as subsequent MPPI.
-        """
-        projected = []
-        for p in proposals:
-            a = _project_action(p.action, self.bounds, self.dynamics.workspace_limits,
-                                (self.dynamics.canvas_width, self.dynamics.canvas_height))
-            if a is not None:
-                projected.append(replace(p,action=a))
-        if not projected:
-            return []
-        actions = np.array([p.action for p in projected])[:, None]
-        colors = np.array([p.color for p in projected])[:, None]
-        if self.color_target is not None:
-            colors = self._candidate_colors(actions, [0])
-            projected = [replace(p, color=int(color))
-                         for p, color in zip(projected, colors[:, 0])]
-        state = np.asarray(current, np.float32).copy()
-        rgb = None if color_images is None else np.asarray(color_images[0], np.float32)/255
-        target_rgb = None if color_images is None else np.asarray(color_images[1], np.float32)/255
-        weights = self.objective_weights(current, goal)
-        selected = []
-        for _ in range(horizon):
-            batches = []
-            coverage_batches = []
-            for start in range(0, len(actions), 32):
-                initial = np.repeat(state[None], len(actions[start:start+32]), axis=0)
-                if self.cfg.get('rgb_equal_luminance_coverage',False):
-                    preds, _, coverage=self.dynamics.rollout_batch(initial,actions[start:start+32],
-                        colors[start:start+32],return_coverage=True)
-                    coverage_batches.append(coverage[0])
-                else:
-                    preds, _ = self.dynamics.rollout_batch(initial, actions[start:start+32],
-                                                           colors[start:start+32])
-                batches.append(preds)
-            predictions = np.concatenate(batches)
-            costs = np.array([self.cost(p, goal, weights) for p in predictions])
-            next_rgb = None
-            if rgb is not None and self.pc.get("rgb_objective_weight", 0):
-                next_rgb = self._rgb_step(np.repeat(rgb[None], len(actions), axis=0),
-                        np.repeat(state[None], len(actions), axis=0), predictions, colors[:,0],
-                        np.concatenate(coverage_batches) if coverage_batches else None)
-                costs += float(self.pc["rgb_objective_weight"])*np.sum(
-                        np.mean(abs(next_rgb-target_rgb), axis=-1)*weights,axis=(1,2))/weights.sum()
-            best = int(np.argmin(costs))
-            selected.append(projected[best])
-            state = predictions[best]
-            if next_rgb is not None:
-                rgb = next_rgb[best]
-        return selected
+            source = (len(actions) - 1) % len(actions)
+            actions.append(actions[source].copy())
+            colors.append(colors[source])
+            opacities.append(opacities[source])
+            masks.append(masks[source].copy())
+        return (np.asarray(actions, dtype=np.float32), colors, opacities, proposals,
+                np.asarray(masks, dtype=bool))
 
     def _sample(self, nominal, seed_actions, sigma, covariance_by_step, count):
         horizon = nominal.shape[0]
@@ -482,72 +351,37 @@ class AdaptiveMPCPlanner:
         return candidates
 
     def _candidate_colors(self, candidates, default):
-        default=np.asarray(default,dtype=np.int64)
         if self.color_target is None:
-            return np.tile(default, (len(candidates), 1)) if default.ndim==1 else default.copy()
+            return np.tile(np.asarray(default, dtype=np.int64), (len(candidates), 1))
         rgb = self.color_target
         h, w = rgb.shape[:2]
         palette = np.asarray(self.cfg["palette_rgb"], dtype=np.float32)/255
         ids = self.cfg.get("active_color_subset", self.cfg["color_subset"])
         result = np.empty(candidates.shape[:2], dtype=np.int64)
         background=np.median(rgb.reshape(-1,3)[::50],axis=0)
-        database=self.cfg.get("color_database")
-        if database:
-            means=np.asarray(database["means_linear_rgb"])[ids]
-            inverse_covariance=np.linalg.inv(np.asarray(database["covariances"])[ids])
         # Appendix B uses predicted footprint intersected with a central disk.
         # This sparse central-band quadrature approximates that image region.
         for i, sequence in enumerate(candidates):
             for j, action in enumerate(sequence):
                 stroke = Stroke(*map(float, action))
+                pts = stroke.points(np.linspace(.25,.75,11))
+                normal = np.array([-np.sin(stroke.angle),np.cos(stroke.angle)])
                 rc=self.cfg["force_radius_m"]
                 radius=rc["minimum"]+rc["scale"]*stroke.force**rc["exponent"]
-                if self.pc.get('color_footprint_disk', False):
-                    # Appendix B Eq.14: the pre-rendered disk footprint,
-                    # intersected with a disk at the geometric center.
-                    # Evaluate a local image region instead of 33 sparse
-                    # samples with a single normal for the entire curve.
-                    path=stroke.points(np.linspace(0,1,100))
-                    center=stroke.points(np.array([.5]))[0]
-                    disk_radius=float(self.pc.get('color_disk_radius_m', .015))
-                    lo=np.maximum(path.min(axis=0)-radius, center-disk_radius)
-                    hi=np.minimum(path.max(axis=0)+radius, center+disk_radius)
-                    x0=max(0,int(np.floor((lo[0]/self.dynamics.canvas_width+.5)*(w-1)))-1)
-                    x1=min(w,int(np.ceil((hi[0]/self.dynamics.canvas_width+.5)*(w-1)))+2)
-                    y0=max(0,int(np.floor((.5-hi[1]/self.dynamics.canvas_height)*(h-1)))-1)
-                    y1=min(h,int(np.ceil((.5-lo[1]/self.dynamics.canvas_height)*(h-1)))+2)
-                    yy,xx=np.mgrid[y0:y1,x0:x1]
-                    xy=np.stack([(xx/(w-1)-.5)*self.dynamics.canvas_width,
-                        (.5-yy/(h-1))*self.dynamics.canvas_height],axis=-1)
-                    # Same 100-point footprint, vectorized within this small
-                    # central region. No change to samples or candidate count.
-                    distance=np.min((xy[...,0,None]-path[:,0])**2
-                                    +(xy[...,1,None]-path[:,1])**2,axis=-1)
-                    mask=(distance<=radius**2)&(np.sum((xy-center)**2,axis=-1)<=disk_radius**2)
-                    sample_weights=np.maximum(radius-np.sqrt(distance[mask]), radius*.05)
-                    samples=rgb[y0:y1,x0:x1][mask]
-                    if not len(samples):
-                        fallback=default if default.ndim==1 else default[i]
-                        result[i,j]=int(fallback[min(j,len(fallback)-1)])
-                        continue
-                else:
-                    pts = stroke.points(np.linspace(.25,.75,11))
-                    normal = np.array([-np.sin(stroke.angle),np.cos(stroke.angle)])
-                    pts=(pts[:,None,:]+normal[None,None,:]*np.array([-.4,0,.4])[None,:,None]*radius).reshape(-1,2)
-                    x=np.clip(np.rint((pts[:,0]/self.dynamics.canvas_width+.5)*(w-1)).astype(int),0,w-1)
-                    y=np.clip(np.rint((.5-pts[:,1]/self.dynamics.canvas_height)*(h-1)).astype(int),0,h-1)
-                    samples=rgb[y,x]
-                    sample_weights=np.ones(len(samples))
+                pts=(pts[:,None,:]+normal[None,None,:]*np.array([-.4,0,.4])[None,:,None]*radius).reshape(-1,2)
+                x=np.clip(np.rint((pts[:,0]/self.dynamics.canvas_width+.5)*(w-1)).astype(int),0,w-1)
+                y=np.clip(np.rint((.5-pts[:,1]/self.dynamics.canvas_height)*(h-1)).astype(int),0,h-1)
+                samples=rgb[y,x]
                 # Robust representative in linear RGB. Reject paper background.
                 keep=np.max(abs(samples-background),axis=-1)>.05
-                if keep.any():
-                    samples=samples[keep]
-                    sample_weights=sample_weights[keep]
+                if keep.any(): samples=samples[keep]
                 linear=lambda x: np.where(x<=.04045,x/12.92,((x+.055)/1.055)**2.4)
-                mu=np.average(linear(samples),axis=0,weights=sample_weights)
+                mu=linear(samples).mean(axis=0)
+                database=self.cfg.get("color_database")
                 if database:
-                    delta=mu-means
-                    cost=np.einsum("ni,nij,nj->n",delta,inverse_covariance,delta)
+                    delta=mu-np.asarray(database["means_linear_rgb"])[ids]
+                    inv=np.linalg.inv(np.asarray(database["covariances"])[ids])
+                    cost=np.einsum("ni,nij,nj->n",delta,inv,delta)
                 else:
                     delta=abs(linear(palette[ids,None])-linear(samples[None]))
                     cost=np.mean(delta,axis=(1,2))
@@ -556,20 +390,11 @@ class AdaptiveMPCPlanner:
 
     def _evaluate(self, current, goal, candidates, colors, opacities, weights):
         color_batch = self._candidate_colors(candidates, colors)
-        opacity_batch = np.asarray(opacities, dtype=np.float32)
-        if opacity_batch.ndim == 1:
-            opacity_batch = np.tile(opacity_batch, (len(candidates), 1))
-        if opacity_batch.shape != candidates.shape[:2]:
-            raise ValueError('One opacity is required per candidate stroke')
+        opacity_batch = np.tile(np.asarray(opacities, dtype=np.float32), (len(candidates), 1))
         initial_batch = np.tile(np.asarray(current, dtype=np.float32)[None],
                                 (len(candidates), 1, 1))
-        coverages = None
-        if self.cfg.get('rgb_equal_luminance_coverage',False):
-            final_predictions, rollout_frames, coverages=self.dynamics.rollout_batch(
-                initial_batch,candidates,color_batch,opacity_batch,return_coverage=True)
-        else:
-            final_predictions, rollout_frames = self.dynamics.rollout_batch(
-                initial_batch, candidates, color_batch, opacity_batch)
+        final_predictions, rollout_frames = self.dynamics.rollout_batch(
+            initial_batch, candidates, color_batch, opacity_batch)
         costs = np.asarray([self.cost(prediction, goal, weights)
                             for prediction in final_predictions], dtype=np.float32)
         rgb_weight = float(self.pc.get("rgb_objective_weight", 0))
@@ -578,9 +403,16 @@ class AdaptiveMPCPlanner:
             # next-state difference and the separate, known pigment color.
             rgb = np.broadcast_to(self.color_current, (len(candidates),*self.color_current.shape)).copy()
             gray = np.broadcast_to(current, (len(candidates),*current.shape)).copy()
+            palette = np.asarray(self.cfg["palette_rgb"],np.float32)/255
             for t, next_gray in enumerate(rollout_frames):
-                rgb=self._rgb_step(rgb,gray,next_gray,color_batch[:,t],
-                                   None if coverages is None else coverages[t])
+                pigment=palette[color_batch[:,t]]
+                pg=pigment @ np.array([.299,.587,.114],np.float32)
+                denominator=pg[:,None,None]-gray
+                alpha=np.divide(next_gray-gray,denominator,
+                    out=np.zeros_like(gray),where=abs(denominator)>.025)
+                alpha=np.clip(alpha,0,1)
+                alpha[abs(next_gray-gray)<.003]=0
+                rgb+=alpha[...,None]*(pigment[:,None,None,:]-rgb)
                 gray=next_gray
             rgb_error=np.mean(abs(rgb-self.color_target),axis=-1)
             costs += rgb_weight*np.sum(rgb_error*weights,axis=(1,2))/weights.sum()
@@ -592,13 +424,14 @@ class AdaptiveMPCPlanner:
         self.color_target = (np.asarray(color_images[1],np.float32)/255 if color_images is not None and self.pc.get("update_colors_with_geometry",False) else None)
         self.color_current = (np.asarray(color_images[0],np.float32)/255 if color_images is not None else None)
         if initial is None:
-            nominal, inferred_colors, inferred_opacities, proposals = self._initial_sequence(
+            nominal, inferred_colors, inferred_opacities, proposals, seed_masks = self._initial_sequence(
                 current, goal, horizon, color_images, proposal_images)
         else:
             nominal = np.asarray(initial, dtype=np.float32).copy()
             inferred_colors = list(colors or [0] * horizon)
             inferred_opacities = list(opacities or [1.0] * horizon)
             proposals = []
+            seed_masks = None
             if len(nominal) < horizon:
                 pad = np.repeat(nominal[-1:, :], horizon - len(nominal), axis=0)
                 nominal = np.concatenate([nominal, pad], axis=0)
@@ -617,25 +450,6 @@ class AdaptiveMPCPlanner:
             inferred_opacities.append(inferred_opacities[-1] if inferred_opacities else 1.0)
         inferred_colors = inferred_colors[:horizon]
         inferred_opacities = inferred_opacities[:horizon]
-        if self.pc.get('seed_order_search',False) and 1<horizon<=5:
-            orders=np.asarray(list(permutations(range(horizon))),dtype=int)
-            ordered=nominal[orders]
-            order_costs=[]
-            weights=self.objective_weights(current,goal)
-            for start in range(0,len(orders),16):
-                # Reclassifying colours with geometry is the normal MPC
-                # contract. Fixed-opacity values travel with their strokes.
-                batch_orders=orders[start:start+16]
-                cost,_=self._evaluate(current,goal,ordered[start:start+16],
-                    np.asarray(inferred_colors)[batch_orders],
-                    np.asarray(inferred_opacities)[batch_orders],weights)
-                order_costs.extend(cost.tolist())
-            order=orders[int(np.argmin(order_costs))]
-            nominal=nominal[order]
-            inferred_colors=np.asarray(inferred_colors)[order].tolist()
-            inferred_opacities=np.asarray(inferred_opacities)[order].tolist()
-            seed_actions=nominal.copy()
-            seed_colors=list(inferred_colors)
         sigma = np.tile(np.asarray(self.pc["initial_sigma"], dtype=np.float32), (horizon, 1))
         covariance = np.tile(np.eye(6, dtype=np.float64), (horizon, 1, 1))
         step_paths = np.zeros((horizon, 6), dtype=np.float64)
@@ -740,4 +554,5 @@ class AdaptiveMPCPlanner:
             best_prediction, best_cost = final_prediction, final_cost
         return PlanResult(best_actions, best_colors, inferred_opacities,
                           best_prediction, initial_cost,
-                          float(best_cost), trace, proposals, seed_actions, seed_colors)
+                          float(best_cost), trace, proposals, seed_actions, seed_colors,
+                          seed_masks)

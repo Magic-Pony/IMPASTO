@@ -1,24 +1,17 @@
 """Measure a simulation-specific 25x25 opaque pigment patch database."""
 from pathlib import Path
 import json
-import os
 import numpy as np
 import cv2
 from PIL import Image
 from impasto.sim.mujoco_env import PaintingEnv
 from impasto.actions import Stroke
 root=Path(__file__).resolve().parents[1]
-config_path=Path(os.environ.get('IMPASTO_STAGE3_CONFIG','configs/stage3.json'))
-if not config_path.is_absolute():
- config_path=root/config_path
-cfg=json.loads(config_path.read_text())
-if cfg.get('deployment_palette_rgb'):
- cfg['palette_rgb']=cfg['deployment_palette_rgb']
+cfg=json.loads((root/'configs/stage3_refined.json').read_text())
 s1=json.loads((root/cfg['stage1_config']).read_text())
 s1['paint']['palette_rgb']=cfg.get('deployment_palette_rgb',cfg['palette_rgb'])
 env=PaintingEnv(s1,seed=6127)
-out=root/cfg.get('report_dir','reports/stage3')
-out.mkdir(parents=True,exist_ok=True)
+out=root/'reports/stage3_refined'
 means=[];covariances=[];patches=[];records=[]
 try:
  for color in range(24):
@@ -47,5 +40,4 @@ db={'kind':'simulated opaque central 25x25 patches','samples_per_color':2,
 sheet=np.zeros((4*75,6*75,3),dtype=np.uint8)
 for i,patch in enumerate(patches):sheet[(i//6)*75:(i//6+1)*75,(i%6)*75:(i%6+1)*75]=cv2.resize(patch,(75,75),interpolation=cv2.INTER_NEAREST)
 Image.fromarray(sheet).save(out/'color_database.png')
-print(f'color database: {out / "color_database.json"}')
 print('48 opaque patch measurements complete')

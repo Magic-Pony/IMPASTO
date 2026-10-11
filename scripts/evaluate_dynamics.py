@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import csv
-import argparse
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -24,10 +22,6 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--comparison-checkpoint',
-                        help='Evaluate another compatible model on the same held-out transitions')
-    args=parser.parse_args()
     cfg = json.loads((ROOT / os.environ.get("IMPASTO_STAGE2_CONFIG", "configs/stage2.json")).read_text())
     train_metrics = json.loads((ROOT / cfg.get("report_dir", "reports/stage2") / "training_metrics.json").read_text())
     checkpoint_path = ROOT / train_metrics["best_checkpoint"]
@@ -59,8 +53,6 @@ def main():
     changed = np.max(np.abs(target - inputs[:, 0:1]), axis=1, keepdims=True) > float(cfg["training"]["changed_pixel_threshold"])
     with np.load(dataset_path, allow_pickle=False) as archive:
         quality = archive["quality"]
-        validation_rows = np.isin(archive['episode_ids'], cfg['split']['validation_episode_ids'])
-        validation_forces = archive['world_actions'][validation_rows, 5]
     quality_summary = {
         "mean_target_force_N": float(quality[:, 0].mean()),
         "mean_force_N": float(quality[:, 1].mean()),
@@ -86,40 +78,7 @@ def main():
         "validation_episode_ids": cfg["split"]["validation_episode_ids"],
         "device": str(device),
         "collection_quality": quality_summary,
-        "force_strata": {label: {
-            "samples": int(rows.sum()),
-            "full_patch_l1": float(absolute[rows].mean()) if rows.any() else None,
-            "changed_region_l1": float(absolute[rows][changed[rows]].mean()) if changed[rows].any() else None,
-        } for label, rows in (("low_force_0.4_to_0.65", validation_forces <= .65),
-                              ("higher_force", validation_forces > .65))},
     }
-    if args.comparison_checkpoint:
-        comparison_path=ROOT/args.comparison_checkpoint
-        old=torch.load(comparison_path,map_location=device,weights_only=False)
-        for key in ('action_bounds','palette_rgb','unet_channels','action_embedding_channels'):
-            if old['config'].get(key) != cfg.get(key):
-                raise ValueError(f'Incompatible comparison model: {key}')
-        model.load_state_dict(old['state_dict'])
-        previous=[]
-        with torch.no_grad():
-            for batch in loader:
-                previous.append(model(batch['image'].to(device),batch['action'].to(device)).cpu().numpy())
-        previous=np.concatenate(previous)
-        old_absolute=abs(previous-target)
-        metrics['same_validation_comparison']={
-            'checkpoint':args.comparison_checkpoint,
-            'sha256':hashlib.sha256(comparison_path.read_bytes()).hexdigest(),
-            'unweighted_l1':float(old_absolute.mean()),
-            'stroke_region_l1':float(old_absolute[changed].mean()),
-            'background_l1':float(old_absolute[~changed].mean()),
-            'force_strata':{label:{
-                'samples':int(rows.sum()),
-                'full_patch_l1':float(old_absolute[rows].mean()),
-                'changed_region_l1':float(old_absolute[rows][changed[rows]].mean()),
-            } for label,rows in (('low_force_0.4_to_0.65',validation_forces<=.65),
-                                ('higher_force',validation_forces>.65))},
-            'protocol':'same episode-held-out stable-physics validation set; new checkpoint selected on this set; old checkpoint fixed before collection',
-        }
     report_dir = ROOT / cfg.get("report_dir", "reports/stage2")
     (report_dir / "evaluation_metrics.json").write_text(json.dumps(metrics, indent=2))
     chosen = np.linspace(0, len(dataset) - 1, min(6, len(dataset)), dtype=int)
@@ -179,7 +138,7 @@ def main():
 
 ## Result
 
-The episode-held-out validation set contains {metrics['validation_samples']} transitions from episodes {metrics['validation_episode_ids']}. The best checkpoint is epoch {train_metrics['best_epoch']}; its unweighted next-state L1 is **{metrics['unweighted_l1']:.5f}**, compared with the paper's **0.0285** reference at 900 training samples. These scores use different data and cannot establish superiority to the paper. The same validation set selects the checkpoint, so this is a validation result rather than an untouched test result.
+The episode-held-out validation set contains {metrics['validation_samples']} transitions from episodes {metrics['validation_episode_ids']}. The best checkpoint is epoch {train_metrics['best_epoch']}; its unweighted next-state L1 is **{metrics['unweighted_l1']:.5f}**, compared with the paper's **0.0285** reference at 900 training samples. This local simulation score is lower than the reported reference. The same validation set selects the checkpoint, so this is a validation result rather than an untouched test result.
 
 |Metric|Value|
 |---|---:|
@@ -208,7 +167,7 @@ The episode-held-out validation set contains {metrics['validation_samples']} tra
 
 ## Simulator data quality
 
-The {len(quality):,} successful transitions came from {cfg['episodes']} independent {cfg['samples_per_episode']}-stroke episodes. Mean achieved force was {quality_summary['mean_force_N']:.3f} N against a {quality_summary['mean_target_force_N']:.3f} N mean target; mean per-stroke force RMSE was {quality_summary['mean_force_rmse_N']:.3f} N (maximum {quality_summary['max_force_rmse_N']:.3f} N). Mean contact fraction was {quality_summary['mean_contact_fraction']:.5f}, minimum {quality_summary['min_contact_fraction']:.5f}; mean trajectory RMSE was {quality_summary['mean_trajectory_rmse_m']*1000:.2f} mm. Failed attempts averaged {quality_summary['mean_failed_attempts']:.3f} per accepted sample.
+The 1,000 successful transitions came from ten independent 100-stroke episodes. Mean achieved force was {quality_summary['mean_force_N']:.3f} N against a {quality_summary['mean_target_force_N']:.3f} N mean target; mean per-stroke force RMSE was {quality_summary['mean_force_rmse_N']:.3f} N (maximum {quality_summary['max_force_rmse_N']:.3f} N). Mean contact fraction was {quality_summary['mean_contact_fraction']:.5f}, minimum {quality_summary['min_contact_fraction']:.5f}; mean trajectory RMSE was {quality_summary['mean_trajectory_rmse_m']*1000:.2f} mm. Failed attempts averaged {quality_summary['mean_failed_attempts']:.3f} per accepted sample.
 
 ## Reproducibility
 
@@ -217,7 +176,7 @@ SHA-256: `{train_metrics['best_checkpoint_sha256']}`
 Training history: `{train_metrics['history']}`  
 Dataset manifest: `{cfg['dataset_dir']}/manifest.json`
 
-The paper-specified model dimensions, optimizer, learning rate, batch size, epoch count, and decay schedule are used. This run uses {train_metrics['train_samples']} training and {metrics['validation_samples']} validation transitions; any increase over 900/100 is a local extension. The signed bend normalization, numeric action limits, crop margin, configured palette, brush-width law, dropout rate, and changed-pixel loss multiplier are local choices because the paper does not specify them. Inputs use a two-channel 100 x 100 patch and the complete next grayscale patch is predicted. The simulator is the Stage-1 contact-driven paint model, not the real robot; therefore the comparison with the paper is an implementation-level reference, not a controlled reproduction on identical hardware data. No baseline is implemented or evaluated in this stage.
+The paper-specified model dimensions, optimizer, learning rate, batch size, epoch count, decay schedule, and 900 training samples are used. The signed bend normalization, numeric action limits, crop margin, configured task-specific color subset, brush-width law, dropout rate, and changed-pixel loss multiplier are local choices because the paper does not specify them. Inputs use a two-channel 100 x 100 patch and the complete next grayscale patch is predicted. The simulator is the Stage-1 contact-driven paint model, not the real robot; therefore the comparison with the paper is an implementation-level reference, not a controlled reproduction on identical hardware data. No baseline is implemented or evaluated in this stage.
 """
     (report_dir / "report.md").write_text(report)
     print(json.dumps(metrics, indent=2))

@@ -100,7 +100,7 @@ def main():
     val_set = Stage2Dataset(data_path, cfg["action_bounds"], False, cfg["seed"] + 1,
                             cfg["training"], val_ids)
     if len(train_set) != int(cfg["train_samples"]) or len(val_set) != int(cfg["validation_samples"]):
-        raise ValueError(f"Expected configured train/validation counts, got {len(train_set)}/{len(val_set)}")
+        raise ValueError(f"Expected 900/100 train/validation samples, got {len(train_set)}/{len(val_set)}")
     generator = torch.Generator().manual_seed(int(cfg["seed"]))
     train_loader = DataLoader(train_set, batch_size=int(cfg["training"]["batch_size"]),
                               shuffle=True, generator=generator, num_workers=0, pin_memory=device.type == "cuda")

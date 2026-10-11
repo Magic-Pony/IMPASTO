@@ -53,8 +53,6 @@ class PaintingEnv:
         self.tip_site = _id(self.model, mujoco.mjtObj.mjOBJ_SITE, "brush_tip_site")
         self.control_site = self.model.site("brush_nominal_site").id
         self.tip_geom = _id(self.model, mujoco.mjtObj.mjOBJ_GEOM, "brush_tip")
-        if "brush_contact_timeconst_s" in self.config:
-            self.model.geom_solref[self.tip_geom, 0] = float(self.config["brush_contact_timeconst_s"])
         self.canvas_geom = _id(self.model, mujoco.mjtObj.mjOBJ_GEOM, "canvas_surface")
         self.palette_well_geoms = [self.model.geom(f"well_{i:02d}").id for i in range(24)]
         self.washer_water_geom = self.model.geom("washer_water").id
