@@ -66,7 +66,7 @@ Flower 和 Fish 的最终图像分别与原始 1107014 结果逐像素一致，�
 
 ## 阶段 3：模型预测规划与闭环绘画
 
-单笔实验使用 `H=1`。Flower/Fish 使用论文式 `H=5` 预测窗口，每次执行两笔后读取当前画布并重新规划。初始化采用 PCA–RANSAC 笔画候选，候选序列通过 elite softmax 的 MPPI 风格更新，再用 CMA 风格协方差自适应收缩搜索分布。颜色在本地 24 色 palette 中选择；论文提到的实测颜料 patch 数据库和原始逐笔 action 未公开，因此本地使用目标 RGB 与预混 palette 的颜色匹配。
+单笔实验使用 `H=1`。Flower/Fish 使用论文式 `H=5` 预测窗口，每次执行两笔后读取当前画布并重新规划。初始化采用 PCA–RANSAC 笔画候选，候选序列通过 elite softmax 的 MPPI 风格更新，再用 CMA 风格协方差自适应收缩搜索分布。颜色在本地 24 色 palette 中选择；阶段三使用 `reports/stage3_refined/color_database.json` 中由仿真采集的 25×25 颜料 patch 均值与协方差，并按 Mahalanobis 距离分类，几何更新后重新取色。论文提到的实测数据库和原始逐笔 action 未公开，因此这个数据库是本地工程替代物。
 
 本项目没有复现论文中的 FRIDA-CNN、IMPASTO-LR 和 Heuristics-only baseline，符合本复现任务“不复现 baseline”的范围。
 
@@ -120,12 +120,14 @@ Flower 和 Fish 的最终图像分别与原始 1107014 结果逐像素一致，�
 
 ## 完整绘画过程视频
 
-视频按仿真时间生成，并以 2× 播放速度导出。合集按 Flower → Fish 顺序展示，另提供单独视频。
+视频从保存的 MuJoCo 执行动作连续重放生成，包含机器人移动、取色、清洗、接触、运笔、实时画布和法向力读数；随后以 2× 播放速度导出。合集按 Flower → Fish 顺序展示，另提供单独视频。重放使用与保留基线完全相同的 stroke records，Flower/Fish 终点相对基线画布的最大 RGB 差值和均值差值均为 0。
 
 - [2× 完整绘画合集](../baseline_1107014_corrected_final/showcase/painting_process_2x.mp4)
 - [2× Flower](../baseline_1107014_corrected_final/showcase/flower_painting_2x.mp4)
 - [2× Fish](../baseline_1107014_corrected_final/showcase/fish_painting_2x.mp4)
 - [2× 单笔](../baseline_1107014_corrected_final/showcase/single_stroke_2x.mp4)
+
+视频来源、帧数、哈希和终点一致性见 [`video_provenance.json`](../baseline_1107014_corrected_final/showcase/video_provenance.json)。
 
 ## 论文对齐点与边界
 
@@ -137,7 +139,7 @@ Flower 和 Fish 的最终图像分别与原始 1107014 结果逐像素一致，�
 
 ```bash
 conda env create --prefix ./.conda --file environment.yml
-conda activate /home/lcy-pony/Draw_WS/IMPASTO/.conda
+conda activate "$PWD/.conda"
 
 # 代码检查
 bash scripts/run.sh -m pytest -q

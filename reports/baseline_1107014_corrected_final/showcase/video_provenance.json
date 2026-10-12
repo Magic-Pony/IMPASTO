@@ -1,0 +1,43 @@
+{
+  "kind": "continuous_mujoco_replay_export",
+  "variant": "corrected_1107014_baseline",
+  "speed_factor": 2.0,
+  "source_replay_directory": "reports/stage3_refined",
+  "source_videos": {
+    "flower": {
+      "path": "reports/stage3_refined/flower_scene_replay.mp4",
+      "frames": 753,
+      "source_fps": 3.0,
+      "source_sha256": "1bff023e8e7b25071f196a224ee144ad4dbd1d189f8244e4c74924176352587c",
+      "end_canvas_max_abs_rgb_difference": 0,
+      "end_canvas_mean_abs_rgb_difference": 0.0
+    },
+    "fish": {
+      "path": "reports/stage3_refined/fish_scene_replay.mp4",
+      "frames": 791,
+      "source_fps": 3.0,
+      "source_sha256": "542b6de768ac6d03962e8aefb2d3510f78590b4bf90906eadcf4a65c1cfc6e6e",
+      "end_canvas_max_abs_rgb_difference": 0,
+      "end_canvas_mean_abs_rgb_difference": 0.0
+    }
+  },
+  "exports": {
+    "fish_painting_2x.mp4": {
+      "sha256": "4b52ffdbdc170680ae8e30328644a5caa4cd26f7321bcc945c60a4d24490ad70",
+      "bytes": 1900924
+    },
+    "painting_process_2x.mp4": {
+      "sha256": "1c3f54263219504d382ad81ed74b973e56744b74f7eac9dda9f3dcbc1359575e",
+      "bytes": 3745266
+    },
+    "flower_painting_2x.mp4": {
+      "sha256": "79a8a0adb000ca0c7af7eea3cf9911fd73d244b731d590b1fe93b09bd26a4311",
+      "bytes": 1844872
+    },
+    "single_stroke_2x.mp4": {
+      "sha256": "d34922fe59a0cd2193b5ef752a3838d81ba8a2417fbde3ba92ea38066e50fab8",
+      "bytes": 7141
+    }
+  },
+  "notes": "The source replays execute the saved Flower/Fish stroke records from the retained corrected 1107014 baseline. No MPC replanning or action generation occurs during export. Each export preserves every source frame and changes playback rate from 3 fps to 6 fps."
+}

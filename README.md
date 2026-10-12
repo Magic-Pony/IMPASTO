@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="reports/final_reproduction/index.html">📖 Final three-stage report</a> ·
-  <a href="reports/baseline_1107014_corrected_final/showcase/painting_process_2x.mp4">🎬 2× painting showcase</a> ·
+  <a href="reports/baseline_1107014_corrected_final/showcase/painting_process_2x.mp4">🎬 2× continuous painting showcase</a> ·
   <a href="https://arxiv.org/abs/2603.29315">📄 Paper</a>
 </p>
 
@@ -64,7 +64,7 @@ Create the isolated Conda environment:
 
 ```bash
 conda env create --prefix ./.conda --file environment.yml
-conda activate /home/lcy-pony/Draw_WS/IMPASTO/.conda
+conda activate "$PWD/.conda"
 ```
 
 Run the test suite through the project wrapper:
@@ -114,7 +114,8 @@ Large generated datasets and checkpoints are intentionally kept outside Git thro
 This repository contains an independent implementation. Upstream Panda assets retain their upstream license; see [`assets/`](assets/) and the included notices. Cite the paper when referring to the method:
 
 ```bibtex
-@article{impasto2026,
+@article{wang2026impasto,
+  author  = {Wang, Yingke and Li, Hao and Zhu, Yifeng and Yu, Hong-Xing and Goldberg, Ken and Fei-Fei, Li and Wu, Jiajun and Li, Yunzhu and Zhang, Ruohan},
   title   = {IMPASTO: Integrating Model-Based Planning with Learned Dynamics Models for Robotic Oil Painting Reproduction},
   journal = {arXiv preprint arXiv:2603.29315},
   year    = {2026}
