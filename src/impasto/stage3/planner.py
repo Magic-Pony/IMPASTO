@@ -283,10 +283,6 @@ class AdaptiveMPCPlanner:
             radius_config=self.cfg.get("force_radius_m"),
             curvature_penalty=float(self.pc.get("splitter_curvature_penalty", .01)),
             overlap_penalty=float(self.pc.get("splitter_overlap_penalty", .15)),
-            preserve_thin_regions=bool(self.pc.get("splitter_preserve_thin_regions", False)),
-            foreground_threshold=float(self.pc.get("splitter_foreground_threshold", .06)),
-            return_pool=bool(self.pc.get("learned_seed_selection", False)),
-            force_hypotheses=self.pc.get("seed_force_hypotheses"),
             canvas_width=self.dynamics.canvas_width,
             canvas_height=self.dynamics.canvas_height,
             action_bounds=self.bounds,
@@ -296,9 +292,6 @@ class AdaptiveMPCPlanner:
             target_rgb=None if color_images is None else color_images[1],
             palette=self.cfg.get("palette_rgb"),
         )
-        if self.pc.get("learned_seed_selection", False) and proposals:
-            proposals = self._select_learned_seeds(current, goal, proposals, horizon,
-                                                   color_images)
         actions = []
         colors = []
         opacities = []
@@ -331,79 +324,6 @@ class AdaptiveMPCPlanner:
             masks.append(masks[source].copy())
         return (np.asarray(actions, dtype=np.float32), colors, opacities, proposals,
                 np.asarray(masks, dtype=bool))
-
-    def _rgb_step(self, rgb, gray, next_gray, colors):
-        palette = np.asarray(self.cfg["palette_rgb"], np.float32) / 255.0
-        pigment = palette[np.asarray(colors, dtype=int)]
-        pigment_gray = pigment @ np.array([.299, .587, .114], np.float32)
-        denominator = pigment_gray[:, None, None] - gray
-        alpha = np.divide(next_gray - gray, denominator,
-                          out=np.zeros_like(gray), where=abs(denominator) > .025)
-        alpha = np.clip(alpha, 0.0, 1.0)
-        alpha[abs(next_gray - gray) < .003] = 0.0
-        return rgb + alpha[..., None] * (pigment[:, None, None, :] - rgb)
-
-    def _select_learned_seeds(self, current, goal, proposals, horizon, color_images):
-        """Select initial stroke hypotheses with the deployed dynamics model.
-
-        The splitter supplies alternative decompositions and force values. A
-        greedy rollout keeps a small residual stroke from losing to a wide
-        stroke merely because the latter explains more pixels in the seed
-        mask. This ranking is target agnostic and uses only the current goal.
-        """
-        projected = []
-        for proposal in proposals:
-            action = _project_action(proposal.action, self.bounds,
-                                     self.dynamics.workspace_limits,
-                                     (self.dynamics.canvas_width,
-                                      self.dynamics.canvas_height))
-            if action is not None:
-                projected.append((proposal, action))
-        if not projected:
-            return []
-        actions = np.asarray([action for _, action in projected], dtype=np.float32)[:, None]
-        default_colors = np.asarray([[proposal.color] for proposal, _ in projected], dtype=np.int64)
-        if self.color_target is not None:
-            colors = self._candidate_colors(actions, [0])
-        else:
-            colors = default_colors
-        weights = self.objective_weights(current, goal)
-        state = np.asarray(current, dtype=np.float32).copy()
-        rgb = (None if color_images is None else
-               np.asarray(color_images[0], np.float32) / 255.0)
-        target_rgb = self.color_target
-        remaining = list(range(len(projected)))
-        selected = []
-        for _ in range(min(int(horizon), len(remaining))):
-            batch_actions = actions[remaining]
-            batch_colors = colors[remaining]
-            initial = np.repeat(state[None], len(remaining), axis=0)
-            predictions, frames = self.dynamics.rollout_batch(
-                initial, batch_actions, batch_colors,
-                np.ones((len(remaining), 1), dtype=np.float32))
-            costs = np.asarray([self.cost(prediction, goal, weights)
-                                for prediction in predictions], dtype=np.float32)
-            predicted_rgb = None
-            if (rgb is not None and target_rgb is not None
-                    and float(self.pc.get("rgb_objective_weight", 0))):
-                predicted_rgb = self._rgb_step(
-                    np.repeat(rgb[None], len(remaining), axis=0),
-                    np.repeat(state[None], len(remaining), axis=0),
-                    frames[0], batch_colors[:, 0])
-                rgb_error = np.mean(abs(predicted_rgb - target_rgb), axis=-1)
-                costs += float(self.pc["rgb_objective_weight"]) * np.asarray([
-                    np.sum(weights * error) / max(float(weights.sum()), 1e-8)
-                    for error in rgb_error])
-            best_local = int(np.argmin(costs))
-            best_index = remaining.pop(best_local)
-            proposal, action = projected[best_index]
-            selected.append(StrokeProposal(
-                action, int(batch_colors[best_local, 0]), 1.0, proposal.mask,
-                float(-costs[best_local]), proposal.model))
-            state = predictions[best_local]
-            if predicted_rgb is not None:
-                rgb = predicted_rgb[best_local]
-        return selected
 
     def _sample(self, nominal, seed_actions, sigma, covariance_by_step, count):
         horizon = nominal.shape[0]

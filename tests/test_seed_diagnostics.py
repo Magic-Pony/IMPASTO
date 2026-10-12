@@ -1,8 +1,7 @@
 import numpy as np
-import cv2
 
 from impasto.stage3.planner import AdaptiveMPCPlanner
-from impasto.stage3.splitter import StrokeProposal, split_difference
+from impasto.stage3.splitter import StrokeProposal
 
 
 class _TinyWorkspace:
@@ -50,29 +49,3 @@ def test_seed_masks_follow_executable_seeds_after_filter_and_padding(monkeypatch
     assert opacities == [1.0, 1.0]
     np.testing.assert_array_equal(masks[0], valid_mask)
     np.testing.assert_array_equal(masks[1], valid_mask)
-
-
-def test_generic_thin_stroke_pool_preserves_width_alternatives():
-    base_rgb = np.full((96, 96, 3), 245, dtype=np.uint8)
-    target_rgb = base_rgb.copy()
-    pigment = (130, 185, 140)
-    cv2.line(target_rgb, (42, 20), (42, 75), pigment, 3)
-    cv2.line(target_rgb, (54, 20), (54, 62), pigment, 3)
-    gray = lambda image: cv2.cvtColor(image, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255
-    bounds = {
-        "x_m": [-.125, .07], "y_m": [-.135, .135],
-        "length_m": [.004, .105], "bend_m": [-.05, .05],
-        "force_N": [.4, 1.5],
-    }
-    pool = split_difference(
-        gray(base_rgb), gray(target_rgb), components=4, threshold=.01,
-        min_pixels=5, kmeans_iterations=8, ransac_iterations=16,
-        canvas_width=.4572, canvas_height=.5334, action_bounds=bounds,
-        seed=7, color_subset=[0], base_rgb=base_rgb, target_rgb=target_rgb,
-        palette=[pigment], opaque_colors=True, robust_candidates=True,
-        preserve_thin_regions=True, return_pool=True,
-        force_hypotheses=[.4, .7, 1.0, 1.3])
-    assert len(pool) >= 8
-    assert {round(float(proposal.action[5]), 1) for proposal in pool} >= {
-        .4, .7, 1.0, 1.3}
-    assert len({round(float(proposal.action[2]), 3) for proposal in pool}) >= 2

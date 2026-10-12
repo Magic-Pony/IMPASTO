@@ -1,0 +1,101 @@
+{
+  "title": "IMPASTO: Integrating Model-Based Planning with Learned Dynamics Models for Robotic Oil Painting Reproduction",
+  "paper": {
+    "arxiv": "2603.29315v1",
+    "url": "https://arxiv.org/abs/2603.29315"
+  },
+  "reproduction_status": "independent_personal_reproduction",
+  "official_author_code": false,
+  "baselines_reproduced": false,
+  "final_variant": "corrected_1107014_baseline",
+  "stage1": {
+    "simulator": "MuJoCo 3.15.0",
+    "robot": "Franka Emika Panda",
+    "canvas_m": [
+      0.4572,
+      0.5334
+    ],
+    "canvas_resolution": 512,
+    "palette_slots": 24,
+    "physics_timestep_s": 0.002,
+    "control_period_s": 0.004,
+    "target_force_N": 0.6,
+    "force_rmse_N": 0.016592622228430685,
+    "contact_fraction": 1.0,
+    "static_ik_max_error_mm": 0.0488,
+    "dynamic_workstation_visits": 48,
+    "all_strokes_success": 9,
+    "realtime_factor_without_render": 9.275790079512632,
+    "parallel_throughput_strokes_per_s": 2.917829252785229,
+    "parallel_speedup": 3.5267851387626337
+  },
+  "stage2": {
+    "self_play_transitions": 1000,
+    "train_samples": 900,
+    "validation_samples": 100,
+    "episodes": 10,
+    "epochs": 1000,
+    "batch_size": 120,
+    "best_epoch": 236,
+    "parameters": 999361,
+    "unet_channels": [
+      32,
+      64,
+      128,
+      256
+    ],
+    "validation_unweighted_l1": 0.008486959934234619,
+    "changed_region_l1": 0.02809750847518444,
+    "background_l1": 0.005210288800299168,
+    "paper_reference_l1": 0.0285,
+    "checkpoint": "outputs/stage2_refined/impasto_unet_best.pt",
+    "checkpoint_sha256": "831ea440fd73c275e350e65cca236598b5aff4b5a1b4ba74a646a58744799d35"
+  },
+  "stage3": {
+    "protocol": {
+      "single_stroke_horizon": 1,
+      "painting_horizon": 5,
+      "execute_before_replan": 2
+    },
+    "planner": {
+      "initialization": "PCA-RANSAC",
+      "sequence_update": "elite softmax / MPPI-style",
+      "adaptation": "CMA-style covariance adaptation"
+    },
+    "flower": {
+      "target_strokes": 17,
+      "executed_strokes": 17,
+      "replanning_cycles": 10,
+      "weighted_gray_l1": 0.014945199713110924,
+      "changed_region_gray_l1": 0.062027134001255035,
+      "prediction_execution_l1": 0.0003627312806202099,
+      "force_rmse_N": 0.008427302339563868,
+      "trajectory_rmse_mm": 0.1137041049967337,
+      "result_sha256": "39eaea974389a26ee7bd22cb7ade938d247d97df0630650f5ad1d6392ca17b65"
+    },
+    "fish": {
+      "target_strokes": 18,
+      "executed_strokes": 18,
+      "replanning_cycles": 11,
+      "weighted_gray_l1": 0.014755094423890114,
+      "changed_region_gray_l1": 0.0795477032661438,
+      "prediction_execution_l1": 0.0003116255565228957,
+      "force_rmse_N": 0.024533018364879935,
+      "trajectory_rmse_mm": 0.11968328236471704,
+      "result_sha256": "e524d3d1c61a154684a28eb0fea1bdab4d72a084dcad3470807d0c4d8373b4db"
+    },
+    "single_stroke": {
+      "weighted_gray_l1": 0.0009305058629252017,
+      "force_rmse_N": 0.010350475025822755,
+      "trajectory_rmse_mm": 0.06541276131251715
+    }
+  },
+  "provenance": {
+    "source_variant": "1107014",
+    "correction_scope": "diagnostic-only seed-mask/provenance synchronization fix",
+    "painting_actions_reused": true,
+    "painting_behavior_changed": false,
+    "later_general_stage3_optimization_in_final": false,
+    "pixel_identity_verified_for_flower_and_fish": true
+  }
+}
