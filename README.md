@@ -107,7 +107,17 @@ The final report and showcase already contain the completed run, so opening the 
 - [`reports/baseline_1107014_corrected_final/`](reports/baseline_1107014_corrected_final/) — final Flower/Fish outputs, per-round images, metrics, and showcase videos.
 - [`reports/final_reproduction/`](reports/final_reproduction/) — polished three-stage report in Markdown, HTML, and JSON.
 
-Large generated datasets and checkpoints are intentionally kept outside Git through `.gitignore`; the final report records their expected paths and SHA-256 values. The public repository is meant to document and reproduce the method locally, not to imply access to the authors' private data or implementation.
+Large generated datasets and checkpoints are intentionally kept outside Git through `.gitignore`. The verified Stage-2 dataset and checkpoint are distributed as the [`v0.1.0-reproduction-assets`](https://github.com/Magic-Pony/IMPASTO/releases/tag/v0.1.0-reproduction-assets) release asset; extract it at the repository root to restore the `data/stage2_refined/` and `outputs/stage2_refined/` paths. Their SHA-256 values remain recorded in the reports. The public repository is meant to document and reproduce the method locally, not to imply access to the authors' private data or implementation.
+
+To restore the ignored Stage-2 artifacts with GitHub CLI:
+
+```bash
+gh release download v0.1.0-reproduction-assets \
+  --repo Magic-Pony/IMPASTO \
+  --pattern impasto_stage2_refined_assets.tar.gz \
+  --dir /tmp/impasto-assets
+tar -xzf /tmp/impasto-assets/impasto_stage2_refined_assets.tar.gz
+```
 
 ## License and attribution
 
